@@ -18,6 +18,22 @@ services:
     networks:
       - net
 
+  redis:
+    image: 'redis:8-alpine'
+    restart: unless-stopped
+    command: redis-server --save 60 1 --loglevel warning --requirepass ${REDIS_PASSWORD:-secretdummy}
+    volumes:
+      - redis_data:/data
+    ports:
+      - '6379:6379'
+    healthcheck:
+      test: ["CMD", "sh", "-c", "redis-cli -a $${REDIS_PASSWORD:-secretdummy} ping | grep PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - net
+
   app:
     build:
       context: .
@@ -27,13 +43,23 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     restart: unless-stopped
+    environment:
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_DATA_REDIS_PASSWORD=${REDIS_PASSWORD:-secretdummy}
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/${PG_DB}
+      - SPRING_DATASOURCE_USERNAME=${PG_USER}
+      - SPRING_DATASOURCE_PASSWORD=${PG_PASSWORD}
     env_file:
       - .env
     networks:
       - net
 volumes:
   postgres_data:
+  redis_data:
 
 networks:
   net:

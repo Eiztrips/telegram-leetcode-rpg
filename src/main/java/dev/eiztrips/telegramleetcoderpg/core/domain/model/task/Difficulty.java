@@ -1,19 +1,28 @@
 package dev.eiztrips.telegramleetcoderpg.core.domain.model.task;
 
+import lombok.Getter;
+
 /**
  * Уровень сложности задачи.
  */
+@Getter
 public enum Difficulty {
 	/**
 	 * Легкая сложность.
 	 */
-	EASY,
+	EASY(10),
 	/**
 	 * Средняя сложность.
 	 */
-	MEDIUM,
+	MEDIUM(20),
 	/**
 	 * Высокая сложность.
 	 */
-	HARD
+	HARD(30);
+
+	private final int reward;
+
+	Difficulty(int reward) {
+		this.reward = reward;
+	}
 }

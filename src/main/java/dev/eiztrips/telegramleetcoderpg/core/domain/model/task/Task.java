@@ -10,10 +10,6 @@ public record Task(String title, Difficulty difficulty) {
 	 * @return получаемый опыт
 	 */
 	public int reward() {
-		return switch (difficulty) {
-			case EASY -> 10;
-			case MEDIUM -> 20;
-			case HARD -> 30;
-		};
+		return difficulty.getReward();
 	}
 }

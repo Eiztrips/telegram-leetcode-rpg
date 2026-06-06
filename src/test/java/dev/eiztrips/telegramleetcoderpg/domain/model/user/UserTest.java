@@ -1,8 +1,10 @@
 package dev.eiztrips.telegramleetcoderpg.domain.model.user;
 
+import dev.eiztrips.telegramleetcoderpg.domain.exception.SubmissionExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
@@ -29,6 +31,20 @@ class UserTest {
         );
 
         assertNotNull(user.lastCheckTime());
+    }
+
+    @Test
+    void createUserWithBadTelegramId() {
+        assertThrows(
+                UserExceptions.ArgumentEmptyException.class,
+                () -> new User(
+                        null,
+                        "test_1",
+                        "https://leetcode.com/u/test/",
+                        0,
+                        null
+                )
+        );
     }
 
     @Test
@@ -94,5 +110,32 @@ class UserTest {
         Instant last = u.lastCheckTime().minusSeconds(5);
         User user = u.withLastCheckTime();
         assertNotEquals(last, user.lastCheckTime());
+    }
+
+    @Test
+    void validateCheckRateLimitTest() {
+        User user1 = new User(
+                1L,
+                "name",
+                "https://leetcode.com/u/test/",
+                0,
+                Instant.now().minus(Duration.ofHours(1))
+        );
+
+        assertThrows(
+                SubmissionExceptions.SubmissionCheckRateLimitException.class,
+                user1::validateCheckRateLimit
+        );
+
+        User user2 = new User(
+                1L,
+                "name",
+                "https://leetcode.com/u/test/",
+                0,
+                Instant.now().minus(Duration.ofDays(1))
+        );
+
+        assertDoesNotThrow(user2::validateCheckRateLimit);
+
     }
 }

@@ -1,14 +1,16 @@
 package dev.eiztrips.telegramleetcoderpg.application.service;
 
-import dev.eiztrips.telegramleetcoderpg.core.domain.exception.UserExceptions;
-import dev.eiztrips.telegramleetcoderpg.core.domain.model.task.Task;
-import dev.eiztrips.telegramleetcoderpg.core.domain.model.user.User;
-import dev.eiztrips.telegramleetcoderpg.core.ports.inbound.CheckSubmissionsUseCase;
-import dev.eiztrips.telegramleetcoderpg.core.ports.outbound.LeetCodeClientPort;
-import dev.eiztrips.telegramleetcoderpg.core.ports.outbound.UserRepositoryPort;
+import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions;
+import dev.eiztrips.telegramleetcoderpg.domain.model.user.Difficulty;
+import dev.eiztrips.telegramleetcoderpg.domain.model.user.Submission;
+import dev.eiztrips.telegramleetcoderpg.domain.model.user.User;
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.CheckSubmissionsUseCase;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.leetcode.LeetCodeClientPort;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.a.shared.dto.SubmissionData;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserRepositoryPort;
 
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Сервис игрового прогресса.
@@ -36,24 +38,34 @@ public final class GameProgressionService implements CheckSubmissionsUseCase {
 		User user = userRepository.getByTelegramId(userTelegramId)
 				.orElseThrow(() -> new UserExceptions.UserNotFoundException(userTelegramId));
 
+		// что бы избежать race condition нужно обернуть все это
+		// дело в транзакцию, либо тут, либо в конфиге (лучше по гексагону)
+		// и вообще todo: во всех сервисах натранзакционить
 		user.validateCheckRateLimit();
 
-		List<Task> todaySubmittedTasks = leetCodeClient.getTodaySubmissions(userTelegramId);
-		Set<Task> userTasksLastWeek = user.getCompletedTasksLastWeek();
+		List<SubmissionData> todaySubmissions = leetCodeClient.getTodaySubmissions(userTelegramId);
+		List<SubmissionData> lastWeekSubmissions = userRepository.getSubmissionsLastWeek(userTelegramId);
 
-		boolean hasNewSubmissions = false;
+		var tasksLastWeek = lastWeekSubmissions.stream().map(SubmissionData::taskSlug)
+				.collect(Collectors.toUnmodifiableSet());
 
-		for (Task task : todaySubmittedTasks) {
-			if (!userTasksLastWeek.contains(task)) {
-				user = user.completeTask(task);
-				hasNewSubmissions = true;
-			}
+		var newSubmissions = todaySubmissions.stream().filter(sub -> !tasksLastWeek.contains(sub.taskSlug())).toList();
+
+		if (newSubmissions.isEmpty()) {
+			userRepository.save(user.withLastCheckTime());
+			return false;
 		}
 
-		user = user.withLastCheckTime();
+		User updatedUser = user.takeRewardForSolveTask(newSubmissions.stream().map(this::toSubmission).toList());
 
-		userRepository.save(user);
+		userRepository.addSubmissions(userTelegramId, newSubmissions);
+		userRepository.save(updatedUser.withLastCheckTime());
 
-		return hasNewSubmissions;
+		return true;
+	}
+
+	private Submission toSubmission(SubmissionData data) {
+		return new Submission(data.taskSlug(), Difficulty.valueOf(data.taskDifficulty().toUpperCase()),
+				data.completedAt());
 	}
 }

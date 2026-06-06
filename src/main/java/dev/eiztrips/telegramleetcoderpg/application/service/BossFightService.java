@@ -1,9 +1,9 @@
 package dev.eiztrips.telegramleetcoderpg.application.service;
 
-import dev.eiztrips.telegramleetcoderpg.core.domain.exception.WeeklyBossExceptions;
-import dev.eiztrips.telegramleetcoderpg.core.domain.model.boss.WeeklyBoss;
-import dev.eiztrips.telegramleetcoderpg.core.ports.inbound.AttackBossUseCase;
-import dev.eiztrips.telegramleetcoderpg.core.ports.outbound.BossRepositoryPort;
+import dev.eiztrips.telegramleetcoderpg.domain.exception.WeeklyBossExceptions;
+import dev.eiztrips.telegramleetcoderpg.domain.model.boss.WeeklyBoss;
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.AttackBossUseCase;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.boss.BossRepositoryPort;
 
 /**
  * Сервис боя с боссом.

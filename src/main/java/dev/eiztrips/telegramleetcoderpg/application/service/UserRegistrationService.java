@@ -1,9 +1,9 @@
 package dev.eiztrips.telegramleetcoderpg.application.service;
 
-import dev.eiztrips.telegramleetcoderpg.core.domain.exception.UserExceptions.*;
-import dev.eiztrips.telegramleetcoderpg.core.domain.model.user.User;
-import dev.eiztrips.telegramleetcoderpg.core.ports.inbound.RegisterUserUseCase;
-import dev.eiztrips.telegramleetcoderpg.core.ports.outbound.UserRepositoryPort;
+import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions.*;
+import dev.eiztrips.telegramleetcoderpg.domain.model.user.User;
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.RegisterUserUseCase;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserRepositoryPort;
 
 /**
  * Сервис регистрации пользователей.
@@ -28,8 +28,10 @@ public final class UserRegistrationService implements RegisterUserUseCase {
 			throw new UserAlreadyExistsException();
 		}
 
-		User user = new User(userTelegramId, name, leetcodeURL, 0, null, null);
+		User user = new User(userTelegramId, name, leetcodeURL, 0, null);
 
-		return userRepository.save(user);
+		userRepository.save(user);
+
+		return user;
 	}
 }

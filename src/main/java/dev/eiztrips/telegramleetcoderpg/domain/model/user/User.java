@@ -30,6 +30,10 @@ public record User(Long telegramId, String username, String leetcodeURL, int xp,
 	 *            время последней проверки (по умолчанию: сейчас)
 	 */
 	public User {
+		if (telegramId == null) {
+			throw new UserExceptions.ArgumentEmptyException("telegramId");
+		}
+
 		if (username == null || username.isBlank()) {
 			throw new UserExceptions.ArgumentEmptyException("username");
 		}

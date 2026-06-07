@@ -8,6 +8,65 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class WeeklyBossTest {
+
+    @Test
+    void weeklyBossCreationTest() {
+        WeeklyBoss boss = WeeklyBoss.builder()
+                .id(1L)
+                .name("Test WeeklyBoss")
+                .maxHp(1000)
+                .currentHp(1000)
+                .build();
+        assertEquals(1L, boss.id());
+        assertEquals("Test WeeklyBoss", boss.name());
+        assertEquals(1000, boss.maxHp());
+        assertEquals(1000, boss.currentHp());
+    }
+
+    @Test
+    void weeklyBossCreationWithInvalidArguments() {
+        assertThrows(GlobalExceptions.ArgumentEmptyException.class, () ->
+                WeeklyBoss.builder()
+                        .name("Test WeeklyBoss")
+                        .maxHp(1000)
+                        .currentHp(1000)
+                        .build());
+        assertThrows(GlobalExceptions.ArgumentEmptyException.class, () ->
+                WeeklyBoss.builder()
+                        .id(1L)
+                        .maxHp(1000)
+                        .currentHp(1000)
+                        .build());
+        assertThrows(GlobalExceptions.ArgumentEmptyException.class, () ->
+                WeeklyBoss.builder()
+                        .id(1L)
+                        .name("")
+                        .maxHp(1000)
+                        .currentHp(1000)
+                        .build());
+        assertThrows(GlobalExceptions.ArgumentInvalidException.class, () ->
+                WeeklyBoss.builder()
+                        .id(1L)
+                        .name("Test WeeklyBoss")
+                        .maxHp(-1)
+                        .currentHp(1000)
+                        .build());
+        assertThrows(GlobalExceptions.ArgumentInvalidException.class, () ->
+                WeeklyBoss.builder()
+                        .id(1L)
+                        .name("Test WeeklyBoss")
+                        .maxHp(1000)
+                        .currentHp(-1)
+                        .build());
+        assertThrows(GlobalExceptions.ArgumentInvalidException.class, () ->
+                WeeklyBoss.builder()
+                        .id(1L)
+                        .name("Test WeeklyBoss")
+                        .maxHp(1000)
+                        .currentHp(1500)
+                        .build());
+    }
+
     @Test
     void takeDamageTest() {
         WeeklyBoss boss = new WeeklyBoss(1L, "Test WeeklyBoss", 1000, 10);

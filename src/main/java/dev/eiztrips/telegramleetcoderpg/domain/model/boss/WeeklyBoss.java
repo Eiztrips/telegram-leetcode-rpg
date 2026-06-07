@@ -2,12 +2,14 @@ package dev.eiztrips.telegramleetcoderpg.domain.model.boss;
 
 import dev.eiztrips.telegramleetcoderpg.domain.exception.GlobalExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.WeeklyBossExceptions;
+import lombok.Builder;
 
 /**
  * Модель еженедельного босса.
  */
 public record WeeklyBoss(Long id, String name, int maxHp, int currentHp) {
 
+	@Builder
 	public WeeklyBoss {
 		if (id == null)
 			throw new GlobalExceptions.ArgumentEmptyException("id");

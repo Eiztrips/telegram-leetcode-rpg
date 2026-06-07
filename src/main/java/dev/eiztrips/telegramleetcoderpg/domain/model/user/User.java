@@ -2,6 +2,7 @@ package dev.eiztrips.telegramleetcoderpg.domain.model.user;
 
 import dev.eiztrips.telegramleetcoderpg.domain.exception.GlobalExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.SubmissionExceptions;
+import lombok.Builder;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -29,6 +30,7 @@ public record User(Long telegramId, String username, String leetcodeURL, int xp,
 	 * @param lastCheckTime
 	 *            время последней проверки (по умолчанию: сейчас)
 	 */
+	@Builder
 	public User {
 		if (telegramId == null)
 			throw new GlobalExceptions.ArgumentEmptyException("telegramId");

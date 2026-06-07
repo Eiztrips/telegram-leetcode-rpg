@@ -12,24 +12,24 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserTest {
 
-    private final User u = new User(
-            1L,
-            "test_1",
-            "https://leetcode.com/u/test/",
-            0,
-            null
-    );
+    private final User u = User.builder()
+            .telegramId(1L)
+            .username("test_1")
+            .leetcodeURL("https://leetcode.com/u/test/")
+            .build();
 
     @Test
     void createUserTest() {
-        var user = new User(
-                1L,
-                "test_1",
-                "https://leetcode.com/u/test/",
-                0,
-                null
-        );
+        var user = User.builder()
+                .telegramId(1L)
+                .username("test_1")
+                .leetcodeURL("https://leetcode.com/u/test/")
+                .build();
 
+        assertEquals(1L, user.telegramId());
+        assertEquals("test_1", user.username());
+        assertEquals("https://leetcode.com/u/test/", user.leetcodeURL());
+        assertEquals(0, user.xp());
         assertNotNull(user.lastCheckTime());
     }
 
@@ -37,13 +37,10 @@ class UserTest {
     void createUserWithBadTelegramId() {
         assertThrows(
                 GlobalExceptions.ArgumentEmptyException.class,
-                () -> new User(
-                        null,
-                        "test_1",
-                        "https://leetcode.com/u/test/",
-                        0,
-                        null
-                )
+                () -> User.builder()
+                        .username("test_1")
+                        .leetcodeURL("https://leetcode.com/u/test/")
+                        .build()
         );
     }
 
@@ -51,13 +48,10 @@ class UserTest {
     void createUserWithBadUsername() {
         assertThrows(
                 GlobalExceptions.ArgumentEmptyException.class,
-                () -> new User(
-                        1L,
-                        null,
-                        "https://leetcode.com/u/test/",
-                        0,
-                        null
-                )
+                () -> User.builder()
+                        .telegramId(1L)
+                        .leetcodeURL("https://leetcode.com/u/test/")
+                        .build()
         );
     }
 
@@ -65,13 +59,10 @@ class UserTest {
     void createUserWithBadLink() {
         assertThrows(
                 GlobalExceptions.ArgumentEmptyException.class,
-                () -> new User(
-                        1L,
-                        "test",
-                        null,
-                        0,
-                        null
-                )
+                () -> User.builder()
+                        .telegramId(1L)
+                        .username("test_1")
+                        .build()
         );
     }
 
@@ -79,20 +70,18 @@ class UserTest {
     void createUserWithBadPatternLink() {
         assertThrows(
                 GlobalExceptions.ArgumentInvalidException.class,
-                () -> new User(
-                        1L,
-                        "test",
-                        "https://ya.ru/",
-                        0,
-                        null
-                )
+                () -> User.builder()
+                        .telegramId(1L)
+                        .username("test_1")
+                        .leetcodeURL("https://ya.ru/u/test")
+                        .build()
         );
     }
 
     @Test
     void takeRewardForSolveTaskTest() {
         User user = u.takeRewardForSolveTask(List.of(
-                new Submission("two_poooo", Difficulty.EASY, Instant.now()),
+                Submission.builder().taskSlug("one_pooooppoooo").taskDifficulty(Difficulty.EASY).completedAt(Instant.now()).build(),
                 new Submission("three_poooo", Difficulty.HARD, Instant.now())
         ));
         assertEquals(40, user.xp());

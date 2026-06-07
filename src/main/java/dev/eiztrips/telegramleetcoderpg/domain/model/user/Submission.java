@@ -1,6 +1,7 @@
 package dev.eiztrips.telegramleetcoderpg.domain.model.user;
 
 import dev.eiztrips.telegramleetcoderpg.domain.exception.GlobalExceptions;
+import lombok.Builder;
 
 import java.time.Instant;
 
@@ -8,6 +9,8 @@ import java.time.Instant;
  * Модель выполненной задачи.
  */
 public record Submission(String taskSlug, Difficulty taskDifficulty, Instant completedAt) {
+
+	@Builder
 	public Submission {
 		if (taskSlug == null)
 			throw new GlobalExceptions.ArgumentEmptyException("task_slug");

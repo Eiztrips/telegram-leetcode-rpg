@@ -28,7 +28,8 @@ public final class UserRegistrationService implements RegisterUserUseCase {
 			throw new UserAlreadyExistsException();
 		}
 
-		User user = new User(userTelegramId, name, leetcodeURL, 0, null);
+		User user = User.builder().telegramId(userTelegramId).username(name).leetcodeURL(leetcodeURL).xp(0)
+				.lastCheckTime(null).build();
 
 		userRepository.save(user);
 

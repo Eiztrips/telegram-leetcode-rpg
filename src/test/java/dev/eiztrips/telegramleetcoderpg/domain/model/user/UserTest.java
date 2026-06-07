@@ -1,7 +1,7 @@
 package dev.eiztrips.telegramleetcoderpg.domain.model.user;
 
+import dev.eiztrips.telegramleetcoderpg.domain.exception.GlobalExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.SubmissionExceptions;
-import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -36,7 +36,7 @@ class UserTest {
     @Test
     void createUserWithBadTelegramId() {
         assertThrows(
-                UserExceptions.ArgumentEmptyException.class,
+                GlobalExceptions.ArgumentEmptyException.class,
                 () -> new User(
                         null,
                         "test_1",
@@ -50,7 +50,7 @@ class UserTest {
     @Test
     void createUserWithBadUsername() {
         assertThrows(
-                UserExceptions.ArgumentEmptyException.class,
+                GlobalExceptions.ArgumentEmptyException.class,
                 () -> new User(
                         1L,
                         null,
@@ -64,7 +64,7 @@ class UserTest {
     @Test
     void createUserWithBadLink() {
         assertThrows(
-                UserExceptions.ArgumentEmptyException.class,
+                GlobalExceptions.ArgumentEmptyException.class,
                 () -> new User(
                         1L,
                         "test",
@@ -78,7 +78,7 @@ class UserTest {
     @Test
     void createUserWithBadPatternLink() {
         assertThrows(
-                UserExceptions.InvalidLeetCodeUrlException.class,
+                GlobalExceptions.ArgumentInvalidException.class,
                 () -> new User(
                         1L,
                         "test",

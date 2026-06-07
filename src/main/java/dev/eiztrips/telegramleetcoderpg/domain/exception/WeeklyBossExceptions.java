@@ -21,13 +21,4 @@ public final class WeeklyBossExceptions {
 			super("Босс " + id + " уже повержен");
 		}
 	}
-
-	/**
-	 * Исключение: урон не может быть отрицательным
-	 */
-	public static final class InvalidDamageException extends DomainException {
-		public InvalidDamageException() {
-			super("Урон не может быть отрицательным");
-		}
-	}
 }

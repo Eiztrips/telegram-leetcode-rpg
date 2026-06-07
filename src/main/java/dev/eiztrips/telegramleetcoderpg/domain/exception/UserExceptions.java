@@ -21,23 +21,4 @@ public final class UserExceptions {
 			super("Пользователь уже зарегистрирован");
 		}
 	}
-
-	/**
-	 * Исключение: пустое поле.
-	 */
-	public static final class ArgumentEmptyException extends DomainException {
-		public ArgumentEmptyException(String arg) {
-			super(arg + " не может быть пустым.");
-		}
-	}
-
-	/**
-	 * Исключение: некорректный формат leetcode ссылки.
-	 */
-	public static final class InvalidLeetCodeUrlException extends DomainException {
-		public InvalidLeetCodeUrlException(String url) {
-			super(String.format(
-					"Некорректный формат ссылки: '%s'. Пример правильной ссылки: https://leetcode.com/u/<name>", url));
-		}
-	}
 }

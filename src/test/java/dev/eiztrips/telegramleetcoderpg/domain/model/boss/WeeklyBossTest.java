@@ -1,5 +1,6 @@
 package dev.eiztrips.telegramleetcoderpg.domain.model.boss;
 
+import dev.eiztrips.telegramleetcoderpg.domain.exception.GlobalExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.WeeklyBossExceptions;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +20,7 @@ class WeeklyBossTest {
                 () -> new WeeklyBoss(1L, "Test WeeklyBoss", 1000, 0).takeDamage(1)
         );
         assertThrows(
-                WeeklyBossExceptions.InvalidDamageException.class,
+                GlobalExceptions.ArgumentInvalidException.class,
                 () -> new WeeklyBoss(1L, "Test WeeklyBoss", 1000, 10).takeDamage(-1)
         );
     }

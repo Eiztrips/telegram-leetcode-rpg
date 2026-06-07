@@ -1,7 +1,7 @@
 package dev.eiztrips.telegramleetcoderpg.domain.model.user;
 
+import dev.eiztrips.telegramleetcoderpg.domain.exception.GlobalExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.SubmissionExceptions;
-import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -30,20 +30,16 @@ public record User(Long telegramId, String username, String leetcodeURL, int xp,
 	 *            время последней проверки (по умолчанию: сейчас)
 	 */
 	public User {
-		if (telegramId == null) {
-			throw new UserExceptions.ArgumentEmptyException("telegramId");
-		}
-
-		if (username == null || username.isBlank()) {
-			throw new UserExceptions.ArgumentEmptyException("username");
-		}
-
-		if (leetcodeURL == null || leetcodeURL.isBlank()) {
-			throw new UserExceptions.ArgumentEmptyException("LeetCode url");
-		}
-
+		if (telegramId == null)
+			throw new GlobalExceptions.ArgumentEmptyException("telegramId");
+		if (username == null || username.isBlank())
+			throw new GlobalExceptions.ArgumentEmptyException("username");
+		if (leetcodeURL == null || leetcodeURL.isBlank())
+			throw new GlobalExceptions.ArgumentEmptyException("LeetCode url");
 		if (!LEETCODE_PATTERN.matcher(leetcodeURL.trim()).matches())
-			throw new UserExceptions.InvalidLeetCodeUrlException(leetcodeURL.trim());
+			throw new GlobalExceptions.ArgumentInvalidException(String.format(
+					"Некорректный формат ссылки: '%s'. Пример правильной ссылки: https://leetcode.com/u/<name>",
+					leetcodeURL.trim()));
 
 		lastCheckTime = (lastCheckTime == null) ? Instant.now() : lastCheckTime;
 	}

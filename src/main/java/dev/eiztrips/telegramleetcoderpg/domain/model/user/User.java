@@ -16,20 +16,6 @@ public record User(Long telegramId, String username, String leetcodeURL, int xp,
 	private static final Pattern LEETCODE_PATTERN = Pattern
 			.compile("^(https?://)?(www\\.)?leetcode\\.com/(u/)?([a-zA-Z0-9_-]+)/?$");
 
-	/**
-	 * Инициализация пользователя.
-	 *
-	 * @param telegramId
-	 *            идентификатор
-	 * @param username
-	 *            имя пользователя
-	 * @param leetcodeURL
-	 *            ссылка на LeetCode профиль
-	 * @param xp
-	 *            опыт
-	 * @param lastCheckTime
-	 *            время последней проверки (по умолчанию: сейчас)
-	 */
 	@Builder
 	public User {
 		if (telegramId == null)

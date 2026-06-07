@@ -19,8 +19,9 @@ public class ArchitectureLayersTest {
             .domainModels("dev.eiztrips.telegramleetcoderpg.domain.model..")
             .domainServices("dev.eiztrips.telegramleetcoderpg.domain.service..")
             .applicationServices("dev.eiztrips.telegramleetcoderpg.application..")
-            .adapter("telegram", "dev.eiztrips.telegramleetcoderpg.infrastructure.adapter.in.telegram..")
-            .adapter("database", "dev.eiztrips.telegramleetcoderpg.infrastructure.adapter.out.db..")
-            // todo: убрать как ток архитектура будет реализована
+
+            .adapter("telegram", "dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram..")
+            .adapter("database", "dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence..")
+
             .allowEmptyShould(true);
 }

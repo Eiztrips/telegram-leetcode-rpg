@@ -42,20 +42,26 @@ repositories {
  */
 val springDocVersion = "3.0.3"
 val archUnit = "1.4.2"
+val mapstruct = "1.6.3"
+val lombokMapstructBuilding = "0.2.0"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-restclient")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocVersion")
+    implementation("org.mapstruct:mapstruct:$mapstruct")
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     runtimeOnly("org.postgresql:postgresql")
     annotationProcessor("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok-mapstruct-binding:$lombokMapstructBuilding")
+    annotationProcessor("org.mapstruct:mapstruct-processor:$mapstruct")
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
     testImplementation("org.springframework.boot:spring-boot-starter-restclient-test")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.h2database:h2")
     testImplementation("com.tngtech.archunit:archunit-junit5:$archUnit")
     testCompileOnly("org.projectlombok:lombok")

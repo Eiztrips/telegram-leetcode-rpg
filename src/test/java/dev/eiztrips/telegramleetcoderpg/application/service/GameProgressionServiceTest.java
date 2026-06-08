@@ -64,7 +64,7 @@ class GameProgressionServiceTest {
 
         SubmissionData duplicateSubmission = new SubmissionData(1L, "Two sum", "two-sum", "EASY", Instant.now());
 
-        when(leetCodeClient.getTodaySubmissions(telegramId)).thenReturn(List.of(duplicateSubmission));
+        when(leetCodeClient.getTodaySubmissions(userMock.leetcodeUsername())).thenReturn(List.of(duplicateSubmission));
         when(userRepository.getSubmissionsLastWeek(telegramId)).thenReturn(List.of(duplicateSubmission));
 
         boolean result = gameProgressionService.checkTodaySubmissions(telegramId);
@@ -88,7 +88,7 @@ class GameProgressionServiceTest {
         SubmissionData oldSubmission = new SubmissionData(1L, "Two sum", "two-sum", "EASY", Instant.now().minus(Duration.ofDays(2)));
         SubmissionData newSubmission = new SubmissionData(2L, "Add two numbers", "add-two-numbers", "MEDIUM", Instant.now());
 
-        when(leetCodeClient.getTodaySubmissions(telegramId)).thenReturn(List.of(oldSubmission, newSubmission));
+        when(leetCodeClient.getTodaySubmissions(userMock.leetcodeUsername())).thenReturn(List.of(oldSubmission, newSubmission));
         when(userRepository.getSubmissionsLastWeek(telegramId)).thenReturn(List.of(oldSubmission));
 
         User updatedUserMock = mock(User.class);

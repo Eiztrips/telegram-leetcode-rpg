@@ -43,7 +43,7 @@ public final class GameProgressionService implements CheckSubmissionsUseCase {
 		// и вообще todo: во всех сервисах натранзакционить
 		user.validateCheckRateLimit();
 
-		List<SubmissionData> todaySubmissions = leetCodeClient.getTodaySubmissions(userTelegramId);
+		List<SubmissionData> todaySubmissions = leetCodeClient.getTodaySubmissions(user.leetcodeUsername());
 		List<SubmissionData> lastWeekSubmissions = userRepository.getSubmissionsLastWeek(userTelegramId);
 
 		var tasksLastWeek = lastWeekSubmissions.stream().map(SubmissionData::taskSlug)

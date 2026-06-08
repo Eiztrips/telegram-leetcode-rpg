@@ -11,9 +11,9 @@ public interface LeetCodeClientPort {
 	/**
 	 * Получить сегодняшние отправленные решения.
 	 *
-	 * @param userTelegramId
-	 *            telegram telegramId пользователя
+	 * @param leetcodeUsername
+	 *            имя пользователя на LeetCode
 	 * @return список сегодняшних решений
 	 */
-	List<SubmissionData> getTodaySubmissions(Long userTelegramId);
+	List<SubmissionData> getTodaySubmissions(String leetcodeUsername);
 }

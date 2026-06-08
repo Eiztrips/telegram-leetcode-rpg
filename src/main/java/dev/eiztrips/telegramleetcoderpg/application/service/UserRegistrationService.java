@@ -23,12 +23,12 @@ public final class UserRegistrationService implements RegisterUserUseCase {
 	}
 
 	@Override
-	public User registerUser(Long userTelegramId, String name, String leetcodeURL) {
+	public User registerUser(Long userTelegramId, String leetcodeUsername) {
 		if (userRepository.existsByTelegramId(userTelegramId)) {
 			throw new UserAlreadyExistsException();
 		}
 
-		User user = User.builder().telegramId(userTelegramId).username(name).leetcodeURL(leetcodeURL).xp(0)
+		User user = User.builder().telegramId(userTelegramId).leetcodeUsername(leetcodeUsername).xp(0)
 				.lastCheckTime(null).build();
 
 		userRepository.save(user);

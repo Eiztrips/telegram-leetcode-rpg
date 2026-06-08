@@ -12,14 +12,12 @@ public interface RegisterUserUseCase {
 	 *
 	 * @param userTelegramId
 	 *            telegram telegramId пользователя
-	 * @param name
-	 *            имя
-	 * @param leetcodeURL
-	 *            ссылка на профиль LeetCode
+	 * @param leetcodeUsername
+	 *            имя пользователя LeetCode
 	 * @return зарегистрированный пользователь
 	 *
 	 * @throws UserAlreadyExistsException
 	 *             пользователь уже был зарегистрирован
 	 */
-	User registerUser(Long userTelegramId, String name, String leetcodeURL);
+	User registerUser(Long userTelegramId, String leetcodeUsername);
 }

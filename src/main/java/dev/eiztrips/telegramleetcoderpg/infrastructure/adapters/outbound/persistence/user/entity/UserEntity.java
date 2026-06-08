@@ -23,11 +23,8 @@ public class UserEntity {
 	@EqualsAndHashCode.Include
 	private Long telegramId;
 
-	@Column(name = "username", nullable = false)
-	private String username;
-
-	@Column(name = "leetcode_url", nullable = false, unique = true)
-	private String leetcodeURL;
+	@Column(name = "leetcode_username", nullable = false, unique = true)
+	private String leetcodeUsername;
 
 	@Column(name = "experience")
 	private int xp;

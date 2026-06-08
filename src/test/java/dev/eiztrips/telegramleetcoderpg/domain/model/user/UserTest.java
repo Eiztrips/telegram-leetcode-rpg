@@ -14,21 +14,18 @@ class UserTest {
 
     private final User u = User.builder()
             .telegramId(1L)
-            .username("test_1")
-            .leetcodeURL("https://leetcode.com/u/test/")
+            .leetcodeUsername("test_1")
             .build();
 
     @Test
     void createUserTest() {
         var user = User.builder()
                 .telegramId(1L)
-                .username("test_1")
-                .leetcodeURL("https://leetcode.com/u/test/")
+                .leetcodeUsername("test_1")
                 .build();
 
         assertEquals(1L, user.telegramId());
-        assertEquals("test_1", user.username());
-        assertEquals("https://leetcode.com/u/test/", user.leetcodeURL());
+        assertEquals("test_1", user.leetcodeUsername());
         assertEquals(0, user.xp());
         assertNotNull(user.lastCheckTime());
     }
@@ -38,42 +35,17 @@ class UserTest {
         assertThrows(
                 GlobalExceptions.ArgumentEmptyException.class,
                 () -> User.builder()
-                        .username("test_1")
-                        .leetcodeURL("https://leetcode.com/u/test/")
+                        .leetcodeUsername("test_1")
                         .build()
         );
     }
 
     @Test
-    void createUserWithBadUsername() {
+    void createUserWithBadLeetCodeUsername() {
         assertThrows(
                 GlobalExceptions.ArgumentEmptyException.class,
                 () -> User.builder()
                         .telegramId(1L)
-                        .leetcodeURL("https://leetcode.com/u/test/")
-                        .build()
-        );
-    }
-
-    @Test
-    void createUserWithBadLink() {
-        assertThrows(
-                GlobalExceptions.ArgumentEmptyException.class,
-                () -> User.builder()
-                        .telegramId(1L)
-                        .username("test_1")
-                        .build()
-        );
-    }
-
-    @Test
-    void createUserWithBadPatternLink() {
-        assertThrows(
-                GlobalExceptions.ArgumentInvalidException.class,
-                () -> User.builder()
-                        .telegramId(1L)
-                        .username("test_1")
-                        .leetcodeURL("https://ya.ru/u/test")
                         .build()
         );
     }
@@ -106,7 +78,6 @@ class UserTest {
         User user1 = new User(
                 1L,
                 "name",
-                "https://leetcode.com/u/test/",
                 0,
                 Instant.now().minus(Duration.ofHours(1))
         );
@@ -119,7 +90,6 @@ class UserTest {
         User user2 = new User(
                 1L,
                 "name",
-                "https://leetcode.com/u/test/",
                 0,
                 Instant.now().minus(Duration.ofDays(1))
         );

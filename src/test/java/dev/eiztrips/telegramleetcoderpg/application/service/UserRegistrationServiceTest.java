@@ -28,17 +28,15 @@ class UserRegistrationServiceTest {
     @DisplayName("Успешная регистрация нового пользователя")
     void registerUser_WhenUserDoesNotExist_ShouldRegisterSuccessfully() {
         Long telegramId = 123456789L;
-        String name = "TestCoder";
-        String leetcodeUrl = "https://leetcode.com/testcoder";
+        String leetcodeUsername = "testcoder";
 
         when(userRepository.existsByTelegramId(telegramId)).thenReturn(false);
 
-        User registeredUser = userRegistrationService.registerUser(telegramId, name, leetcodeUrl);
+        User registeredUser = userRegistrationService.registerUser(telegramId, leetcodeUsername);
 
         assertNotNull(registeredUser, "Возвращенный пользователь не должен быть null");
         assertEquals(telegramId, registeredUser.telegramId());
-        assertEquals(name, registeredUser.username());
-        assertEquals(leetcodeUrl, registeredUser.leetcodeURL());
+        assertEquals(leetcodeUsername, registeredUser.leetcodeUsername());
         assertEquals(0, registeredUser.xp(), "Начальный опыт должен быть равен 0");
         assertNotNull(registeredUser.lastCheckTime(), "Время проверки должно быть null при регистрации");
 
@@ -53,13 +51,12 @@ class UserRegistrationServiceTest {
     @DisplayName("Выброс исключения, если пользователь с таким Telegram ID уже зарегистрирован")
     void registerUser_WhenUserAlreadyExists_ShouldThrowUserAlreadyExistsException() {
         Long telegramId = 987654321L;
-        String name = "ExistingCoder";
-        String leetcodeUrl = "https://leetcode.com/existing";
+        String leetcodeUsername = "existing";
 
         when(userRepository.existsByTelegramId(telegramId)).thenReturn(true);
 
         assertThrows(UserAlreadyExistsException.class, () -> {
-            userRegistrationService.registerUser(telegramId, name, leetcodeUrl);
+            userRegistrationService.registerUser(telegramId, leetcodeUsername);
         }, "Ожидалось исключение UserAlreadyExistsException, но оно не было выброшено");
 
         verify(userRepository, never()).save(any(User.class));

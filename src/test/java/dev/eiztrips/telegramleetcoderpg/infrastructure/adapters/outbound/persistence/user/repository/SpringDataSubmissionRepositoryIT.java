@@ -30,15 +30,13 @@ class SpringDataSubmissionRepositoryIT {
 
         UserEntity targetUser = UserEntity.builder()
                 .telegramId(targetUserId)
-                .username("target_user")
-                .leetcodeURL("url1")
+                .leetcodeUsername("target_user")
                 .build();
         userRepository.save(targetUser);
 
         UserEntity otherUser = UserEntity.builder()
                 .telegramId(otherUserId)
-                .username("other_user")
-                .leetcodeURL("url2")
+                .leetcodeUsername("other_user")
                 .build();
         userRepository.save(otherUser);
 
@@ -74,6 +72,6 @@ class SpringDataSubmissionRepositoryIT {
         List<SubmissionEntity> result = submissionRepository.findWeeklySubmissions(targetUserId, oneWeekAgo);
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSubmissionId()).isEqualTo(101L);
+        assertThat(result.getFirst().getSubmissionId()).isEqualTo(101L);
     }
 }

@@ -7,27 +7,18 @@ import lombok.Builder;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Доменная модель пользователя.
  */
-public record User(Long telegramId, String username, String leetcodeURL, int xp, Instant lastCheckTime) {
-	private static final Pattern LEETCODE_PATTERN = Pattern
-			.compile("^(https?://)?(www\\.)?leetcode\\.com/(u/)?([a-zA-Z0-9_-]+)/?$");
+public record User(Long telegramId, String leetcodeUsername, int xp, Instant lastCheckTime) {
 
 	@Builder
 	public User {
 		if (telegramId == null)
 			throw new GlobalExceptions.ArgumentEmptyException("telegramId");
-		if (username == null || username.isBlank())
-			throw new GlobalExceptions.ArgumentEmptyException("username");
-		if (leetcodeURL == null || leetcodeURL.isBlank())
-			throw new GlobalExceptions.ArgumentEmptyException("LeetCode url");
-		if (!LEETCODE_PATTERN.matcher(leetcodeURL.trim()).matches())
-			throw new GlobalExceptions.ArgumentInvalidException(String.format(
-					"Некорректный формат ссылки: '%s'. Пример правильной ссылки: https://leetcode.com/u/<name>",
-					leetcodeURL.trim()));
+		if (leetcodeUsername == null || leetcodeUsername.isBlank())
+			throw new GlobalExceptions.ArgumentEmptyException("leetcodeUsername");
 
 		lastCheckTime = (lastCheckTime == null) ? Instant.now() : lastCheckTime;
 	}
@@ -46,7 +37,7 @@ public record User(Long telegramId, String username, String leetcodeURL, int xp,
 			newXp += submission.getReward();
 		}
 
-		return new User(this.telegramId, this.username, this.leetcodeURL, newXp, this.lastCheckTime);
+		return new User(this.telegramId, this.leetcodeUsername, newXp, this.lastCheckTime);
 	}
 
 	/**
@@ -55,7 +46,7 @@ public record User(Long telegramId, String username, String leetcodeURL, int xp,
 	 * @return обновленный пользователь
 	 */
 	public User withLastCheckTime() {
-		return new User(this.telegramId, this.username, this.leetcodeURL, this.xp, Instant.now());
+		return new User(this.telegramId, this.leetcodeUsername, this.xp, Instant.now());
 	}
 
 	/**

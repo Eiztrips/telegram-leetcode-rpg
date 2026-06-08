@@ -1,5 +1,7 @@
 package dev.eiztrips.telegramleetcoderpg.application.ports.outbound.a.shared.dto;
 
+import lombok.Builder;
+
 import java.time.Instant;
 
 /**
@@ -7,4 +9,19 @@ import java.time.Instant;
  */
 public record SubmissionData(Long submissionId, String taskTitle, String taskSlug, String taskDifficulty,
 		Instant completedAt) {
+	/**
+	 * @param submissionId
+	 *            индетификатор сабмишена
+	 * @param taskTitle
+	 *            название задачи
+	 * @param taskSlug
+	 *            уникальное название задачи
+	 * @param taskDifficulty
+	 *            сложность задачи
+	 * @param completedAt
+	 *            время выполнения задачи
+	 */
+	@Builder
+	public SubmissionData {
+	}
 }

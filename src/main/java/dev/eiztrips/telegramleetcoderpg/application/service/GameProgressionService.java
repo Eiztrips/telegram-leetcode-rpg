@@ -65,7 +65,8 @@ public final class GameProgressionService implements CheckSubmissionsUseCase {
 	}
 
 	private Submission toSubmission(SubmissionData data) {
-		return new Submission(data.taskSlug(), Difficulty.valueOf(data.taskDifficulty().toUpperCase()),
-				data.completedAt());
+		return Submission.builder().taskSlug(data.taskSlug())
+				.taskDifficulty(Difficulty.valueOf(data.taskDifficulty().toUpperCase())).completedAt(data.completedAt())
+				.build();
 	}
 }

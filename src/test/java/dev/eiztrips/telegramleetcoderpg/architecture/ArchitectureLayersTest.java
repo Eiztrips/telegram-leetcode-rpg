@@ -21,6 +21,7 @@ public class ArchitectureLayersTest {
             .applicationServices("dev.eiztrips.telegramleetcoderpg.application..")
 
             .adapter("telegram", "dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram..")
+            .adapter("leetcode", "dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.leetcode..")
             .adapter("database", "dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence..")
 
             .allowEmptyShould(true);

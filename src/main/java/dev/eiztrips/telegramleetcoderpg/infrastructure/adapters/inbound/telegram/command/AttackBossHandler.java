@@ -4,10 +4,12 @@ import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.AttackBossUseC
 import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.CheckSubmissionsUseCase;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.a.shared.dto.SubmissionData;
 import dev.eiztrips.telegramleetcoderpg.domain.model.boss.WeeklyBoss;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 
+@Component
 public class AttackBossHandler implements CommandHandler {
 
 	private final AttackBossUseCase attackBossUseCase;

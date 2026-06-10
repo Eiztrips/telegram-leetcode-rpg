@@ -2,8 +2,10 @@ package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegra
 
 import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.RegisterUserUseCase;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.TelegramException;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+@Component
 public class RegisterHandler implements CommandHandler {
 	private final RegisterUserUseCase registerUserUseCase;
 

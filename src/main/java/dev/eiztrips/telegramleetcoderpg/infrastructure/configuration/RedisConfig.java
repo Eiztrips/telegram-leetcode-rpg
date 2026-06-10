@@ -26,12 +26,9 @@ public class RedisConfig {
 
 	@Bean
 	public RedisConnectionFactory redisConnectionFactory() {
-		ClientOptions clientOptions = ClientOptions.builder()
-				.protocolVersion(ProtocolVersion.RESP2)
-				.build();
+		ClientOptions clientOptions = ClientOptions.builder().protocolVersion(ProtocolVersion.RESP2).build();
 
-		LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
-				.clientOptions(clientOptions)
+		LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder().clientOptions(clientOptions)
 				.build();
 
 		RedisStandaloneConfiguration serverConfig = new RedisStandaloneConfiguration(redisHost, redisPort);

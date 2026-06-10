@@ -15,6 +15,7 @@ class UserTest {
     private final User u = User.builder()
             .telegramId(1L)
             .leetcodeUsername("test_1")
+            .lastCheckTime(Instant.now())
             .build();
 
     @Test
@@ -27,7 +28,7 @@ class UserTest {
         assertEquals(1L, user.telegramId());
         assertEquals("test_1", user.leetcodeUsername());
         assertEquals(0, user.xp());
-        assertNotNull(user.lastCheckTime());
+        assertNull(user.lastCheckTime());
     }
 
     @Test

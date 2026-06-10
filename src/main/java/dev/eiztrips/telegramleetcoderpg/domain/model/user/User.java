@@ -19,8 +19,6 @@ public record User(Long telegramId, String leetcodeUsername, int xp, Instant las
 			throw new GlobalExceptions.ArgumentEmptyException("telegramId");
 		if (leetcodeUsername == null || leetcodeUsername.isBlank())
 			throw new GlobalExceptions.ArgumentEmptyException("leetcodeUsername");
-
-		lastCheckTime = (lastCheckTime == null) ? Instant.now() : lastCheckTime;
 	}
 
 	/**
@@ -33,9 +31,8 @@ public record User(Long telegramId, String leetcodeUsername, int xp, Instant las
 	public User takeRewardForSolveTask(List<Submission> submissions) {
 		int newXp = xp;
 
-		for (Submission submission : submissions) {
+		for (Submission submission : submissions)
 			newXp += submission.getReward();
-		}
 
 		return new User(this.telegramId, this.leetcodeUsername, newXp, this.lastCheckTime);
 	}
@@ -53,7 +50,7 @@ public record User(Long telegramId, String leetcodeUsername, int xp, Instant las
 	 * Проверка отправлений за последние 24 часа.
 	 */
 	public void validateCheckRateLimit() {
-		if (this.lastCheckTime.isAfter(Instant.now().minus(Duration.ofDays(1)))) {
+		if (this.lastCheckTime != null && this.lastCheckTime.isAfter(Instant.now().minus(Duration.ofDays(1)))) {
 			throw new SubmissionExceptions.SubmissionCheckRateLimitException(lastCheckTime);
 		}
 	}

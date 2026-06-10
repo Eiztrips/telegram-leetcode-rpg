@@ -38,7 +38,7 @@ class UserRegistrationServiceTest {
         assertEquals(telegramId, registeredUser.telegramId());
         assertEquals(leetcodeUsername, registeredUser.leetcodeUsername());
         assertEquals(0, registeredUser.xp(), "Начальный опыт должен быть равен 0");
-        assertNotNull(registeredUser.lastCheckTime(), "Время проверки должно быть null при регистрации");
+        assertNull(registeredUser.lastCheckTime(), "Время проверки должно быть null при регистрации");
 
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         verify(userRepository, times(1)).save(userCaptor.capture());

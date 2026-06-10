@@ -20,7 +20,10 @@ public class ArchitectureLayersTest {
             .domainServices("dev.eiztrips.telegramleetcoderpg.domain.service..")
             .applicationServices("dev.eiztrips.telegramleetcoderpg.application..")
 
-            .adapter("telegram", "dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram..")
+            .adapter("telegram", new String[]{
+                    "dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram..",
+                    "dev.eiztrips.telegramleetcoderpg.infrastructure.configuration.."
+            })
             .adapter("leetcode", "dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.leetcode..")
             .adapter("database", "dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence..")
 

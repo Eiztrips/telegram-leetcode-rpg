@@ -44,6 +44,7 @@ val springDocVersion = "3.0.3"
 val archUnit = "1.4.2"
 val mapstruct = "1.6.3"
 val lombokMapstructBuilding = "0.2.0"
+val telegram = "6.9.7.1"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -52,6 +53,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocVersion")
     implementation("org.mapstruct:mapstruct:$mapstruct")
+    implementation("org.telegram:telegrambots:$telegram")
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")

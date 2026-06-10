@@ -9,6 +9,7 @@ import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.leetcode.Leet
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.a.shared.dto.SubmissionData;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserRepositoryPort;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ public final class GameProgressionService implements CheckSubmissionsUseCase {
 	}
 
 	@Override
-	public boolean checkTodaySubmissions(Long userTelegramId) {
+	public List<SubmissionData> checkTodaySubmissions(Long userTelegramId) {
 		User user = userRepository.getByTelegramId(userTelegramId)
 				.orElseThrow(() -> new UserExceptions.UserNotFoundException(userTelegramId));
 
@@ -53,7 +54,7 @@ public final class GameProgressionService implements CheckSubmissionsUseCase {
 
 		if (newSubmissions.isEmpty()) {
 			userRepository.save(user.withLastCheckTime());
-			return false;
+			return new ArrayList<>();
 		}
 
 		User updatedUser = user.takeRewardForSolveTask(newSubmissions.stream().map(this::toSubmission).toList());
@@ -61,7 +62,7 @@ public final class GameProgressionService implements CheckSubmissionsUseCase {
 		userRepository.addSubmissions(userTelegramId, newSubmissions);
 		userRepository.save(updatedUser.withLastCheckTime());
 
-		return true;
+		return newSubmissions;
 	}
 
 	private Submission toSubmission(SubmissionData data) {

@@ -58,8 +58,8 @@ class GameProgressionServiceTest {
     }
 
     @Test
-    @DisplayName("Возврат false, если у пользователя нет новых отправленных решений за сегодня")
-    void checkTodaySubmissions_WhenNoNewSubmissions_ShouldReturnFalse() {
+    @DisplayName("Возврат пустого списка, если у пользователя нет новых отправленных решений за сегодня")
+    void checkTodaySubmissions_WhenNoNewSubmissions_ShouldReturnEmptyList() {
         when(userRepository.getByTelegramId(telegramId)).thenReturn(Optional.of(userMock));
 
         SubmissionData duplicateSubmission = new SubmissionData(1L, "Two sum", "two-sum", "EASY", Instant.now());
@@ -67,9 +67,9 @@ class GameProgressionServiceTest {
         when(leetCodeClient.getTodaySubmissions(userMock.leetcodeUsername())).thenReturn(List.of(duplicateSubmission));
         when(userRepository.getSubmissionsLastWeek(telegramId)).thenReturn(List.of(duplicateSubmission));
 
-        boolean result = gameProgressionService.checkTodaySubmissions(telegramId);
+        List<SubmissionData> result = gameProgressionService.checkTodaySubmissions(telegramId);
 
-        assertFalse(result, "Метод должен вернуть false, так как новых задач нет");
+        assertTrue(result.isEmpty(), "Метод должен вернуть пустой список, так как новых задач нет");
 
         verify(userMock, times(1)).validateCheckRateLimit();
 
@@ -81,8 +81,8 @@ class GameProgressionServiceTest {
     }
 
     @Test
-    @DisplayName("Успешное начисление награды, если найдены новые уникальные решения")
-    void checkTodaySubmissions_WhenNewSubmissionsExist_ShouldRewardUserAndReturnTrue() {
+    @DisplayName("Успешное начисление награды и возврат новых уникальных решений")
+    void checkTodaySubmissions_WhenNewSubmissionsExist_ShouldRewardUserAndReturnNewSubmissions() {
         when(userRepository.getByTelegramId(telegramId)).thenReturn(Optional.of(userMock));
 
         SubmissionData oldSubmission = new SubmissionData(1L, "Two sum", "two-sum", "EASY", Instant.now().minus(Duration.ofDays(2)));
@@ -95,9 +95,10 @@ class GameProgressionServiceTest {
         when(userMock.takeRewardForSolveTask(anyList())).thenReturn(updatedUserMock);
         when(updatedUserMock.withLastCheckTime()).thenReturn(updatedUserMock);
 
-        boolean result = gameProgressionService.checkTodaySubmissions(telegramId);
+        List<SubmissionData> result = gameProgressionService.checkTodaySubmissions(telegramId);
 
-        assertTrue(result, "Метод должен вернуть true, так как была найдена новая задача");
+        assertFalse(result.isEmpty(), "Метод должен вернуть список с новой задачей");
+        assertEquals("add-two-numbers", result.get(0).taskSlug(), "Неверный слаг задачи");
 
         verify(userRepository, times(1)).addSubmissions(eq(telegramId), argThat(list ->
                 list.size() == 1 && list.get(0).taskSlug().equals("add-two-numbers")

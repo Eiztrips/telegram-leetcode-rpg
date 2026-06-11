@@ -24,8 +24,14 @@ public class ArchitectureLayersTest {
                     "dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram..",
                     "dev.eiztrips.telegramleetcoderpg.infrastructure.configuration.."
             })
-            .adapter("leetcode", "dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.leetcode..")
-            .adapter("database", "dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence..")
+            .adapter("leetcode", new String[]{
+                    "dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.leetcode..",
+                    "dev.eiztrips.telegramleetcoderpg.infrastructure.configuration.."
+            })
+            .adapter("database", new String[]{
+                    "dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence..",
+                    "dev.eiztrips.telegramleetcoderpg.infrastructure.configuration.."
+            })
 
             .allowEmptyShould(true);
 }

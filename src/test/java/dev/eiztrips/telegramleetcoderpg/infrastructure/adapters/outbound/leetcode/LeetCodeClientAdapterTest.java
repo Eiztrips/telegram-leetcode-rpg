@@ -76,7 +76,7 @@ class LeetCodeClientAdapterTest {
         SubmissionData data = result.get(0);
         assertEquals(111L, data.submissionId());
         assertEquals("two-sum", data.taskSlug());
-        assertEquals("Easy", data.taskDifficulty());
+        assertEquals("EASY", data.taskDifficulty());
     }
 
     @Test

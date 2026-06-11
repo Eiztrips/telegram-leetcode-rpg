@@ -117,7 +117,7 @@ public class LeetCodeClientAdapter implements LeetCodeClientPort {
 						.completedAt(Instant.ofEpochSecond(Long.parseLong(gql.timestamp()))).taskSlug(gql.titleSlug())
 						.taskTitle(gql.title())
 						// fixme: line_139
-						.taskDifficulty(getTaskDifficulty(gql.titleSlug())).build())
+						.taskDifficulty(getTaskDifficulty(gql.titleSlug()).toUpperCase()).build())
 				.filter(data -> data.completedAt().isAfter(oneDayAgo)).toList();
 	}
 

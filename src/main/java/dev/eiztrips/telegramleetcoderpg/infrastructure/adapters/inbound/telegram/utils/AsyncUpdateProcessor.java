@@ -13,7 +13,7 @@ import java.util.function.Consumer;
 
 @Component
 @RequiredArgsConstructor
-public class UpdateProcessor {
+public class AsyncUpdateProcessor {
 	private final List<CommandHandler> commandHandlers;
 
 	@Async

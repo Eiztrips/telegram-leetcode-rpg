@@ -1,7 +1,7 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram;
 
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
-import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.utils.UpdateProcessor;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.utils.AsyncUpdateProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -21,15 +21,15 @@ public class TelegramBotAdapter extends TelegramLongPollingBot {
 
 	private final String botUsername;
 	private final List<CommandHandler> commandHandlers;
-	private final UpdateProcessor updateProcessor;
+	private final AsyncUpdateProcessor asyncUpdateProcessor;
 
 	public TelegramBotAdapter(@Value("${telegram.bot.username}") String botUsername,
 			@Value("${telegram.bot.token}") String botToken, List<CommandHandler> commandHandlers,
-			UpdateProcessor updateProcessor) {
+			AsyncUpdateProcessor asyncUpdateProcessor) {
 		super(botToken);
 		this.botUsername = botUsername;
 		this.commandHandlers = commandHandlers;
-		this.updateProcessor = updateProcessor;
+		this.asyncUpdateProcessor = asyncUpdateProcessor;
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class TelegramBotAdapter extends TelegramLongPollingBot {
 			return;
 		}
 
-		updateProcessor.process(update, lockedUsers,
+		asyncUpdateProcessor.process(update, lockedUsers,
 				responseText -> executeMessage(SendMessage.builder().chatId(userId).text(responseText).build()),
 				() -> sendUnknownCommandMessage(userId));
 	}

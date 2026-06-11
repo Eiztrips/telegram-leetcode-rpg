@@ -37,12 +37,20 @@ public class AttackBossHandler implements CommandHandler {
 
 		WeeklyBoss newBossState = attackBossUseCase.attackBoss(CHANGE_ME_LATER, submissionDataList);
 
+		StringBuilder sb = new StringBuilder();
+
 		if (newBossState.currentHp() == 0) {
-			return ("Успешно проведена атака %d задачами. Босс повержен!");
+			sb.append(String.format("Успешно проведена атака %d задачами. Босс повержен!", submissionDataList.size()));
 		} else {
-			return String.format("Успешно проведена атака %d задачами. Здоровье босса: %d/%d",
-					submissionDataList.size(), newBossState.currentHp(), newBossState.maxHp());
+			sb.append(String.format("Успешно проведена атака %d задачами. Здоровье босса: %d/%d",
+					submissionDataList.size(), newBossState.currentHp(), newBossState.maxHp()));
 		}
+
+		sb.append("\n\nПроведенные атаки:\n");
+		submissionDataList.forEach(submissionData -> sb.append(String.format("- %s (%s)%n", submissionData.taskTitle(),
+				"https://leetcode.com/problems/" + submissionData.taskSlug())));
+
+		return sb.toString();
 	}
 
 	@Override

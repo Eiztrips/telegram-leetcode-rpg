@@ -33,7 +33,7 @@ public class AttackBossHandler implements CommandHandler {
 
 		submissionDataList = checkSubmissionsUseCase.checkTodaySubmissions(userId);
 
-		Long CHANGE_ME_LATER = 0L; // fixme
+		Long CHANGE_ME_LATER = 1L; // fixme
 
 		WeeklyBoss newBossState = attackBossUseCase.attackBoss(CHANGE_ME_LATER, submissionDataList);
 

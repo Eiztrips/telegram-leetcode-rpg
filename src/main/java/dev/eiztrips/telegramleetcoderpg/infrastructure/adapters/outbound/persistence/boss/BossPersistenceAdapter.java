@@ -1,5 +1,6 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.boss;
 
+import dev.eiztrips.telegramleetcoderpg.domain.exception.GlobalExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.model.boss.WeeklyBoss;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.boss.BossRepositoryPort;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.boss.entity.WeeklyBossEntity;
@@ -21,6 +22,10 @@ public class BossPersistenceAdapter implements BossRepositoryPort {
 	@Override
 	@Transactional
 	public void save(WeeklyBoss boss) {
+		if (boss.id() != null && boss.version() == null) {
+			throw new GlobalExceptions.ArgumentEmptyException("version");
+		}
+
 		WeeklyBossEntity entity = weeklyBossMapper.toEntity(boss);
 		bossRepository.save(entity);
 	}

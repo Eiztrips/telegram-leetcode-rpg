@@ -27,12 +27,6 @@ class WeeklyBossTest {
     void weeklyBossCreationWithInvalidArguments() {
         assertThrows(GlobalExceptions.ArgumentEmptyException.class, () ->
                 WeeklyBoss.builder()
-                        .name("Test WeeklyBoss")
-                        .maxHp(1000)
-                        .currentHp(1000)
-                        .build());
-        assertThrows(GlobalExceptions.ArgumentEmptyException.class, () ->
-                WeeklyBoss.builder()
                         .id(1L)
                         .maxHp(1000)
                         .currentHp(1000)
@@ -69,18 +63,18 @@ class WeeklyBossTest {
 
     @Test
     void takeDamageTest() {
-        WeeklyBoss boss = new WeeklyBoss(1L, "Test WeeklyBoss", 1000, 10);
+        WeeklyBoss boss = new WeeklyBoss(1L, "Test WeeklyBoss", 1000, 10, 0L);
         boss = boss.takeDamage(1);
         assertEquals(9, boss.currentHp());
         boss = boss.takeDamage(10);
         assertEquals(0, boss.currentHp());
         assertThrows(
                 WeeklyBossExceptions.WeeklyBossAlreadyDefeated.class,
-                () -> new WeeklyBoss(1L, "Test WeeklyBoss", 1000, 0).takeDamage(1)
+                () -> new WeeklyBoss(1L, "Test WeeklyBoss", 1000, 0, 0L).takeDamage(1)
         );
         assertThrows(
                 GlobalExceptions.ArgumentInvalidException.class,
-                () -> new WeeklyBoss(1L, "Test WeeklyBoss", 1000, 10).takeDamage(-1)
+                () -> new WeeklyBoss(1L, "Test WeeklyBoss", 1000, 10, 0L).takeDamage(-1)
         );
     }
 }

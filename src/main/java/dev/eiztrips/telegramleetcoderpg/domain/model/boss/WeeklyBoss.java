@@ -7,12 +7,10 @@ import lombok.Builder;
 /**
  * Модель еженедельного босса.
  */
-public record WeeklyBoss(Long id, String name, int maxHp, int currentHp) {
+public record WeeklyBoss(Long id, String name, int maxHp, int currentHp, Long version) {
 
 	@Builder
 	public WeeklyBoss {
-		if (id == null)
-			throw new GlobalExceptions.ArgumentEmptyException("id");
 		if (name == null || name.isBlank())
 			throw new GlobalExceptions.ArgumentEmptyException("name");
 		if (maxHp < 0 || currentHp < 0)
@@ -34,6 +32,6 @@ public record WeeklyBoss(Long id, String name, int maxHp, int currentHp) {
 		if (currentHp == 0)
 			throw new WeeklyBossExceptions.WeeklyBossAlreadyDefeated(id);
 		int newHp = Math.max(currentHp - damage, 0);
-		return new WeeklyBoss(id, name, maxHp, newHp);
+		return new WeeklyBoss(id, name, maxHp, newHp, version);
 	}
 }

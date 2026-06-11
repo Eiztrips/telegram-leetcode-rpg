@@ -16,9 +16,6 @@ import java.util.*;
 @Table(name = "users")
 public class UserEntity {
 
-	@Version
-	private Long version;
-
 	@Id
 	@EqualsAndHashCode.Include
 	private Long telegramId;

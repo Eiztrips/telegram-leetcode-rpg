@@ -12,7 +12,6 @@ import java.util.List;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserMapper {
 
-	@Mapping(target = "version", ignore = true)
 	@Mapping(target = "submissions", ignore = true)
 	UserEntity toEntity(User user);
 	List<UserEntity> toEntityList(List<User> users);

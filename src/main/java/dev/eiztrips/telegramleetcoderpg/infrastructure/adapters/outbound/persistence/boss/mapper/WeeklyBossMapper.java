@@ -3,14 +3,12 @@ package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persis
 import dev.eiztrips.telegramleetcoderpg.domain.model.boss.WeeklyBoss;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.boss.entity.WeeklyBossEntity;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
 import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface WeeklyBossMapper {
-	@Mapping(target = "version", ignore = true)
 	WeeklyBossEntity toEntity(WeeklyBoss weeklyBoss);
 	List<WeeklyBossEntity> toEntityList(List<WeeklyBoss> weeklyBosses);
 

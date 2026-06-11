@@ -1,7 +1,8 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram;
 
-import dev.eiztrips.telegramleetcoderpg.domain.exception.*;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.utils.UpdateProcessor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -10,17 +11,25 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @Component
 public class TelegramBotAdapter extends TelegramLongPollingBot {
+	private final Set<Long> lockedUsers = ConcurrentHashMap.newKeySet();
+
 	private final String botUsername;
 	private final List<CommandHandler> commandHandlers;
+	private final UpdateProcessor updateProcessor;
 
 	public TelegramBotAdapter(@Value("${telegram.bot.username}") String botUsername,
-			@Value("${telegram.bot.token}") String botToken, List<CommandHandler> commandHandlers) {
+			@Value("${telegram.bot.token}") String botToken, List<CommandHandler> commandHandlers,
+			UpdateProcessor updateProcessor) {
 		super(botToken);
 		this.botUsername = botUsername;
 		this.commandHandlers = commandHandlers;
+		this.updateProcessor = updateProcessor;
 	}
 
 	@Override
@@ -33,40 +42,16 @@ public class TelegramBotAdapter extends TelegramLongPollingBot {
 		if (update == null || !update.hasMessage() || !update.getMessage().hasText())
 			return;
 
-		String text = update.getMessage().getText();
-		long chatId = update.getMessage().getChatId();
+		Long userId = update.getMessage().getChatId();
 
-		CommandHandler handler = commandHandlers.stream().filter(h -> h.canHandle(text)).findFirst().orElse(null);
-
-		if (handler == null) {
-			sendUnknownCommandMessage(chatId);
+		if (!lockedUsers.add(userId)) {
+			executeMessage(SendMessage.builder().chatId(userId).text("Не спамь").build());
 			return;
 		}
 
-		String responseText;
-		try {
-			responseText = handler.handle(update);
-		} catch (DomainException e) {
-			responseText = resolveDomainException(e);
-		} catch (Exception e) {
-			responseText = "Произошла непредвиденная ошибка: " + e.getMessage();
-		}
-
-		executeMessage(SendMessage.builder().chatId(chatId).text(responseText).build());
-	}
-
-	private String resolveDomainException(DomainException e) {
-		return switch (e) {
-			case WeeklyBossExceptions.WeeklyBossNotFoundException wbnfe -> wbnfe.getMessage();
-			case WeeklyBossExceptions.WeeklyBossAlreadyDefeated wbad -> wbad.getMessage();
-			case UserExceptions.UserNotFoundException unfe -> unfe.getMessage();
-			case UserExceptions.UserAlreadyExistsException uaee -> uaee.getMessage();
-			case TelegramException.InvalidCommandException ice -> ice.getMessage();
-			case SubmissionExceptions.SubmissionCheckRateLimitException scrle -> scrle.getMessage();
-			case GlobalExceptions.ArgumentEmptyException aee -> aee.getMessage(); // аеееее
-			case GlobalExceptions.ArgumentInvalidException aie -> aie.getMessage();
-			default -> "Незвестная ошибка бизнесс-логики";
-		};
+		updateProcessor.process(update, lockedUsers,
+				responseText -> executeMessage(SendMessage.builder().chatId(userId).text(responseText).build()),
+				() -> sendUnknownCommandMessage(userId));
 	}
 
 	private void sendUnknownCommandMessage(long chatId) {
@@ -81,7 +66,7 @@ public class TelegramBotAdapter extends TelegramLongPollingBot {
 		try {
 			execute(message);
 		} catch (TelegramApiException e) {
-			System.err.println("Ошибка отправки сообщения в Telegram: " + e.getMessage());
+			log.error("Ошибка отправки сообщения в Telegram: {}", e.getMessage());
 		}
 	}
 }

@@ -87,9 +87,8 @@ public class LeetCodeClientAdapter implements LeetCodeClientPort {
 		return response.data().recentAcSubmissionList().stream()
 				.map(gql -> SubmissionData.builder().submissionId(Long.parseLong(gql.id()))
 						.completedAt(Instant.ofEpochSecond(Long.parseLong(gql.timestamp()))).taskSlug(gql.titleSlug())
-						.taskTitle(gql.title())
-						// fixme: line_139
-						.taskDifficulty(getTaskDifficulty(gql.titleSlug()).toUpperCase()).build())
+						.taskTitle(gql.title()).taskDifficulty(getTaskDifficulty(gql.titleSlug()).toUpperCase())
+						.build())
 				.filter(data -> data.completedAt().isAfter(oneDayAgo)).toList();
 	}
 
@@ -99,9 +98,11 @@ public class LeetCodeClientAdapter implements LeetCodeClientPort {
 		if (difficulty != null)
 			return difficulty;
 
-		log.warn("Сложность для таски {} не найдена в Redis кэше", taskSlug);
-		// fixme: это не круто(
-		return "Medium";
+		syncAllTasksToRedis();
+
+		difficulty = leetCodeTaskCacheRepository.getDifficulty(taskSlug);
+
+		return difficulty == null ? "Medium" : difficulty;
 	}
 
 	private Map<String, String> fetchAllTasksFromLeetCode() {

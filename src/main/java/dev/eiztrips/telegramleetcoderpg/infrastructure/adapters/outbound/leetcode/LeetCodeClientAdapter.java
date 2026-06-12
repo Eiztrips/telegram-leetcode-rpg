@@ -5,11 +5,8 @@ import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.leetcode.Leet
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.leetcode.dto.LeetCodeAllQuestionsResponse;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.leetcode.dto.LeetCodeGraphQlRequest;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.leetcode.dto.LeetCodeSubmissionResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
-import org.springframework.data.redis.core.RedisTemplate;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.leetcode.repository.LeetCodeTaskCacheRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -21,16 +18,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class LeetCodeClientAdapter implements LeetCodeClientPort {
 
-	private static final Logger log = LoggerFactory.getLogger(LeetCodeClientAdapter.class);
-
 	private final RestClient restClient;
-	private final RedisTemplate<String, String> redisTemplate;
-	private static final String TASKS_HASH_KEY = "leetcode:tasks:difficulty";
-	private static final String METADATA_SYNC_KEY = "leetcode:metadata:last_sync";
-	private static final Duration SYNC_PERIOD = Duration.ofDays(7);
+	private final LeetCodeTaskCacheRepository leetCodeTaskCacheRepository;
 
 	private static final String RECENT_SUBMISSIONS_QUERY = """
 			query recentAcSubmissions($username: String!, $limit: Int!) {
@@ -54,32 +47,11 @@ public class LeetCodeClientAdapter implements LeetCodeClientPort {
 
 	private static final int LIMIT = 10;
 
-	public LeetCodeClientAdapter(RestClient.Builder restClientBuilder, RedisTemplate<String, String> redisTemplate) {
+	public LeetCodeClientAdapter(RestClient.Builder restClientBuilder,
+			LeetCodeTaskCacheRepository leetCodeTaskCacheRepository) {
 		this.restClient = restClientBuilder.baseUrl("https://leetcode.com/graphql")
 				.defaultHeader("User-Agent", "Mozilla/5.0 (LeetQuestBot; Spring Boot 4)").build();
-		this.redisTemplate = redisTemplate;
-	}
-
-	@EventListener(ApplicationReadyEvent.class)
-	public void initCacheOnStartup() {
-		log.info("Проверка актуальности кэша задач LeetCode в Redis...");
-
-		Long cacheSize = redisTemplate.opsForHash().size(TASKS_HASH_KEY);
-		String lastSyncStr = redisTemplate.opsForValue().get(METADATA_SYNC_KEY);
-
-		boolean isCacheEmpty = cacheSize == null || cacheSize == 0;
-		boolean isExpired = true;
-
-		if (lastSyncStr != null) {
-			Instant lastSync = Instant.ofEpochMilli(Long.parseLong(lastSyncStr));
-			isExpired = Instant.now().isAfter(lastSync.plus(SYNC_PERIOD));
-		}
-
-		if (isCacheEmpty || isExpired) {
-			syncAllTasksToRedis();
-		} else {
-			log.info("Кэш задач в Redis актуален. Записей: {}", cacheSize);
-		}
+		this.leetCodeTaskCacheRepository = leetCodeTaskCacheRepository;
 	}
 
 	// при горизонтальном масштабирование, от мутекса будет мало толку
@@ -89,8 +61,8 @@ public class LeetCodeClientAdapter implements LeetCodeClientPort {
 			Map<String, String> fetchedTasks = fetchAllTasksFromLeetCode();
 
 			if (!fetchedTasks.isEmpty()) {
-				redisTemplate.opsForHash().putAll(TASKS_HASH_KEY, fetchedTasks);
-				redisTemplate.opsForValue().set(METADATA_SYNC_KEY, String.valueOf(Instant.now().toEpochMilli()));
+				leetCodeTaskCacheRepository.saveAllTasks(fetchedTasks);
+				leetCodeTaskCacheRepository.updateLastSyncData();
 				log.info("Синхронизация завершена. Успешно закэшировано задач: {}", fetchedTasks.size());
 			}
 		} catch (Exception e) {
@@ -122,9 +94,11 @@ public class LeetCodeClientAdapter implements LeetCodeClientPort {
 	}
 
 	private String getTaskDifficulty(String taskSlug) {
-		Object difficulty = redisTemplate.opsForHash().get(TASKS_HASH_KEY, taskSlug);
+		String difficulty = leetCodeTaskCacheRepository.getDifficulty(taskSlug);
+
 		if (difficulty != null)
-			return (String) difficulty;
+			return difficulty;
+
 		log.warn("Сложность для таски {} не найдена в Redis кэше", taskSlug);
 		// fixme: это не круто(
 		return "Medium";

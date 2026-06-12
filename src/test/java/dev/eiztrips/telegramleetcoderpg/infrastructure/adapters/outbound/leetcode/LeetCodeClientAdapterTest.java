@@ -2,15 +2,13 @@ package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.leetco
 
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.a.shared.dto.SubmissionData;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.leetcode.dto.LeetCodeSubmissionResponse;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.leetcode.repository.LeetCodeTaskCacheRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClient;
 
@@ -32,13 +30,7 @@ class LeetCodeClientAdapterTest {
     private RestClient restClient;
 
     @Mock
-    private RedisTemplate<String, String> redisTemplate;
-
-    @Mock
-    private HashOperations<String, Object, Object> hashOperations;
-
-    @Mock
-    private ValueOperations<String, String> valueOperations;
+    private LeetCodeTaskCacheRepository leetCodeTaskCacheRepository;
 
     private LeetCodeClientAdapter adapter;
 
@@ -48,7 +40,7 @@ class LeetCodeClientAdapterTest {
         when(restClientBuilder.defaultHeader(anyString(), anyString())).thenReturn(restClientBuilder);
         when(restClientBuilder.build()).thenReturn(restClient);
 
-        adapter = new LeetCodeClientAdapter(restClientBuilder, redisTemplate);
+        adapter = new LeetCodeClientAdapter(restClientBuilder, leetCodeTaskCacheRepository);
     }
 
     @Test
@@ -56,8 +48,7 @@ class LeetCodeClientAdapterTest {
         String username = "testUser";
         String taskSlug = "two-sum";
 
-        when(redisTemplate.opsForHash()).thenReturn(hashOperations);
-        when(hashOperations.get("leetcode:tasks:difficulty", taskSlug)).thenReturn("Easy");
+        when(leetCodeTaskCacheRepository.getDifficulty(taskSlug)).thenReturn("Easy");
 
         long nowSeconds = Instant.now().getEpochSecond();
         LeetCodeSubmissionResponse.GraphQlSubmission submission =
@@ -84,8 +75,7 @@ class LeetCodeClientAdapterTest {
         String username = "testUser";
         String taskSlug = "old-task";
 
-        when(redisTemplate.opsForHash()).thenReturn(hashOperations);
-        when(hashOperations.get("leetcode:tasks:difficulty", taskSlug)).thenReturn("Medium");
+        when(leetCodeTaskCacheRepository.getDifficulty(taskSlug)).thenReturn("Medium");
 
         long oldTimestamp = Instant.now().minusSeconds(3 * 24 * 60 * 60).getEpochSecond();
         LeetCodeSubmissionResponse.GraphQlSubmission oldSubmission =
@@ -101,21 +91,6 @@ class LeetCodeClientAdapterTest {
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void initCacheOnStartup_ShouldNotSync_WhenCacheIsFresh() {
-        when(redisTemplate.opsForHash()).thenReturn(hashOperations);
-        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
-
-        when(hashOperations.size("leetcode:tasks:difficulty")).thenReturn(100L);
-
-        long freshTimestamp = Instant.now().minusSeconds(60).toEpochMilli();
-        when(valueOperations.get("leetcode:metadata:last_sync")).thenReturn(String.valueOf(freshTimestamp));
-
-        adapter.initCacheOnStartup();
-
-        verify(hashOperations, never()).putAll(anyString(), anyMap());
     }
 
     private void mockRestClientPost(LeetCodeSubmissionResponse responseDto) {

@@ -16,12 +16,6 @@ public final class BossFightService implements AttackBossUseCase {
 
 	private final BossRepositoryPort bossRepositoryPort;
 
-	/**
-	 * Создает сервис боя с боссом.
-	 *
-	 * @param bossRepositoryPort
-	 *            порт репозитория боссов
-	 */
 	public BossFightService(BossRepositoryPort bossRepositoryPort) {
 		this.bossRepositoryPort = bossRepositoryPort;
 	}

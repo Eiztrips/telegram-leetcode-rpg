@@ -12,12 +12,6 @@ public final class UserRegistrationService implements RegisterUserUseCase {
 
 	private final UserRepositoryPort userRepository;
 
-	/**
-	 * Создает новый сервис регистрации пользователей.
-	 *
-	 * @param userRepository
-	 *            репозиторий пользователей
-	 */
 	public UserRegistrationService(UserRepositoryPort userRepository) {
 		this.userRepository = userRepository;
 	}

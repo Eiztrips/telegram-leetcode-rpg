@@ -16,6 +16,7 @@ class WeeklyBossTest {
                 .name("Test WeeklyBoss")
                 .maxHp(1000)
                 .currentHp(1000)
+                .guildId(0L)
                 .build();
         assertEquals(1L, boss.id());
         assertEquals("Test WeeklyBoss", boss.name());
@@ -63,18 +64,18 @@ class WeeklyBossTest {
 
     @Test
     void takeDamageTest() {
-        WeeklyBoss boss = new WeeklyBoss(1L, "Test WeeklyBoss", 1000, 10, 0L);
+        WeeklyBoss boss = new WeeklyBoss(1L, "Test WeeklyBoss", 1000, 10, 0L, 0L);
         boss = boss.takeDamage(1);
         assertEquals(9, boss.currentHp());
         boss = boss.takeDamage(10);
         assertEquals(0, boss.currentHp());
         assertThrows(
                 WeeklyBossExceptions.WeeklyBossAlreadyDefeated.class,
-                () -> new WeeklyBoss(1L, "Test WeeklyBoss", 1000, 0, 0L).takeDamage(1)
+                () -> new WeeklyBoss(1L, "Test WeeklyBoss", 1000, 0, 0L, 0L).takeDamage(1)
         );
         assertThrows(
                 GlobalExceptions.ArgumentInvalidException.class,
-                () -> new WeeklyBoss(1L, "Test WeeklyBoss", 1000, 10, 0L).takeDamage(-1)
+                () -> new WeeklyBoss(1L, "Test WeeklyBoss", 1000, 10, 0L, 0L).takeDamage(-1)
         );
     }
 }

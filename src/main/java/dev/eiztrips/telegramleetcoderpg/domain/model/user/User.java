@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Доменная модель пользователя.
  */
-public record User(Long telegramId, String leetcodeUsername, int xp, Instant lastCheckTime) {
+public record User(Long telegramId, String leetcodeUsername, int xp, Instant lastCheckTime, Long guildId) {
 
 	@Builder
 	public User {
@@ -34,7 +34,7 @@ public record User(Long telegramId, String leetcodeUsername, int xp, Instant las
 		for (Submission submission : submissions)
 			newXp += submission.getReward();
 
-		return new User(this.telegramId, this.leetcodeUsername, newXp, this.lastCheckTime);
+		return new User(this.telegramId, this.leetcodeUsername, newXp, this.lastCheckTime, this.guildId);
 	}
 
 	/**
@@ -43,7 +43,27 @@ public record User(Long telegramId, String leetcodeUsername, int xp, Instant las
 	 * @return обновленный пользователь
 	 */
 	public User withLastCheckTime() {
-		return new User(this.telegramId, this.leetcodeUsername, this.xp, Instant.now());
+		return new User(this.telegramId, this.leetcodeUsername, this.xp, Instant.now(), this.guildId);
+	}
+
+	/**
+	 * Обновить гильдую пользователя.
+	 *
+	 * @return обновленный пользователь
+	 */
+	public User withGuild(Long guildId) {
+		return User.builder().telegramId(telegramId).leetcodeUsername(leetcodeUsername).xp(xp)
+				.lastCheckTime(lastCheckTime).guildId(guildId).build();
+	}
+
+	/**
+	 * Исключить пользователя из гильдии.
+	 *
+	 * @return обновленный пользователь
+	 */
+	public User withoutGuild() {
+		return User.builder().telegramId(telegramId).leetcodeUsername(leetcodeUsername).xp(xp)
+				.lastCheckTime(lastCheckTime).guildId(null).build();
 	}
 
 	/**

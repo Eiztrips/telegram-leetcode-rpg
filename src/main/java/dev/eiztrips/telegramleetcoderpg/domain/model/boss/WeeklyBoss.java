@@ -7,7 +7,7 @@ import lombok.Builder;
 /**
  * Модель еженедельного босса.
  */
-public record WeeklyBoss(Long id, String name, int maxHp, int currentHp, Long version) {
+public record WeeklyBoss(Long id, String name, int maxHp, int currentHp, Long version, Long guildId) {
 
 	@Builder
 	public WeeklyBoss {
@@ -17,6 +17,8 @@ public record WeeklyBoss(Long id, String name, int maxHp, int currentHp, Long ve
 			throw new GlobalExceptions.ArgumentInvalidException("Здоровье не может быть отрицательным.");
 		if (currentHp > maxHp)
 			throw new GlobalExceptions.ArgumentInvalidException("Текущее здоровье не может превышать максимальное.");
+		if (guildId == null)
+			throw new GlobalExceptions.ArgumentEmptyException("guildId");
 	}
 
 	/**
@@ -32,6 +34,6 @@ public record WeeklyBoss(Long id, String name, int maxHp, int currentHp, Long ve
 		if (currentHp == 0)
 			throw new WeeklyBossExceptions.WeeklyBossAlreadyDefeated(id);
 		int newHp = Math.max(currentHp - damage, 0);
-		return new WeeklyBoss(id, name, maxHp, newHp, version);
+		return new WeeklyBoss(id, name, maxHp, newHp, version, guildId);
 	}
 }

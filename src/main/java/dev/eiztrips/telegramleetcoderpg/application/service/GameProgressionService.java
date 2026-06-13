@@ -21,14 +21,6 @@ public final class GameProgressionService implements CheckSubmissionsUseCase {
 	private final UserRepositoryPort userRepository;
 	private final LeetCodeClientPort leetCodeClient;
 
-	/**
-	 * Создает новый сервис игрового прогресса.
-	 *
-	 * @param userRepository
-	 *            репозиторий пользователей
-	 * @param leetCodeClient
-	 *            клиент LeetCode
-	 */
 	public GameProgressionService(UserRepositoryPort userRepository, LeetCodeClientPort leetCodeClient) {
 		this.userRepository = userRepository;
 		this.leetCodeClient = leetCodeClient;

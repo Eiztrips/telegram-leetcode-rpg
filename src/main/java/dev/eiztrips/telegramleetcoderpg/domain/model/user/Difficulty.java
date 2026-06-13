@@ -7,18 +7,8 @@ import lombok.Getter;
  */
 @Getter
 public enum Difficulty {
-	/**
-	 * Легкая сложность.
-	 */
-	EASY(10),
-	/**
-	 * Средняя сложность.
-	 */
-	MEDIUM(20),
-	/**
-	 * Высокая сложность.
-	 */
-	HARD(30);
+
+	EASY(10), MEDIUM(20), HARD(30);
 
 	private final int reward;
 

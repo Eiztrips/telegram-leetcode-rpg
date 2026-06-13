@@ -15,12 +15,14 @@ public interface AttackBossUseCase {
 	 * 
 	 * @param bossId
 	 *            telegramId босса
-	 * @param damage
-	 *            нанесенный урон
+	 * @param submissionDataList
+	 *            сабмишены пользователя
 	 * @return еженедельный босс с обновленным здоровьем
 	 *
 	 * @throws WeeklyBossNotFoundException
 	 *             босс с данным telegramId не найден
+	 * @throws WeeklyBossAlreadyDefeated
+	 *             босс уже был побежден
 	 */
 	WeeklyBoss attackBoss(Long bossId, List<SubmissionData> submissionDataList);
 }

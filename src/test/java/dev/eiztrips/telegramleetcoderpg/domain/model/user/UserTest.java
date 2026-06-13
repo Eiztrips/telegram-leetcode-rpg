@@ -2,6 +2,7 @@ package dev.eiztrips.telegramleetcoderpg.domain.model.user;
 
 import dev.eiztrips.telegramleetcoderpg.domain.exception.GlobalExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.SubmissionExceptions;
+import dev.eiztrips.telegramleetcoderpg.domain.model.guild.Guild;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -75,12 +76,29 @@ class UserTest {
     }
 
     @Test
+    void withGuild() {
+        User user = User.builder().telegramId(1L).leetcodeUsername("u").build();
+        assertNull(user.guildId());
+
+        user = user.withGuild(0L);
+        assertEquals(0L, user.guildId());
+    }
+
+    @Test
+    void withoutGuild() {
+        User user = User.builder().telegramId(1L).guildId(0L).leetcodeUsername("u").build();
+        user = user.withoutGuild();
+        assertNull(user.guildId());
+    }
+
+    @Test
     void validateCheckRateLimitTest() {
         User user1 = new User(
                 1L,
                 "name",
                 0,
-                Instant.now().minus(Duration.ofHours(1))
+                Instant.now().minus(Duration.ofHours(1)),
+                null
         );
 
         assertThrows(
@@ -92,7 +110,8 @@ class UserTest {
                 1L,
                 "name",
                 0,
-                Instant.now().minus(Duration.ofDays(1))
+                Instant.now().minus(Duration.ofDays(1)),
+                null
         );
 
         assertDoesNotThrow(user2::validateCheckRateLimit);

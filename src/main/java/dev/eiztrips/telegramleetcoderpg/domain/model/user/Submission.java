@@ -20,6 +20,11 @@ public record Submission(String taskSlug, Difficulty taskDifficulty, Instant com
 			throw new GlobalExceptions.ArgumentEmptyException("completedAt");
 	}
 
+	/**
+	 * Получить награду за задачу.
+	 *
+	 * @return награда
+	 */
 	public int getReward() {
 		return taskDifficulty().getReward();
 	}

@@ -1,5 +1,6 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.entity;
 
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.guild.entity.GuildEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,6 +30,10 @@ public class UserEntity {
 	@Builder.Default
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<SubmissionEntity> submissions = new ArrayList<>();
+
+	@ManyToOne
+	@JoinColumn(name = "guild_id")
+	private GuildEntity guild;
 
 	@Column(name = "last_submission_check_time")
 	private Instant lastCheckTime;

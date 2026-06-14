@@ -3,6 +3,7 @@ package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegra
 import dev.eiztrips.telegramleetcoderpg.domain.exception.*;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AsyncUpdateProcessor {
@@ -22,9 +24,7 @@ public class AsyncUpdateProcessor {
 		Long userId = update.getMessage().getChatId();
 
 		try {
-			String text = update.getMessage().getText();
-
-			CommandHandler handler = commandHandlers.stream().filter(h -> h.canHandle(text)).findFirst().orElse(null);
+			CommandHandler handler = commandHandlers.stream().filter(h -> h.canHandle(update)).findFirst().orElse(null);
 
 			if (handler == null) {
 				unknowCommandRunnable.run();
@@ -38,7 +38,8 @@ public class AsyncUpdateProcessor {
 			} catch (DomainException e) {
 				responseText = resolveDomainException(e);
 			} catch (Exception e) {
-				responseText = "Произошла непредвиденная ошибка: " + e.getMessage();
+				responseText = "Произошла непредвиденная ошибка";
+				log.error(e.getMessage());
 			}
 
 			responseConsumer.accept(responseText);
@@ -48,16 +49,6 @@ public class AsyncUpdateProcessor {
 	}
 
 	private String resolveDomainException(DomainException e) {
-		return switch (e) {
-			case WeeklyBossExceptions.WeeklyBossNotFoundException wbnfe -> wbnfe.getMessage();
-			case WeeklyBossExceptions.WeeklyBossAlreadyDefeated wbad -> wbad.getMessage();
-			case UserExceptions.UserNotFoundException unfe -> unfe.getMessage();
-			case UserExceptions.UserAlreadyExistsException uaee -> uaee.getMessage();
-			case TelegramException.InvalidCommandException ice -> ice.getMessage();
-			case SubmissionExceptions.SubmissionCheckRateLimitException scrle -> scrle.getMessage();
-			case GlobalExceptions.ArgumentEmptyException aee -> aee.getMessage(); // аеееее
-			case GlobalExceptions.ArgumentInvalidException aie -> aie.getMessage();
-			default -> "Незвестная ошибка бизнесс-логики";
-		};
+		return e.getMessage();
 	}
 }

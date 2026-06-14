@@ -51,9 +51,9 @@ public record User(Long telegramId, String leetcodeUsername, int xp, Instant las
 	 *
 	 * @return обновленный пользователь
 	 */
-	public User withGuild(Long guildId) {
+	public User withGuild(Long id) {
 		return User.builder().telegramId(telegramId).leetcodeUsername(leetcodeUsername).xp(xp)
-				.lastCheckTime(lastCheckTime).guildId(guildId).build();
+				.lastCheckTime(lastCheckTime).guildId(id).build();
 	}
 
 	/**

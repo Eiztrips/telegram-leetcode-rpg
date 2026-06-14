@@ -4,7 +4,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 public interface CommandHandler {
 
-	boolean canHandle(String text);
+	boolean canHandle(Update update);
 
 	String handle(Update update);
 

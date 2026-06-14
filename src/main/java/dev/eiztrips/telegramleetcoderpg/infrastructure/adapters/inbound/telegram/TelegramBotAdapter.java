@@ -1,11 +1,13 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram;
 
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.client.ClientPort;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.utils.AsyncUpdateProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChat;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -16,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
-public class TelegramBotAdapter extends TelegramLongPollingBot {
+public class TelegramBotAdapter extends TelegramLongPollingBot implements ClientPort {
 	private final Set<Long> lockedUsers = ConcurrentHashMap.newKeySet();
 
 	private final String botUsername;
@@ -67,6 +69,17 @@ public class TelegramBotAdapter extends TelegramLongPollingBot {
 			execute(message);
 		} catch (TelegramApiException e) {
 			log.error("Ошибка отправки сообщения в Telegram: {}", e.getMessage());
+		}
+	}
+
+	@Override
+	public boolean chatExists(Long chatId) {
+		try {
+			GetChat getChat = GetChat.builder().chatId(chatId).build();
+			execute(getChat);
+			return true;
+		} catch (TelegramApiException _) {
+			return false;
 		}
 	}
 }

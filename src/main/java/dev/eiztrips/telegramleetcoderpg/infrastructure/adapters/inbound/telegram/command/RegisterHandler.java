@@ -14,7 +14,8 @@ public class RegisterHandler implements CommandHandler {
 	}
 
 	@Override
-	public boolean canHandle(String text) {
+	public boolean canHandle(Update update) {
+		String text = update.getMessage().getText();
 		return text.startsWith(getCommand());
 	}
 
@@ -27,7 +28,7 @@ public class RegisterHandler implements CommandHandler {
 
 		// todo: добавить валидацию LeetCode пользователя
 
-		Long userId = update.getMessage().getChatId();
+		Long userId = update.getMessage().getFrom().getId();
 		String leetcodeUsername = parts[1];
 
 		registerUserUseCase.registerUser(userId, leetcodeUsername);

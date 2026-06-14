@@ -73,7 +73,7 @@ public final class GuildService
 		User user = userRepositoryPort.getByTelegramId(userId)
 				.orElseThrow(() -> new UserExceptions.UserNotFoundException(userId));
 
-		if (!user.guildId().equals(guildId))
+		if (user.guildId() == null || !user.guildId().equals(guildId))
 			throw new GuildExceptions.UserNotFoundInGuild(userId);
 
 		userRepositoryPort.save(user.withoutGuild());

@@ -4,6 +4,8 @@ import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.a.shared.dto.
 import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.User;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserRepositoryPort;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.guild.entity.GuildEntity;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.guild.repository.SpringDataGuildRepository;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.entity.SubmissionEntity;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.entity.UserEntity;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.mapper.SubmissionMapper;
@@ -25,6 +27,7 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
 
 	private final SpringDataUserRepository userRepository;
 	private final SpringDataSubmissionRepository submissionRepository;
+	private final SpringDataGuildRepository guildRepository;
 	private final UserMapper userMapper;
 	private final SubmissionMapper submissionMapper;
 
@@ -35,6 +38,13 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
 				.orElseGet(() -> UserEntity.builder().telegramId(user.telegramId()).build());
 
 		userMapper.updateEntityFromDomain(user, entity);
+
+		if (user.guildId() != null) {
+			GuildEntity guild = guildRepository.getReferenceById(user.guildId());
+			entity.setGuild(guild);
+		} else {
+			entity.setGuild(null);
+		}
 
 		userRepository.save(entity);
 	}

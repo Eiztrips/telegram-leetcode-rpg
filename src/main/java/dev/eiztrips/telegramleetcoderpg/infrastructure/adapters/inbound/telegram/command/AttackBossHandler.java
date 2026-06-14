@@ -21,13 +21,14 @@ public class AttackBossHandler implements CommandHandler {
 	}
 
 	@Override
-	public boolean canHandle(String text) {
+	public boolean canHandle(Update update) {
+		String text = update.getMessage().getText();
 		return text.startsWith(getCommand());
 	}
 
 	@Override
 	public String handle(Update update) {
-		Long userId = update.getMessage().getChatId();
+		Long userId = update.getMessage().getFrom().getId();
 
 		List<SubmissionData> submissionDataList;
 

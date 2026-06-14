@@ -19,6 +19,7 @@ public interface UserMapper {
 	@Mapping(target = "submissions", ignore = true)
 	void updateEntityFromDomain(User user, @MappingTarget UserEntity entity);
 
+	@Mapping(target = "guildId", source = "guild.id")
 	User toDomain(UserEntity entity);
 	List<User> toDomainList(List<UserEntity> entities);
 }

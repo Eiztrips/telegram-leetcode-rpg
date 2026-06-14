@@ -19,7 +19,7 @@ public class DataSeeder {
 				return;
 
 			WeeklyBossEntity wbe = weeklyBossMapper
-					.toEntity(WeeklyBoss.builder().maxHp(100).currentHp(100).name("Фнюп").build());
+					.toEntity(WeeklyBoss.builder().maxHp(100).currentHp(100).guildId(4689049129L).name("Фнюп").build());
 
 			springDataBossRepository.save(wbe);
 		};

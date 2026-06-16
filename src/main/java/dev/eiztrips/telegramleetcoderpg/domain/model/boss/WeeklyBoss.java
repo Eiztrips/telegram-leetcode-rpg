@@ -17,8 +17,6 @@ public record WeeklyBoss(Long id, String name, int maxHp, int currentHp, Long ve
 			throw new GlobalExceptions.ArgumentInvalidException("Здоровье не может быть отрицательным.");
 		if (currentHp > maxHp)
 			throw new GlobalExceptions.ArgumentInvalidException("Текущее здоровье не может превышать максимальное.");
-		if (guildId == null)
-			throw new GlobalExceptions.ArgumentEmptyException("guildId");
 	}
 
 	/**

@@ -15,6 +15,10 @@ import dev.eiztrips.telegramleetcoderpg.domain.model.boss.WeeklyBoss;
 import dev.eiztrips.telegramleetcoderpg.domain.model.guild.Guild;
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.User;
 
+import java.time.LocalDate;
+import java.time.temporal.WeekFields;
+import java.util.Locale;
+
 /**
  * Сервис гильдии.
  */
@@ -81,6 +85,31 @@ public final class GuildService
 
 	@Override
 	public void respawnWeeklyBoss(String name, int hp, Long guildId) {
+		if (guildId != null) {
+			respawnCurrentGuild(name, hp, guildId);
+		} else {
+			LocalDate now = LocalDate.now();
+			LocalDate lastRespawn = bossRepositoryPort.getLastRespawnDate();
+
+			WeekFields weekFields = WeekFields.of(Locale.getDefault());
+			int currentWeek = now.get(weekFields.weekOfWeekBasedYear());
+			int lastWeek = lastRespawn.get(weekFields.weekOfWeekBasedYear());
+			int currentYear = now.get(weekFields.weekBasedYear());
+			int lastYear = lastRespawn.get(weekFields.weekBasedYear());
+
+			if (currentWeek == lastWeek && currentYear == lastYear) {
+				return;
+			}
+
+			bossRepositoryPort.saveCurrentWeeklyBoss(WeeklyBoss.builder().name(name).maxHp(hp).build());
+
+			guildRepositoryPort.getAllGuilds().forEach(g -> respawnCurrentGuild(name, hp, g.id()));
+
+			bossRepositoryPort.saveLastRespawnDate(now);
+		}
+	}
+
+	private void respawnCurrentGuild(String name, int hp, Long guildId) {
 		guildRepositoryPort.getGuildById(guildId)
 				.orElseThrow(() -> new GuildExceptions.GuildNotFoundException(guildId));
 

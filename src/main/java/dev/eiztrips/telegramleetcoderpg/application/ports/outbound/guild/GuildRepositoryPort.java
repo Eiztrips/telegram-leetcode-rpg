@@ -2,6 +2,7 @@ package dev.eiztrips.telegramleetcoderpg.application.ports.outbound.guild;
 
 import dev.eiztrips.telegramleetcoderpg.domain.model.guild.Guild;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -25,4 +26,11 @@ public interface GuildRepositoryPort {
 	 * @return гильдия, если существует
 	 */
 	Optional<Guild> getGuildById(Long guildId);
+
+	/**
+	 * Получить все гильдии
+	 *
+	 * @return список гильдий
+	 */
+	List<Guild> getAllGuilds();
 }

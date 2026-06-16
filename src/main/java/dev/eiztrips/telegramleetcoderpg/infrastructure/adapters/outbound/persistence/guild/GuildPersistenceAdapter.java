@@ -8,6 +8,7 @@ import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persist
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -25,5 +26,10 @@ public class GuildPersistenceAdapter implements GuildRepositoryPort {
 	@Override
 	public Optional<Guild> getGuildById(Long guildId) {
 		return guildRepository.findById(guildId).map(guildMapper::toDomain);
+	}
+
+	@Override
+	public List<Guild> getAllGuilds() {
+		return guildRepository.findAll().stream().map(guildMapper::toDomain).toList();
 	}
 }

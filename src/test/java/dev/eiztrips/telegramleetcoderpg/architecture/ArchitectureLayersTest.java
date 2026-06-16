@@ -20,6 +20,10 @@ public class ArchitectureLayersTest {
             .domainServices("dev.eiztrips.telegramleetcoderpg.domain.service..")
             .applicationServices("dev.eiztrips.telegramleetcoderpg.application..")
 
+            .adapter("schedule", new String[]{
+                    "dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.scheduler..",
+                    "dev.eiztrips.telegramleetcoderpg.infrastructure.configuration.."
+            })
             .adapter("telegram", new String[]{
                     "dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram..",
                     "dev.eiztrips.telegramleetcoderpg.infrastructure.configuration.."

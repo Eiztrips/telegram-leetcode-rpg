@@ -1,5 +1,6 @@
 package dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user;
 
+import dev.eiztrips.telegramleetcoderpg.domain.model.guild.Guild;
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.User;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.a.shared.dto.SubmissionData;
 
@@ -26,13 +27,23 @@ public interface UserRepositoryPort {
 	void addSubmissions(Long userTelegramId, List<SubmissionData> data);
 
 	/**
-	 * Получить пользователя по telegram telegramId.
+	 * Получить пользователя по telegramId.
 	 *
 	 * @param userTelegramId
-	 *            telegram telegramId пользователя
+	 *            telegram пользователя
 	 * @return пользователь, если существует
 	 */
 	Optional<User> getByTelegramId(Long userTelegramId);
+
+	/**
+	 * Получить гильдию пользователя по telegram id.
+	 *
+	 * @param userTelegramId
+	 *            telegramId пользователя
+	 *
+	 * @return гильдия, если существует
+	 */
+	Optional<Guild> getGuildByUserTelegramId(Long userTelegramId);
 
 	/**
 	 * Получить все submissions пользователя за последнюю неделю

@@ -3,6 +3,10 @@ package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegra
 import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.AttackBossUseCase;
 import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.CheckSubmissionsUseCase;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.a.shared.dto.SubmissionData;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.guild.GuildRepositoryPort;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserRepositoryPort;
+import dev.eiztrips.telegramleetcoderpg.domain.exception.GuildExceptions;
+import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.model.boss.WeeklyBoss;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -14,10 +18,15 @@ public class AttackBossHandler implements CommandHandler {
 
 	private final AttackBossUseCase attackBossUseCase;
 	private final CheckSubmissionsUseCase checkSubmissionsUseCase;
+	private final GuildRepositoryPort guildRepositoryPort;
+	private final UserRepositoryPort userRepositoryPort;
 
-	public AttackBossHandler(AttackBossUseCase attackBossUseCase, CheckSubmissionsUseCase checkSubmissionsUseCase) {
+	public AttackBossHandler(AttackBossUseCase attackBossUseCase, CheckSubmissionsUseCase checkSubmissionsUseCase,
+			GuildRepositoryPort guildRepositoryPort, UserRepositoryPort userRepositoryPort) {
 		this.attackBossUseCase = attackBossUseCase;
 		this.checkSubmissionsUseCase = checkSubmissionsUseCase;
+		this.guildRepositoryPort = guildRepositoryPort;
+		this.userRepositoryPort = userRepositoryPort;
 	}
 
 	@Override
@@ -34,9 +43,13 @@ public class AttackBossHandler implements CommandHandler {
 
 		submissionDataList = checkSubmissionsUseCase.checkTodaySubmissions(userId);
 
-		Long CHANGE_ME_LATER = 1L; // fixme
+		var userGuild = userRepositoryPort.getGuildByUserTelegramId(userId)
+				.orElseThrow(() -> new UserExceptions.UserGuildNotFoundException(userId));
 
-		WeeklyBoss newBossState = attackBossUseCase.attackBoss(CHANGE_ME_LATER, submissionDataList);
+		var guildBoss = guildRepositoryPort.getCurrentWeeklyBoss(userGuild.id())
+				.orElseThrow(GuildExceptions.GuildBossNotFountException::new);
+
+		WeeklyBoss newBossState = attackBossUseCase.attackBoss(guildBoss.id(), submissionDataList);
 
 		StringBuilder sb = new StringBuilder();
 

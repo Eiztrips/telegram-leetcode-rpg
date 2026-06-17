@@ -8,6 +8,7 @@ import org.mapstruct.MappingConstants;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface GuildMapper {
+	@Mapping(target = "currentBoss.id", source = "currentBossId")
 	GuildEntity toEntity(Guild domain);
 
 	@Mapping(target = "currentBossId", source = "currentBoss.id")

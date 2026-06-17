@@ -14,6 +14,15 @@ public final class UserExceptions {
 	}
 
 	/**
+	 * Исключение: пользователь не состоит в гильдии.
+	 */
+	public static final class UserGuildNotFoundException extends DomainException {
+		public UserGuildNotFoundException(Long id) {
+			super("Пользователь + " + id + ", не состоит в гильдии");
+		}
+	}
+
+	/**
 	 * Исключение: пользователь уже существует.
 	 */
 	public static final class UserAlreadyExistsException extends DomainException {

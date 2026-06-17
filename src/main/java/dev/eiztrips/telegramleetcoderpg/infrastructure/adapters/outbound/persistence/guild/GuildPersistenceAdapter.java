@@ -1,7 +1,12 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.guild;
 
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.boss.BossRepositoryPort;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.guild.GuildRepositoryPort;
+import dev.eiztrips.telegramleetcoderpg.domain.exception.WeeklyBossExceptions;
+import dev.eiztrips.telegramleetcoderpg.domain.model.boss.WeeklyBoss;
 import dev.eiztrips.telegramleetcoderpg.domain.model.guild.Guild;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.boss.entity.WeeklyBossEntity;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.boss.mapper.WeeklyBossMapper;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.guild.entity.GuildEntity;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.guild.mapper.GuildMapper;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.guild.repository.SpringDataGuildRepository;
@@ -16,11 +21,21 @@ import java.util.Optional;
 public class GuildPersistenceAdapter implements GuildRepositoryPort {
 	private final GuildMapper guildMapper;
 	private final SpringDataGuildRepository guildRepository;
+	private final WeeklyBossMapper weeklyBossMapper;
+	private final BossRepositoryPort bossRepositoryPort;
 
 	@Override
-	public void save(Guild guild) {
+	public Guild save(Guild guild) {
 		GuildEntity entity = guildMapper.toEntity(guild);
-		guildRepository.save(entity);
+
+		if (entity.getCurrentBoss() != null) {
+			long bossId = entity.getCurrentBoss().getId();
+			WeeklyBossEntity wbe = bossRepositoryPort.getById(bossId).map(weeklyBossMapper::toEntity)
+					.orElseThrow(() -> new WeeklyBossExceptions.WeeklyBossNotFoundException(bossId));
+			entity.getCurrentBoss().setVersion(wbe.getVersion() == null ? 0L : wbe.getVersion());
+		}
+
+		return guildMapper.toDomain(guildRepository.save(entity));
 	}
 
 	@Override
@@ -31,5 +46,10 @@ public class GuildPersistenceAdapter implements GuildRepositoryPort {
 	@Override
 	public List<Guild> getAllGuilds() {
 		return guildRepository.findAll().stream().map(guildMapper::toDomain).toList();
+	}
+
+	@Override
+	public Optional<WeeklyBoss> getCurrentWeeklyBoss(Long guildId) {
+		return guildRepository.findCurrentBossById(guildId).map(weeklyBossMapper::toDomain);
 	}
 }

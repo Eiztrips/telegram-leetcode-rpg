@@ -2,9 +2,11 @@ package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persis
 
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.a.shared.dto.SubmissionData;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions;
+import dev.eiztrips.telegramleetcoderpg.domain.model.guild.Guild;
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.User;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserRepositoryPort;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.guild.entity.GuildEntity;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.guild.mapper.GuildMapper;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.guild.repository.SpringDataGuildRepository;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.entity.SubmissionEntity;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.entity.UserEntity;
@@ -30,6 +32,7 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
 	private final SpringDataGuildRepository guildRepository;
 	private final UserMapper userMapper;
 	private final SubmissionMapper submissionMapper;
+	private final GuildMapper guildMapper;
 
 	@Override
 	@Transactional
@@ -65,6 +68,11 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
 	@Transactional(readOnly = true)
 	public Optional<User> getByTelegramId(Long userTelegramId) {
 		return userRepository.findById(userTelegramId).map(userMapper::toDomain);
+	}
+
+	@Override
+	public Optional<Guild> getGuildByUserTelegramId(Long userTelegramId) {
+		return userRepository.findGuildByTelegramId(userTelegramId).map(guildMapper::toDomain);
 	}
 
 	@Override

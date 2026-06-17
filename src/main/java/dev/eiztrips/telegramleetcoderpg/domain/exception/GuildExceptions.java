@@ -39,4 +39,13 @@ public final class GuildExceptions {
 			super(String.format("Пользователь: %d - не состоит в гильдии", id));
 		}
 	}
+
+	/**
+	 * Исключение: босс гильдии не существует.
+	 */
+	public static final class GuildBossNotFountException extends DomainException {
+		public GuildBossNotFountException() {
+			super("Босс гильдии не существует");
+		}
+	}
 }

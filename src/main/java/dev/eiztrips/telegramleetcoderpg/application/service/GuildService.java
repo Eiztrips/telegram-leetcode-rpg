@@ -50,8 +50,13 @@ public final class GuildService
 			throw new GuildExceptions.GuildAlreadyExists(chatId);
 		});
 
-		Guild guild = Guild.builder().id(chatId).build();
+		WeeklyBoss currentBoss = bossRepositoryPort.save(bossRepositoryPort.getCurrentWeeklyBoss()
+				.orElse(WeeklyBoss.builder().name("Убийца редиса").maxHp(100).currentHp(100).build()));
+
+		Guild guild = Guild.builder().id(chatId).currentBossId(currentBoss.id()).build();
+
 		guildRepositoryPort.save(guild);
+
 		return guild;
 	}
 

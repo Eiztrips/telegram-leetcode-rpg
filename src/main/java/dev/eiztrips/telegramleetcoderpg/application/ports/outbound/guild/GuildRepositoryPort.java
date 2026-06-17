@@ -1,5 +1,6 @@
 package dev.eiztrips.telegramleetcoderpg.application.ports.outbound.guild;
 
+import dev.eiztrips.telegramleetcoderpg.domain.model.boss.WeeklyBoss;
 import dev.eiztrips.telegramleetcoderpg.domain.model.guild.Guild;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public interface GuildRepositoryPort {
 	 * @param guild
 	 *            доменная модель гильдии
 	 */
-	void save(Guild guild);
+	Guild save(Guild guild);
 
 	/**
 	 * Получить гильдию по guildId
@@ -33,4 +34,11 @@ public interface GuildRepositoryPort {
 	 * @return список гильдий
 	 */
 	List<Guild> getAllGuilds();
+
+	/**
+	 * Получить текущего босса гильдии
+	 *
+	 * @return босс, если существует
+	 */
+	Optional<WeeklyBoss> getCurrentWeeklyBoss(Long guildId);
 }

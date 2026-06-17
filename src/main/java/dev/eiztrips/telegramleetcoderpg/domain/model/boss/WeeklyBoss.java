@@ -34,4 +34,9 @@ public record WeeklyBoss(Long id, String name, int maxHp, int currentHp, Long ve
 		int newHp = Math.max(currentHp - damage, 0);
 		return new WeeklyBoss(id, name, maxHp, newHp, version, guildId);
 	}
+
+	public WeeklyBoss withGuild(Long newGuildId) {
+		return WeeklyBoss.builder().id(id).name(name).maxHp(maxHp).currentHp(currentHp).version(version)
+				.guildId(newGuildId).build();
+	}
 }

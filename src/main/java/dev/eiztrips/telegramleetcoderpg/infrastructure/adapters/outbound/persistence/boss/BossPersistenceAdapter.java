@@ -24,13 +24,13 @@ public class BossPersistenceAdapter implements BossRepositoryPort {
 
 	@Override
 	@Transactional
-	public void save(WeeklyBoss boss) {
+	public WeeklyBoss save(WeeklyBoss boss) {
 		if (boss.id() != null && boss.version() == null) {
 			throw new GlobalExceptions.ArgumentEmptyException("version");
 		}
 
 		WeeklyBossEntity entity = weeklyBossMapper.toEntity(boss);
-		bossRepository.save(entity);
+		return weeklyBossMapper.toDomain(bossRepository.save(entity));
 	}
 
 	@Override

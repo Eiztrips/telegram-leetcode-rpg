@@ -15,7 +15,7 @@ public interface BossRepositoryPort {
 	 * @param boss
 	 *            босс
 	 */
-	void save(WeeklyBoss boss);
+	WeeklyBoss save(WeeklyBoss boss);
 
 	/**
 	 * Получить босса по telegramId.

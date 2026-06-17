@@ -9,7 +9,18 @@ import java.time.Instant;
 import java.util.List;
 
 /**
- * Доменная модель пользователя.
+ * Доменная модель пользователя
+ *
+ * @param telegramId
+ *            уникальный индетификатор пользователя
+ * @param leetcodeUsername
+ *            имя пользователя на литкоде
+ * @param xp
+ *            опыт пользователя
+ * @param lastCheckTime
+ *            последнее время проверки сабмишенов
+ * @param guildId
+ *            id гильдии пользователя
  */
 public record User(Long telegramId, String leetcodeUsername, int xp, Instant lastCheckTime, Long guildId) {
 
@@ -48,6 +59,9 @@ public record User(Long telegramId, String leetcodeUsername, int xp, Instant las
 
 	/**
 	 * Обновить гильдую пользователя.
+	 *
+	 * @param id
+	 *            уникальный идентификатор пользователя
 	 *
 	 * @return обновленный пользователь
 	 */

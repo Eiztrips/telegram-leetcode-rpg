@@ -6,7 +6,14 @@ import lombok.Builder;
 import java.time.Instant;
 
 /**
- * Модель выполненной задачи.
+ * Доменная модель сабмишена.
+ *
+ * @param taskSlug
+ *            уникальное название задачи
+ * @param taskDifficulty
+ *            сложность задачи (ENUM)
+ * @param completedAt
+ *            время отправки сабмишена
  */
 public record Submission(String taskSlug, Difficulty taskDifficulty, Instant completedAt) {
 

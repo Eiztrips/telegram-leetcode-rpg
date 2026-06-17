@@ -1,5 +1,7 @@
 package dev.eiztrips.telegramleetcoderpg.application.ports.inbound.guild;
 
+import dev.eiztrips.telegramleetcoderpg.domain.exception.GuildExceptions.GuildNotFoundException;
+
 /**
  * Сценарий обновления еженедельного босса гильдии.
  */
@@ -13,6 +15,9 @@ public interface RespawnWeeklyBossUseCase {
 	 *            здоровье босса
 	 * @param guildId
 	 *            id гильдии
+	 *
+	 * @throws GuildNotFoundException
+	 *             гильдия не существует
 	 */
 	void respawnWeeklyBoss(String name, int hp, Long guildId);
 }

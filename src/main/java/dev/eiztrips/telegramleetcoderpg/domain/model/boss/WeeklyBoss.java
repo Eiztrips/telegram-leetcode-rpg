@@ -6,6 +6,19 @@ import lombok.Builder;
 
 /**
  * Модель еженедельного босса.
+ *
+ * @param id
+ *            уникальный индетификатор
+ * @param name
+ *            имя босса
+ * @param maxHp
+ *            максимальное хп
+ * @param currentHp
+ *            текущее хп
+ * @param version
+ *            версия (race condition)
+ * @param guildId
+ *            id привязанной гильдии
  */
 public record WeeklyBoss(Long id, String name, int maxHp, int currentHp, Long version, Long guildId) {
 
@@ -35,6 +48,13 @@ public record WeeklyBoss(Long id, String name, int maxHp, int currentHp, Long ve
 		return new WeeklyBoss(id, name, maxHp, newHp, version, guildId);
 	}
 
+	/**
+	 * С гильдией
+	 *
+	 * @param newGuildId
+	 *            новая гильдия
+	 * @return босс
+	 */
 	public WeeklyBoss withGuild(Long newGuildId) {
 		return WeeklyBoss.builder().id(id).name(name).maxHp(maxHp).currentHp(currentHp).version(version)
 				.guildId(newGuildId).build();

@@ -2,9 +2,6 @@ package dev.eiztrips.telegramleetcoderpg.domain.model.user;
 
 import lombok.Getter;
 
-/**
- * Уровень сложности задачи.
- */
 @Getter
 public enum Difficulty {
 

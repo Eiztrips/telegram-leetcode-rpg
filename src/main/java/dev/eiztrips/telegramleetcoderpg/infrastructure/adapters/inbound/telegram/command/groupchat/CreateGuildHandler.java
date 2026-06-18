@@ -23,7 +23,9 @@ public class CreateGuildHandler extends GroupChatHandler implements CommandHandl
 	@Transactional
 	public String handle(Update update) {
 		Long chatId = update.getMessage().getChatId();
+
 		createGuildUseCase.create(chatId);
+
 		return "Гильдия была успешно создана";
 	}
 

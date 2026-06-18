@@ -24,7 +24,9 @@ public class LeaveFromGuildHandler extends GroupChatHandler implements CommandHa
 	public String handle(Update update) {
 		var userId = update.getMessage().getFrom().getId();
 		var groupId = update.getMessage().getChatId();
+
 		removeUserFromGuildUseCase.removeUserFromGuild(userId, groupId);
+
 		return "Вы успешно покинули группу";
 	}
 

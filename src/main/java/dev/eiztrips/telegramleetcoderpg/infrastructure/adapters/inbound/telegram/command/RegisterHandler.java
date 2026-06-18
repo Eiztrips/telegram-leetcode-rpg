@@ -28,13 +28,12 @@ public class RegisterHandler implements CommandHandler {
 		if (parts.length != 2)
 			throw new TelegramException.InvalidCommandException(getCommandExample());
 
-		// todo: добавить валидацию LeetCode пользователя
-
 		Long userId = update.getMessage().getFrom().getId();
 
 		String leetcodeUsername = parts[1];
 
 		registerUserUseCase.registerUser(userId, leetcodeUsername);
+
 		return "Успешная регистрация!";
 	}
 

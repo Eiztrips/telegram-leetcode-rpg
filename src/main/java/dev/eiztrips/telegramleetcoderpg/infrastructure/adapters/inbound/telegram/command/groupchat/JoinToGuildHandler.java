@@ -24,7 +24,9 @@ public class JoinToGuildHandler extends GroupChatHandler implements CommandHandl
 	public String handle(Update update) {
 		var userId = update.getMessage().getFrom().getId();
 		var guildId = update.getMessage().getChatId();
+
 		addUserToGuildUseCase.addUserToGuild(userId, guildId);
+
 		return "Вы были успешно добавлены";
 	}
 

@@ -29,6 +29,8 @@ public final class UserRegistrationService implements RegisterUserUseCase {
 		User user = User.builder().telegramId(userTelegramId).leetcodeUsername(leetcodeUsername).xp(0)
 				.lastCheckTime(null).build();
 
+		// todo: добавить валидацию LeetCode пользователя
+
 		userRepository.save(user);
 
 		return user;

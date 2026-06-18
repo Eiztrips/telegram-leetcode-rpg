@@ -41,9 +41,10 @@ public class AttackBossHandler implements CommandHandler {
 	public String handle(Update update) {
 		Long userId = update.getMessage().getFrom().getId();
 
-		List<SubmissionData> submissionDataList;
+		List<SubmissionData> submissionDataList = checkSubmissionsUseCase.checkTodaySubmissions(userId);
 
-		submissionDataList = checkSubmissionsUseCase.checkTodaySubmissions(userId);
+		if (submissionDataList.isEmpty())
+			return "Вы не выполнили ни одной задачи";
 
 		var userGuild = userRepositoryPort.getGuildByUserTelegramId(userId)
 				.orElseThrow(() -> new UserExceptions.UserGuildNotFoundException(userId));

@@ -23,11 +23,20 @@ public final class UserExceptions {
 	}
 
 	/**
-	 * Исключение: пользователь уже существует.
+	 * Исключение: пользователь с таким id уже зарегестрирован.
 	 */
-	public static final class UserAlreadyExistsException extends DomainException {
-		public UserAlreadyExistsException() {
-			super("Пользователь уже зарегистрирован");
+	public static final class TelegramIdAlreadyExistsException extends DomainException {
+		public TelegramIdAlreadyExistsException() {
+			super("Пользователь с таким id уже зарегистрирован");
+		}
+	}
+
+	/**
+	 * Исключение: пользователь с таким юзернеймом уже зарегестрирован.
+	 */
+	public static final class LeetcodeUsernameAlreadyExistsException extends DomainException {
+		public LeetcodeUsernameAlreadyExistsException() {
+			super("Пользователь с таким юзернеймом уже зарегистрирован");
 		}
 	}
 }

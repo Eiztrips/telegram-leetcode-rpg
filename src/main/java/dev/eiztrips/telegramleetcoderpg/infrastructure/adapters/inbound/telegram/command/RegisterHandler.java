@@ -3,6 +3,7 @@ package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegra
 import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.RegisterUserUseCase;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.TelegramException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
@@ -20,6 +21,7 @@ public class RegisterHandler implements CommandHandler {
 	}
 
 	@Override
+	@Transactional
 	public String handle(Update update) {
 		String[] parts = update.getMessage().getText().trim().split("\\s+");
 
@@ -29,6 +31,7 @@ public class RegisterHandler implements CommandHandler {
 		// todo: добавить валидацию LeetCode пользователя
 
 		Long userId = update.getMessage().getFrom().getId();
+
 		String leetcodeUsername = parts[1];
 
 		registerUserUseCase.registerUser(userId, leetcodeUsername);

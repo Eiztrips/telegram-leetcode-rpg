@@ -31,9 +31,6 @@ public final class GameProgressionService implements CheckSubmissionsUseCase {
 		User user = userRepository.getByTelegramId(userTelegramId)
 				.orElseThrow(() -> new UserExceptions.UserNotFoundException(userTelegramId));
 
-		// что бы избежать race condition нужно обернуть все это
-		// дело в транзакцию, либо тут, либо в конфиге (лучше по гексагону)
-		// и вообще todo: во всех сервисах натранзакционить
 		user.validateCheckRateLimit();
 
 		List<SubmissionData> todaySubmissions = leetCodeClient.getTodaySubmissions(user.leetcodeUsername());

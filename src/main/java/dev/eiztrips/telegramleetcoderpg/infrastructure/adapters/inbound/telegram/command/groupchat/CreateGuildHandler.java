@@ -4,6 +4,7 @@ import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.guild.CreateGu
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
@@ -19,6 +20,7 @@ public class CreateGuildHandler extends GroupChatHandler implements CommandHandl
 	}
 
 	@Override
+	@Transactional
 	public String handle(Update update) {
 		Long chatId = update.getMessage().getChatId();
 		createGuildUseCase.create(chatId);

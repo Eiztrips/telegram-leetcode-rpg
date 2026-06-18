@@ -71,6 +71,13 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
+	public Optional<User> getByLeetCodeUsername(String username) {
+		return userRepository.findByLeetcodeUsername(username).map(userMapper::toDomain);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
 	public Optional<Guild> getGuildByUserTelegramId(Long userTelegramId) {
 		return userRepository.findGuildByTelegramId(userTelegramId).map(guildMapper::toDomain);
 	}

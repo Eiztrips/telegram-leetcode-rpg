@@ -9,6 +9,7 @@ import dev.eiztrips.telegramleetcoderpg.domain.exception.GuildExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.model.boss.WeeklyBoss;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
@@ -36,6 +37,7 @@ public class AttackBossHandler implements CommandHandler {
 	}
 
 	@Override
+	@Transactional
 	public String handle(Update update) {
 		Long userId = update.getMessage().getFrom().getId();
 

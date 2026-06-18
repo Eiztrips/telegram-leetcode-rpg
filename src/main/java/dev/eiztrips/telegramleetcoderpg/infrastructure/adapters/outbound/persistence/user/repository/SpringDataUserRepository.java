@@ -13,4 +13,6 @@ import java.util.Optional;
 public interface SpringDataUserRepository extends JpaRepository<UserEntity, Long> {
 	@Query("SELECT u.guild FROM UserEntity u WHERE u.telegramId = :id")
 	Optional<GuildEntity> findGuildByTelegramId(@Param("id") Long telegramId);
+
+	Optional<UserEntity> findByLeetcodeUsername(String username);
 }

@@ -36,6 +36,15 @@ public interface UserRepositoryPort {
 	Optional<User> getByTelegramId(Long userTelegramId);
 
 	/**
+	 * Получить пользователя по никнейму leetcode
+	 *
+	 * @param username
+	 *            никней LeetCode пользователя
+	 * @return пользователь, если существует
+	 */
+	Optional<User> getByLeetCodeUsername(String username);
+
+	/**
 	 * Получить гильдию пользователя по telegram id.
 	 *
 	 * @param userTelegramId

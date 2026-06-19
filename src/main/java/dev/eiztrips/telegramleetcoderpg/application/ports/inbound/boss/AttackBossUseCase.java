@@ -1,4 +1,4 @@
-package dev.eiztrips.telegramleetcoderpg.application.ports.inbound;
+package dev.eiztrips.telegramleetcoderpg.application.ports.inbound.boss;
 
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.a.shared.dto.SubmissionData;
 import dev.eiztrips.telegramleetcoderpg.domain.model.boss.WeeklyBoss;

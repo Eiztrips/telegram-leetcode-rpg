@@ -1,6 +1,6 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command;
 
-import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.RegisterUserUseCase;
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.user.RegisterUserUseCase;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.TelegramException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,12 +1,14 @@
 package dev.eiztrips.telegramleetcoderpg.application.service;
 
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.user.CheckSubmissionsUseCase;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.a.shared.dto.SubmissionData;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.leetcode.LeetCodeClientPort;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions;
+import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions.*;
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.Difficulty;
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.Submission;
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.User;
-import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.CheckSubmissionsUseCase;
-import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.leetcode.LeetCodeClientPort;
-import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.a.shared.dto.SubmissionData;
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.user.RegisterUserUseCase;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserRepositoryPort;
 
 import java.util.ArrayList;
@@ -14,16 +16,36 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Сервис игрового прогресса.
+ * Сервис регистрации пользователей.
  */
-public final class GameProgressionService implements CheckSubmissionsUseCase {
+public final class UserService implements RegisterUserUseCase, CheckSubmissionsUseCase {
 
 	private final UserRepositoryPort userRepository;
 	private final LeetCodeClientPort leetCodeClient;
 
-	public GameProgressionService(UserRepositoryPort userRepository, LeetCodeClientPort leetCodeClient) {
+	public UserService(UserRepositoryPort userRepository, LeetCodeClientPort leetCodeClientPort) {
 		this.userRepository = userRepository;
-		this.leetCodeClient = leetCodeClient;
+		this.leetCodeClient = leetCodeClientPort;
+	}
+
+	@Override
+	public User registerUser(Long userTelegramId, String leetcodeUsername) {
+		userRepository.getByTelegramId(userTelegramId).ifPresent(user -> {
+			throw new TelegramIdAlreadyExistsException();
+		});
+
+		userRepository.getByLeetCodeUsername(leetcodeUsername).ifPresent(user -> {
+			throw new LeetcodeUsernameAlreadyExistsException();
+		});
+
+		User user = User.builder().telegramId(userTelegramId).leetcodeUsername(leetcodeUsername).xp(0)
+				.lastCheckTime(null).build();
+
+		// todo: добавить валидацию LeetCode пользователя
+
+		userRepository.save(user);
+
+		return user;
 	}
 
 	@Override

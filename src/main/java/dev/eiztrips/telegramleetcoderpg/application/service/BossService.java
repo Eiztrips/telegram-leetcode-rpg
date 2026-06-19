@@ -3,7 +3,7 @@ package dev.eiztrips.telegramleetcoderpg.application.service;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.a.shared.dto.SubmissionData;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.WeeklyBossExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.model.boss.WeeklyBoss;
-import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.AttackBossUseCase;
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.boss.AttackBossUseCase;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.boss.BossRepositoryPort;
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.Difficulty;
 
@@ -12,11 +12,11 @@ import java.util.List;
 /**
  * Сервис боя с боссом.
  */
-public final class BossFightService implements AttackBossUseCase {
+public final class BossService implements AttackBossUseCase {
 
 	private final BossRepositoryPort bossRepositoryPort;
 
-	public BossFightService(BossRepositoryPort bossRepositoryPort) {
+	public BossService(BossRepositoryPort bossRepositoryPort) {
 		this.bossRepositoryPort = bossRepositoryPort;
 	}
 

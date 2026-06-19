@@ -1,4 +1,4 @@
-package dev.eiztrips.telegramleetcoderpg.application.ports.inbound;
+package dev.eiztrips.telegramleetcoderpg.application.ports.inbound.user;
 
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.User;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions.TelegramIdAlreadyExistsException;

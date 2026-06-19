@@ -62,13 +62,4 @@ public interface UserRepositoryPort {
 	 * @return список submissions
 	 */
 	List<SubmissionData> getSubmissionsLastWeek(Long userTelegramId);
-
-	/**
-	 * Проверить существование пользователя по telegram telegramId.
-	 *
-	 * @param userTelegramId
-	 *            telegram telegramId пользователя
-	 * @return true, если существует, иначе false
-	 */
-	boolean existsByTelegramId(Long userTelegramId);
 }

@@ -90,10 +90,4 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
 				oneWeekAgo);
 		return submissionMapper.toDataListFromEntity(submissionEntities);
 	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public boolean existsByTelegramId(Long userTelegramId) {
-		return userRepository.existsById(userTelegramId);
-	}
 }

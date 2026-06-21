@@ -11,6 +11,9 @@ public final class UserExceptions {
 		public UserNotFoundException(Long id) {
 			super("Пользователь " + id + " не найден");
 		}
+		public UserNotFoundException() {
+			super("Вы не зарегистрированы");
+		}
 	}
 
 	/**
@@ -19,6 +22,9 @@ public final class UserExceptions {
 	public static final class UserGuildNotFoundException extends DomainException {
 		public UserGuildNotFoundException(Long id) {
 			super("Пользователь + " + id + ", не состоит в гильдии");
+		}
+		public UserGuildNotFoundException() {
+			super("Вы не состоите в гильдии");
 		}
 	}
 

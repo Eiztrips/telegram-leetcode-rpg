@@ -47,7 +47,7 @@ public class AttackBossHandler implements CommandHandler {
 			return "Вы не выполнили ни одной задачи";
 
 		var userGuild = userRepositoryPort.getGuildByUserTelegramId(userId)
-				.orElseThrow(() -> new UserExceptions.UserGuildNotFoundException(userId));
+				.orElseThrow(UserExceptions.UserGuildNotFoundException::new);
 
 		var guildBoss = guildRepositoryPort.getCurrentWeeklyBoss(userGuild.id())
 				.orElseThrow(GuildExceptions.GuildBossNotFountException::new);

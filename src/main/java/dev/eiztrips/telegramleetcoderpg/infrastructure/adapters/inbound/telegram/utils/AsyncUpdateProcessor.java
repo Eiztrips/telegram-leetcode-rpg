@@ -1,7 +1,9 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.utils;
 
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserRepositoryPort;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.*;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.RegisterHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -17,6 +19,8 @@ import java.util.function.Consumer;
 @RequiredArgsConstructor
 public class AsyncUpdateProcessor {
 	private final List<CommandHandler> commandHandlers;
+	private final UserRepositoryPort userRepositoryPort;
+	private final RegisterHandler registerHandler;
 
 	@Async
 	public void process(Update update, Set<Long> lockedUsers, Consumer<String> responseConsumer,
@@ -34,6 +38,7 @@ public class AsyncUpdateProcessor {
 			String responseText;
 
 			try {
+				checkUserRegistration(update);
 				responseText = handler.handle(update);
 			} catch (DomainException e) {
 				responseText = resolveDomainException(e);
@@ -50,5 +55,15 @@ public class AsyncUpdateProcessor {
 
 	private String resolveDomainException(DomainException e) {
 		return e.getMessage();
+	}
+
+	private void checkUserRegistration(Update update) {
+		if (!update.getMessage().hasText())
+			return;
+		if (update.getMessage().getText().startsWith(registerHandler.getCommand()))
+			return;
+
+		userRepositoryPort.getByTelegramId(update.getMessage().getFrom().getId())
+				.orElseThrow(UserExceptions.UserNotFoundException::new);
 	}
 }

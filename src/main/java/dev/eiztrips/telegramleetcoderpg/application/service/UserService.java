@@ -51,7 +51,7 @@ public final class UserService implements RegisterUserUseCase, CheckSubmissionsU
 	@Override
 	public List<SubmissionData> checkTodaySubmissions(Long userTelegramId) {
 		User user = userRepository.getByTelegramId(userTelegramId)
-				.orElseThrow(() -> new UserExceptions.UserNotFoundException(userTelegramId));
+				.orElseThrow(UserExceptions.UserNotFoundException::new);
 
 		user.validateCheckRateLimit();
 

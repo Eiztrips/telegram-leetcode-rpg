@@ -1,7 +1,7 @@
 package dev.eiztrips.telegramleetcoderpg.application.ports.inbound.user;
 
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.User;
-import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions.TelegramIdAlreadyExistsException;
+import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions.UserAlreadyExistsException;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions.LeetcodeUsernameAlreadyExistsException;
 
 /**
@@ -17,7 +17,7 @@ public interface RegisterUserUseCase {
 	 *            имя пользователя LeetCode
 	 * @return зарегистрированный пользователь
 	 *
-	 * @throws TelegramIdAlreadyExistsException
+	 * @throws UserAlreadyExistsException
 	 *             пользователь c таким id уже зарегистрирован
 	 * @throws LeetcodeUsernameAlreadyExistsException
 	 *             пользователь с таким leetcode никнеймом уже зарегистрирован

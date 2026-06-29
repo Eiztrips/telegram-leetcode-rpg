@@ -77,6 +77,11 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
 	}
 
 	@Override
+	public List<User> getByGuildId(Long guildId) {
+		return userMapper.toDomainList(userRepository.findAllByGuildId(guildId));
+	}
+
+	@Override
 	@Transactional(readOnly = true)
 	public Optional<Guild> getGuildByUserTelegramId(Long userTelegramId) {
 		return userRepository.findGuildByTelegramId(userTelegramId).map(guildMapper::toDomain);

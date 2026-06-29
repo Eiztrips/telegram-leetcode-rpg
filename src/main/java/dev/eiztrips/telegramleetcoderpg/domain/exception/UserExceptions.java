@@ -31,9 +31,9 @@ public final class UserExceptions {
 	/**
 	 * Исключение: пользователь с таким id уже зарегестрирован.
 	 */
-	public static final class TelegramIdAlreadyExistsException extends DomainException {
-		public TelegramIdAlreadyExistsException() {
-			super("Пользователь с таким id уже зарегистрирован");
+	public static final class UserAlreadyExistsException extends DomainException {
+		public UserAlreadyExistsException() {
+			super("Вы уже зарегистрированы");
 		}
 	}
 

@@ -11,4 +11,6 @@ public interface CommandHandler {
 	String getCommand();
 
 	String getCommandExample();
+
+	String getCommandDescription();
 }

@@ -31,7 +31,7 @@ public final class UserService implements RegisterUserUseCase, CheckSubmissionsU
 	@Override
 	public User registerUser(Long userTelegramId, String leetcodeUsername) {
 		userRepository.getByTelegramId(userTelegramId).ifPresent(user -> {
-			throw new TelegramIdAlreadyExistsException();
+			throw new UserAlreadyExistsException();
 		});
 
 		userRepository.getByLeetCodeUsername(leetcodeUsername).ifPresent(user -> {

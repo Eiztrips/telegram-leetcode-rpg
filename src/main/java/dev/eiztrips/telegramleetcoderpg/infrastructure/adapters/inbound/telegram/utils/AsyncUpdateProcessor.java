@@ -4,6 +4,7 @@ import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserRepo
 import dev.eiztrips.telegramleetcoderpg.domain.exception.*;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.RegisterHandler;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.StartHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -24,16 +25,14 @@ public class AsyncUpdateProcessor {
 
 	@Async
 	public void process(Update update, Set<Long> lockedUsers, Consumer<String> responseConsumer,
-			Runnable unknowCommandRunnable) {
+			Runnable helloCommandRunnable) {
 		Long userId = update.getMessage().getChatId();
 
 		try {
 			CommandHandler handler = commandHandlers.stream().filter(h -> h.canHandle(update)).findFirst().orElse(null);
 
-			if (handler == null) {
-				unknowCommandRunnable.run();
+			if (handler == null || isStart(handler, helloCommandRunnable))
 				return;
-			}
 
 			String responseText;
 
@@ -65,5 +64,13 @@ public class AsyncUpdateProcessor {
 
 		userRepositoryPort.getByTelegramId(update.getMessage().getFrom().getId())
 				.orElseThrow(UserExceptions.UserNotFoundException::new);
+	}
+
+	private boolean isStart(CommandHandler handler, Runnable helloCommandRunnable) {
+		if (handler.getClass().equals(StartHandler.class)) {
+			helloCommandRunnable.run();
+			return true;
+		}
+		return false;
 	}
 }

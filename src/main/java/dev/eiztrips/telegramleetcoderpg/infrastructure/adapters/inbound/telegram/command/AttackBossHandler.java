@@ -8,6 +8,7 @@ import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserRepo
 import dev.eiztrips.telegramleetcoderpg.domain.exception.GuildExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.model.boss.WeeklyBoss;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -15,6 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.List;
 
 @Component
+@Order(5)
 public class AttackBossHandler implements CommandHandler {
 
 	private final AttackBossUseCase attackBossUseCase;
@@ -78,5 +80,11 @@ public class AttackBossHandler implements CommandHandler {
 	@Override
 	public String getCommandExample() {
 		return getCommand();
+	}
+
+	@Override
+	public String getCommandDescription() {
+		return "Атаковать босса. Доступно только в общих чатах," + " при условии что вы находитесь в гильдии,"
+				+ " гильдия и босс существуют.";
 	}
 }

@@ -53,19 +53,30 @@ public class TelegramBotAdapter extends TelegramLongPollingBot implements Client
 
 		asyncUpdateProcessor.process(update, lockedUsers,
 				responseText -> executeMessage(SendMessage.builder().chatId(userId).text(responseText).build()),
-				() -> sendUnknownCommandMessage(userId));
+				() -> sendHelloCommandMessage(userId));
 	}
 
-	private void sendUnknownCommandMessage(long chatId) {
-		StringBuilder commands = new StringBuilder("Неизвестная команда. Доступные команды:\n");
+	private void sendHelloCommandMessage(long chatId) {
+		var hello = "Приветствую в новом RPG мире leetcode приключений! \nВот список существующих команд:\n";
+
+		StringBuilder commands = new StringBuilder("<blockquote>" + hello + "</blockquote>\n \n");
+
 		for (CommandHandler h : this.commandHandlers) {
-			commands.append(h.getCommandExample()).append('\n');
+			String example = h.getCommandExample();
+			String description = h.getCommandDescription();
+
+			commands.append("<b> ").append(example).append("</b>\n").append("<i> • ").append(description)
+					.append("</i>\n\n");
 		}
-		executeMessage(new SendMessage(String.valueOf(chatId), commands.toString()));
+
+		var message = new SendMessage(String.valueOf(chatId), commands.toString());
+
+		executeMessage(message);
 	}
 
 	private void executeMessage(SendMessage message) {
 		try {
+			message.setParseMode("html");
 			execute(message);
 		} catch (TelegramApiException e) {
 			log.error("Ошибка отправки сообщения в Telegram: {}", e.getMessage());

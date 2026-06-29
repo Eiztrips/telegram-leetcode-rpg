@@ -2,11 +2,13 @@ package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegra
 
 import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.user.RegisterUserUseCase;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.TelegramException;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
+@Order(2)
 public class RegisterHandler implements CommandHandler {
 	private final RegisterUserUseCase registerUserUseCase;
 
@@ -44,6 +46,11 @@ public class RegisterHandler implements CommandHandler {
 
 	@Override
 	public String getCommandExample() {
-		return getCommand() + " {LeetCode_никнейм} ";
+		return getCommand() + " Username ";
+	}
+
+	@Override
+	public String getCommandDescription() {
+		return "Зарегистрироваться в RPG-системе. Используйте ваш leetcode юзернейм!";
 	}
 }

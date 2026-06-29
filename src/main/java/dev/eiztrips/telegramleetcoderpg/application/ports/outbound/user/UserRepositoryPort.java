@@ -39,10 +39,19 @@ public interface UserRepositoryPort {
 	 * Получить пользователя по никнейму leetcode
 	 *
 	 * @param username
-	 *            никней LeetCode пользователя
+	 *            никнейм LeetCode пользователя
 	 * @return пользователь, если существует
 	 */
 	Optional<User> getByLeetCodeUsername(String username);
+
+	/**
+	 * Получить список пользователей гильдии
+	 *
+	 * @param guildId
+	 *            id гильдии
+	 * @return список пользователей
+	 */
+	List<User> getByGuildId(Long guildId);
 
 	/**
 	 * Получить гильдию пользователя по telegram id.

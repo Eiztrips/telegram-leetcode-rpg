@@ -9,8 +9,17 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 @Component
@@ -19,6 +28,8 @@ public class WeeklyBossScheduler {
 
 	private final RespawnWeeklyBossUseCase respawnWeeklyBossUseCase;
 	private final BossRepositoryPort bossRepositoryPort;
+	private final HttpClient httpClient;
+	private final ObjectMapper objectMapper;
 
 	@Scheduled(cron = "0 0 0 * * SUN")
 	@Transactional
@@ -39,8 +50,38 @@ public class WeeklyBossScheduler {
 	}
 
 	private void triggerRespawn() {
-		respawnWeeklyBossUseCase.respawnWeeklyBoss("TEST", 100, null);
+		var bossCredentials = fetchRandomBossCredentials();
+		respawnWeeklyBossUseCase.respawnWeeklyBoss((String) bossCredentials.get("name"),
+				(int) bossCredentials.get("hp"), null);
 		log.info("Последняя дата обновления: {}", bossRepositoryPort.getLastRespawnDate().toString());
 		log.info("Текущий босс недели: {}", bossRepositoryPort.getCurrentWeeklyBoss());
+	}
+
+	private Map<String, Object> fetchRandomBossCredentials() {
+		var map = new HashMap<String, Object>();
+
+		var request = HttpRequest.newBuilder().uri(URI.create("https://eiztrips.dev/api/fwd/funny-word"))
+				.header("Accept", "application/json").build();
+
+		var name = "Разрушитель api Eiztrips'a";
+
+		try {
+			HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+			if (response.statusCode() == 200) {
+				var json = objectMapper.readTree(response.body());
+
+				if (json.has("word"))
+					name = json.get("word").asString();
+			}
+		} catch (IOException _) {
+			log.error("IOException выброшен во время выполнения fetchRandomBossCreditals");
+		} catch (InterruptedException _) {
+			Thread.currentThread().interrupt();
+		}
+
+		map.put("name", name);
+		map.put("hp", ThreadLocalRandom.current().nextInt(100, 501));
+
+		return map;
 	}
 }

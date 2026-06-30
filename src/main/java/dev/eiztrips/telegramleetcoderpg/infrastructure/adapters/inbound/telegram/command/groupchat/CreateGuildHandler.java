@@ -43,24 +43,24 @@ public class CreateGuildHandler extends GroupChatHandler implements CommandHandl
 		}, () -> {
 			createGuildUseCase.create(chatId);
 			addUserToGuildUseCase.addUserToGuild(update.getMessage().getFrom().getId(), chatId);
-			info.append("Успешное создание гильдии!\n\n");
+			info.append("<b>Успешное создание гильдии!</b>\n\n");
 		});
 
 		info.append("<blockquote>");
 
-		info.append(String.format("Гильдия - %s%n%n", update.getMessage().getChat().getTitle()));
+		info.append(String.format("<b>%s</b>%n%n", update.getMessage().getChat().getTitle()));
 
 		var boss = guildRepositoryPort.getCurrentWeeklyBoss(chatId);
 
 		boss.ifPresent(b -> info
-				.append(String.format("Текущий босс - %s | %d/%d hp%n%n", b.name(), b.maxHp(), b.currentHp())));
+				.append(String.format("<b>Текущий босс:</b> %n <i>%s | %d/%d hp%n%n</i>", b.name(), b.maxHp(), b.currentHp())));
 
 		var users = userRepositoryPort.getByGuildId(chatId);
 
 		if (!users.isEmpty()) {
-			info.append("Пользователи:\n");
+			info.append("<b>Пользователи:</b>\n");
 			for (User u : users)
-				info.append(String.format("• %s | %d id | %d xp%n", u.leetcodeUsername(), u.telegramId(), u.xp()));
+				info.append(String.format("<i>• %s | %d id | %d xp%n</i>", u.leetcodeUsername(), u.telegramId(), u.xp()));
 		}
 
 		info.append("</blockquote>");

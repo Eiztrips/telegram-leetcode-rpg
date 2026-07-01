@@ -84,7 +84,7 @@ public record User(Long telegramId, String leetcodeUsername, int xp, Instant las
 	 * Проверка отправлений за последние 24 часа.
 	 */
 	public void validateCheckRateLimit() {
-		if (this.lastCheckTime != null && this.lastCheckTime.isAfter(Instant.now().minus(Duration.ofDays(1)))) {
+		if (this.lastCheckTime != null && Instant.now().isBefore(this.lastCheckTime.plus(Duration.ofMinutes(30)))) {
 			throw new SubmissionExceptions.SubmissionCheckRateLimitException(lastCheckTime);
 		}
 	}

@@ -97,7 +97,7 @@ class UserTest {
                 1L,
                 "name",
                 0,
-                Instant.now().minus(Duration.ofHours(1)),
+                Instant.now().minus(Duration.ofMinutes(10)),
                 null
         );
 
@@ -115,6 +115,5 @@ class UserTest {
         );
 
         assertDoesNotThrow(user2::validateCheckRateLimit);
-
     }
 }

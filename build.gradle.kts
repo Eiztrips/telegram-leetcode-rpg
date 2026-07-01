@@ -54,6 +54,11 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocVersion")
     implementation("org.mapstruct:mapstruct:$mapstruct")
     implementation("org.telegram:telegrambots:$telegram")
+    constraints {
+        implementation("org.glassfish.grizzly:grizzly-http:5.0.2") {
+            because("Fixes CVE-2024-45687 CRLF Injection vulnerability")
+        }
+    }
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")

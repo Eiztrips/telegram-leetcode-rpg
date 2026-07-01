@@ -12,14 +12,15 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingDeque;
 
 @Slf4j
 @Component
 public class TelegramBotAdapter extends TelegramLongPollingBot implements ClientPort {
 	private final Set<Long> lockedUsers = ConcurrentHashMap.newKeySet();
+	private final Map<Long, Deque<Update>> updateUserQueueMap = new ConcurrentHashMap<>();
 
 	private final String botUsername;
 	private final List<CommandHandler> commandHandlers;
@@ -41,19 +42,21 @@ public class TelegramBotAdapter extends TelegramLongPollingBot implements Client
 
 	@Override
 	public void onUpdateReceived(Update update) {
-		if (update == null || !update.hasMessage() || !update.getMessage().hasText())
+		if (update == null || !update.hasMessage() || !update.getMessage().hasText()
+				|| !update.getMessage().getText().startsWith("/"))
 			return;
 
-		Long userId = update.getMessage().getChatId();
+		Long userId = update.getMessage().getFrom().getId();
 
-		if (!lockedUsers.add(userId)) {
-			executeMessage(SendMessage.builder().chatId(userId).text("Не спамь").build());
+		updateUserQueueMap.computeIfAbsent(userId, u -> new LinkedBlockingDeque<>()).addLast(update);
+
+		if (!lockedUsers.add(userId))
 			return;
-		}
 
-		asyncUpdateProcessor.process(update, lockedUsers,
-				responseText -> executeMessage(SendMessage.builder().chatId(userId).text(responseText).build()),
-				() -> sendHelloCommandMessage(userId));
+		asyncUpdateProcessor.process(userId, updateUserQueueMap, lockedUsers,
+				(responseText,
+						chatId) -> executeMessage(SendMessage.builder().chatId(chatId).text(responseText).build()),
+				this::sendHelloCommandMessage);
 	}
 
 	private void sendHelloCommandMessage(long chatId) {

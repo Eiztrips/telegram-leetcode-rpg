@@ -53,7 +53,7 @@ public class CreateGuildHandler extends GroupChatHandler implements CommandHandl
 		var boss = guildRepositoryPort.getCurrentWeeklyBoss(chatId);
 
 		boss.ifPresent(b -> info.append(
-				String.format("<b>Текущий босс:</b> %n <i>%s | %d/%d hp%n%n</i>", b.name(), b.maxHp(), b.currentHp())));
+				String.format("<b>Текущий босс:</b> %n <i>%s | %d/%d hp%n%n</i>", b.name(), b.currentHp(), b.maxHp())));
 
 		var users = userRepositoryPort.getByGuildId(chatId);
 

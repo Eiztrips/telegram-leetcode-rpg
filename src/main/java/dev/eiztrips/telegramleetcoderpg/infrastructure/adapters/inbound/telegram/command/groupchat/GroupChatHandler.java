@@ -4,6 +4,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 public abstract class GroupChatHandler {
 	protected boolean canHandle(Update update) {
-		return update.getMessage().getChat().getType().equals("group");
+		String type = update.getMessage().getChat().getType();
+		return type.equals("group") || type.equals("supergroup");
 	}
 }

@@ -1,4 +1,4 @@
-package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command;
+package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.groupchat;
 
 import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.boss.AttackBossUseCase;
 import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.user.CheckSubmissionsUseCase;
@@ -8,6 +8,7 @@ import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserRepo
 import dev.eiztrips.telegramleetcoderpg.domain.exception.GuildExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.model.boss.WeeklyBoss;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,8 +17,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.List;
 
 @Component
-@Order(5)
-public class AttackBossHandler implements CommandHandler {
+@Order(6)
+public class AttackBossHandler extends GroupChatHandler implements CommandHandler {
 
 	private final AttackBossUseCase attackBossUseCase;
 	private final CheckSubmissionsUseCase checkSubmissionsUseCase;
@@ -35,7 +36,7 @@ public class AttackBossHandler implements CommandHandler {
 	@Override
 	public boolean canHandle(Update update) {
 		String text = update.getMessage().getText();
-		return text.startsWith(getCommand());
+		return super.canHandle(update) && text.startsWith(getCommand());
 	}
 
 	@Override

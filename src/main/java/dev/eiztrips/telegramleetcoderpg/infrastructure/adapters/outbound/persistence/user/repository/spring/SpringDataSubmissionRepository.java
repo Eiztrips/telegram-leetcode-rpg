@@ -1,4 +1,4 @@
-package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.repository;
+package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.repository.spring;
 
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.entity.SubmissionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

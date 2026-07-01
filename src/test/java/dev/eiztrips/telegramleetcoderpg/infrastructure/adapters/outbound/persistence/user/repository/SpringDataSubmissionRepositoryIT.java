@@ -2,6 +2,8 @@ package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persis
 
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.entity.SubmissionEntity;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.entity.UserEntity;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.repository.spring.SpringDataSubmissionRepository;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.repository.spring.SpringDataUserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;

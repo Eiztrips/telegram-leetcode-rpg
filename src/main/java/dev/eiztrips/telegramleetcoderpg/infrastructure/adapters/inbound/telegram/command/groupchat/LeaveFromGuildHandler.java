@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
 @RequiredArgsConstructor
-@Order(4)
+@Order(5)
 public class LeaveFromGuildHandler extends GroupChatHandler implements CommandHandler {
 
 	private final RemoveUserFromGuildUseCase removeUserFromGuildUseCase;

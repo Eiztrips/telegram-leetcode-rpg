@@ -12,7 +12,7 @@ public final class UserExceptions {
 			super("Пользователь " + id + " не найден");
 		}
 		public UserNotFoundException() {
-			super("Вы не зарегистрированы");
+			super("Вы не зарегистрированы, напишите /start мне в лс!");
 		}
 	}
 
@@ -43,6 +43,24 @@ public final class UserExceptions {
 	public static final class LeetcodeUsernameAlreadyExistsException extends DomainException {
 		public LeetcodeUsernameAlreadyExistsException() {
 			super("Пользователь с таким юзернеймом уже зарегистрирован");
+		}
+	}
+
+	/**
+	 * Исключение: токен регистрации истек или не найден.
+	 */
+	public static final class RegistrationTokenExpiredException extends DomainException {
+		public RegistrationTokenExpiredException() {
+			super("Ваш токен регистрации не был найден, повторите попытку регистрации");
+		}
+	}
+
+	/**
+	 * Исключение: токен не совпал с текущим.
+	 */
+	public static final class BadRegistrationTokenException extends DomainException {
+		public BadRegistrationTokenException() {
+			super("В описании профиля не найден подходящий токен");
 		}
 	}
 }

@@ -1,7 +1,8 @@
-package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command;
+package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat;
 
 import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.user.RegisterUserUseCase;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.TelegramException;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,7 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
 @Order(2)
-public class RegisterHandler implements CommandHandler {
+public class RegisterHandler extends PrivateChatHandler implements CommandHandler {
 	private final RegisterUserUseCase registerUserUseCase;
 
 	public RegisterHandler(RegisterUserUseCase registerUserUseCase) {
@@ -19,7 +20,7 @@ public class RegisterHandler implements CommandHandler {
 	@Override
 	public boolean canHandle(Update update) {
 		String text = update.getMessage().getText();
-		return text.startsWith(getCommand());
+		return super.canHandle(update) && text.startsWith(getCommand());
 	}
 
 	@Override
@@ -34,9 +35,11 @@ public class RegisterHandler implements CommandHandler {
 
 		String leetcodeUsername = parts[1];
 
-		registerUserUseCase.registerUser(userId, leetcodeUsername);
+		String token = registerUserUseCase.startUserRegistration(userId, leetcodeUsername);
 
-		return "Успешная регистрация!";
+		return String.format(
+				"<b>Ваш токен регистрации:</b> %n<code>%s</code> %n%n<b>Введите его в описание своего профиля на leetcode (readme).</b>%n%s",
+				token, "https://leetcode.com/settings/profile");
 	}
 
 	@Override
@@ -51,6 +54,6 @@ public class RegisterHandler implements CommandHandler {
 
 	@Override
 	public String getCommandDescription() {
-		return "Зарегистрироваться в RPG-системе. Используйте ваш leetcode юзернейм!";
+		return "Зарегистрироваться в RPG-системе. Используйте ваш leetcode юзернейм! Использовать только в личном чате с ботом";
 	}
 }

@@ -4,6 +4,7 @@ import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.boss.BossRepo
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.client.ClientPort;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.guild.GuildRepositoryPort;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.leetcode.LeetCodeClientPort;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserCacheRepositoryPort;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserRepositoryPort;
 import dev.eiztrips.telegramleetcoderpg.application.service.BossService;
 import dev.eiztrips.telegramleetcoderpg.application.service.GuildService;
@@ -21,8 +22,9 @@ public class ApplicationConfig {
 	}
 
 	@Bean
-	public UserService userService(UserRepositoryPort userRepositoryPort, LeetCodeClientPort leetCodeClientPort) {
-		return new UserService(userRepositoryPort, leetCodeClientPort);
+	public UserService userService(UserRepositoryPort userRepositoryPort, LeetCodeClientPort leetCodeClientPort,
+			UserCacheRepositoryPort userCacheRepositoryPort) {
+		return new UserService(userRepositoryPort, leetCodeClientPort, userCacheRepositoryPort);
 	}
 
 	@Bean

@@ -6,8 +6,8 @@ import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persist
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.entity.UserEntity;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.mapper.SubmissionMapper;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.mapper.UserMapper;
-import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.repository.SpringDataSubmissionRepository;
-import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.repository.SpringDataUserRepository;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.repository.spring.SpringDataSubmissionRepository;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.repository.spring.SpringDataUserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

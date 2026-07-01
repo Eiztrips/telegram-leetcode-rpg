@@ -9,12 +9,26 @@ import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions.Leetcode
  */
 public interface RegisterUserUseCase {
 	/**
+	 * Начать процесс регистрации.
+	 *
+	 * @param userTelegramId
+	 *            telegramId пользователя
+	 * @param leetcodeUsername
+	 *            имя пользователя LeetCode
+	 * @return токен
+	 *
+	 * @throws UserAlreadyExistsException
+	 *             пользователь c таким id уже зарегистрирован
+	 * @throws LeetcodeUsernameAlreadyExistsException
+	 *             пользователь с таким leetcode никнеймом уже зарегистрирован
+	 */
+	String startUserRegistration(Long userTelegramId, String leetcodeUsername);
+
+	/**
 	 * Зарегистрировать пользователя.
 	 *
 	 * @param userTelegramId
-	 *            telegram telegramId пользователя
-	 * @param leetcodeUsername
-	 *            имя пользователя LeetCode
+	 *            telegramId пользователя
 	 * @return зарегистрированный пользователь
 	 *
 	 * @throws UserAlreadyExistsException
@@ -22,5 +36,16 @@ public interface RegisterUserUseCase {
 	 * @throws LeetcodeUsernameAlreadyExistsException
 	 *             пользователь с таким leetcode никнеймом уже зарегистрирован
 	 */
-	User registerUser(Long userTelegramId, String leetcodeUsername);
+	User completeUserRegistration(Long userTelegramId);
+
+	/**
+	 * Сгенерировать токен регистрации.
+	 *
+	 * @param userTelegramId
+	 *            telegramId пользователя
+	 * @param leetcodeUsername
+	 *            имя пользователя LeetCode
+	 * @return токен
+	 */
+	String generateRegistrationToken(Long userTelegramId, String leetcodeUsername);
 }

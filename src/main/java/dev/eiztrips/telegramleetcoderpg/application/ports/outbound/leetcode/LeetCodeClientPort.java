@@ -16,4 +16,13 @@ public interface LeetCodeClientPort {
 	 * @return список сегодняшних решений
 	 */
 	List<SubmissionData> getTodaySubmissions(String leetcodeUsername);
+
+	/**
+	 * Получить описание профиля пользователя.
+	 *
+	 * @param leetcodeUsername
+	 *            имя пользователя на LeetCode
+	 * @return описание профиля
+	 */
+	String getBio(String leetcodeUsername);
 }

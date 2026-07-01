@@ -6,7 +6,8 @@ public sealed class DomainException extends RuntimeException
 		GuildExceptions.GuildBossNotFountException, GuildExceptions.GuildNotFoundException,
 		GuildExceptions.UserAlreadyExistsInGuild, GuildExceptions.UserNotFoundInGuild,
 		SubmissionExceptions.SubmissionCheckRateLimitException, TelegramException.InvalidCommandException,
-		UserExceptions.LeetcodeUsernameAlreadyExistsException, UserExceptions.UserAlreadyExistsException,
+		UserExceptions.BadRegistrationTokenException, UserExceptions.LeetcodeUsernameAlreadyExistsException,
+		UserExceptions.RegistrationTokenExpiredException, UserExceptions.UserAlreadyExistsException,
 		UserExceptions.UserGuildNotFoundException, UserExceptions.UserNotFoundException,
 		WeeklyBossExceptions.WeeklyBossAlreadyDefeated, WeeklyBossExceptions.WeeklyBossNotFoundException {
 	protected DomainException(String message) {

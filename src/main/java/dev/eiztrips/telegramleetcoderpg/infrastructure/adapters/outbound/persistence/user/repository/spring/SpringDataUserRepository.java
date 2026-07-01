@@ -1,4 +1,4 @@
-package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.repository;
+package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.repository.spring;
 
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.guild.entity.GuildEntity;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.entity.UserEntity;

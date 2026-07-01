@@ -15,7 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
 @RequiredArgsConstructor
-@Order(3)
+@Order(4)
 public class CreateGuildHandler extends GroupChatHandler implements CommandHandler {
 
 	private final CreateGuildUseCase createGuildUseCase;
@@ -52,15 +52,16 @@ public class CreateGuildHandler extends GroupChatHandler implements CommandHandl
 
 		var boss = guildRepositoryPort.getCurrentWeeklyBoss(chatId);
 
-		boss.ifPresent(b -> info
-				.append(String.format("<b>Текущий босс:</b> %n <i>%s | %d/%d hp%n%n</i>", b.name(), b.maxHp(), b.currentHp())));
+		boss.ifPresent(b -> info.append(
+				String.format("<b>Текущий босс:</b> %n <i>%s | %d/%d hp%n%n</i>", b.name(), b.maxHp(), b.currentHp())));
 
 		var users = userRepositoryPort.getByGuildId(chatId);
 
 		if (!users.isEmpty()) {
 			info.append("<b>Пользователи:</b>\n");
 			for (User u : users)
-				info.append(String.format("<i>• %s | %d id | %d xp%n</i>", u.leetcodeUsername(), u.telegramId(), u.xp()));
+				info.append(
+						String.format("<i>• %s | %d id | %d xp%n</i>", u.leetcodeUsername(), u.telegramId(), u.xp()));
 		}
 
 		info.append("</blockquote>");

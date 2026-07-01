@@ -5,6 +5,7 @@ import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.leetcode.Leet
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.leetcode.dto.LeetCodeAllQuestionsResponse;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.leetcode.dto.LeetCodeGraphQlRequest;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.leetcode.dto.LeetCodeSubmissionResponse;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.leetcode.dto.LeetCodeUserBioResponse;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.leetcode.repository.LeetCodeTaskCacheRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -41,6 +42,16 @@ public class LeetCodeClientAdapter implements LeetCodeClientPort {
 			  allQuestions {
 			    titleSlug
 			    difficulty
+			  }
+			}
+			""";
+
+	private static final String USER_BIO_QUERY = """
+			query getUserProfileDescription($username: String!) {
+			  matchedUser(username: $username) {
+			    profile {
+			      aboutMe
+			    }
 			  }
 			}
 			""";
@@ -90,6 +101,20 @@ public class LeetCodeClientAdapter implements LeetCodeClientPort {
 						.taskTitle(gql.title()).taskDifficulty(getTaskDifficulty(gql.titleSlug()).toUpperCase())
 						.build())
 				.filter(data -> data.completedAt().isAfter(oneDayAgo)).toList();
+	}
+
+	@Override
+	public String getBio(String leetcodeUsername) {
+		LeetCodeGraphQlRequest request = new LeetCodeGraphQlRequest(USER_BIO_QUERY,
+				new LeetCodeGraphQlRequest.Variables(leetcodeUsername, null));
+		LeetCodeUserBioResponse response = restClient.post().uri("").contentType(MediaType.APPLICATION_JSON)
+				.body(request).retrieve().body(LeetCodeUserBioResponse.class);
+
+		if (response == null || response.data() == null || response.data().matchedUser() == null
+				|| response.data().matchedUser().profile() == null)
+			return "";
+
+		return response.data().matchedUser().profile().aboutMe();
 	}
 
 	private String getTaskDifficulty(String taskSlug) {

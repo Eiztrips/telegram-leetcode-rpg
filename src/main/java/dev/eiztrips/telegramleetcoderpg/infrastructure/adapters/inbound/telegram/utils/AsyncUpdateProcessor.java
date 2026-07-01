@@ -3,8 +3,9 @@ package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegra
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserRepositoryPort;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.*;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
-import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.RegisterHandler;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.RegisterHandler;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.StartHandler;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.VerificationHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -22,6 +23,7 @@ public class AsyncUpdateProcessor {
 	private final List<CommandHandler> commandHandlers;
 	private final UserRepositoryPort userRepositoryPort;
 	private final RegisterHandler registerHandler;
+	private final VerificationHandler verificationHandler;
 
 	@Async
 	public void process(Update update, Set<Long> lockedUsers, Consumer<String> responseConsumer,
@@ -59,7 +61,8 @@ public class AsyncUpdateProcessor {
 	private void checkUserRegistration(Update update) {
 		if (!update.getMessage().hasText())
 			return;
-		if (update.getMessage().getText().startsWith(registerHandler.getCommand()))
+		String text = update.getMessage().getText();
+		if (text.startsWith(registerHandler.getCommand()) || text.startsWith(verificationHandler.getCommand()))
 			return;
 
 		userRepositoryPort.getByTelegramId(update.getMessage().getFrom().getId())

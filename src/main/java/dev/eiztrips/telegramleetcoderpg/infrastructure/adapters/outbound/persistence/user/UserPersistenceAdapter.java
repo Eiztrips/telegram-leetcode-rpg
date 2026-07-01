@@ -1,6 +1,8 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user;
 
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.a.shared.dto.SubmissionData;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserCacheRepositoryPort;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.dto.UserRegistrationCacheData;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.model.guild.Guild;
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.User;
@@ -12,8 +14,9 @@ import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persist
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.entity.UserEntity;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.mapper.SubmissionMapper;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.mapper.UserMapper;
-import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.repository.SpringDataSubmissionRepository;
-import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.repository.SpringDataUserRepository;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.repository.redis.RedisUserRepository;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.repository.spring.SpringDataSubmissionRepository;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.repository.spring.SpringDataUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Component;
@@ -25,11 +28,12 @@ import java.util.Optional;
 
 @Component("userPersistenceAdapter")
 @RequiredArgsConstructor
-public class UserPersistenceAdapter implements UserRepositoryPort {
+public class UserPersistenceAdapter implements UserRepositoryPort, UserCacheRepositoryPort {
 
 	private final SpringDataUserRepository userRepository;
 	private final SpringDataSubmissionRepository submissionRepository;
 	private final SpringDataGuildRepository guildRepository;
+	private final RedisUserRepository redisUserRepository;
 	private final UserMapper userMapper;
 	private final SubmissionMapper submissionMapper;
 	private final GuildMapper guildMapper;
@@ -94,5 +98,20 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
 		List<SubmissionEntity> submissionEntities = submissionRepository.findWeeklySubmissions(userTelegramId,
 				oneWeekAgo);
 		return submissionMapper.toDataListFromEntity(submissionEntities);
+	}
+
+	@Override
+	public void saveRegistrationToken(UserRegistrationCacheData data) {
+		redisUserRepository.save(data);
+	}
+
+	@Override
+	public Optional<UserRegistrationCacheData> getRegistrationCache(Long telegramChatId) {
+		return redisUserRepository.findByChatId(telegramChatId);
+	}
+
+	@Override
+	public void removeRegistrationCache(Long telegramChatId) {
+		redisUserRepository.remove(telegramChatId);
 	}
 }

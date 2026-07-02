@@ -16,7 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Component
 @RequiredArgsConstructor
 @Order(4)
-public class CreateGuildHandler extends GroupChatHandler implements CommandHandler {
+public class GuildInfoHandler extends GroupChatHandler implements CommandHandler {
 
 	private final CreateGuildUseCase createGuildUseCase;
 	private final UserRepositoryPort userRepositoryPort;
@@ -55,7 +55,7 @@ public class CreateGuildHandler extends GroupChatHandler implements CommandHandl
 		boss.ifPresent(b -> info.append(
 				String.format("<b>Текущий босс:</b> %n <i>%s | %d/%d hp%n%n</i>", b.name(), b.currentHp(), b.maxHp())));
 
-		var users = userRepositoryPort.getByGuildId(chatId);
+		var users = userRepositoryPort.getUsersByGuildIdSortedByUserXpDesc(chatId);
 
 		if (!users.isEmpty()) {
 			info.append("<b>Пользователи:</b>\n");

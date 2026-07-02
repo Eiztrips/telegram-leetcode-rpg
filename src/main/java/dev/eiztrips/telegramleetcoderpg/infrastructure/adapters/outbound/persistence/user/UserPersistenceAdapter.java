@@ -81,8 +81,13 @@ public class UserPersistenceAdapter implements UserRepositoryPort, UserCacheRepo
 	}
 
 	@Override
-	public List<User> getByGuildId(Long guildId) {
+	public List<User> getUsersByGuildId(Long guildId) {
 		return userMapper.toDomainList(userRepository.findAllByGuildId(guildId));
+	}
+
+	@Override
+	public List<User> getUsersByGuildIdSortedByUserXpDesc(Long guildId) {
+		return userMapper.toDomainList(userRepository.findAllByGuildIdOrderByXpDesc(guildId));
 	}
 
 	@Override

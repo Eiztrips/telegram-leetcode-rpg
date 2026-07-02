@@ -51,7 +51,16 @@ public interface UserRepositoryPort {
 	 *            id гильдии
 	 * @return список пользователей
 	 */
-	List<User> getByGuildId(Long guildId);
+	List<User> getUsersByGuildId(Long guildId);
+
+	/**
+	 * Получить список пользователей гильдии отсортированный по xp пользователя
+	 *
+	 * @param guildId
+	 *            id гильдии
+	 * @return список пользователей
+	 */
+	List<User> getUsersByGuildIdSortedByUserXpDesc(Long guildId);
 
 	/**
 	 * Получить гильдию пользователя по telegram id.

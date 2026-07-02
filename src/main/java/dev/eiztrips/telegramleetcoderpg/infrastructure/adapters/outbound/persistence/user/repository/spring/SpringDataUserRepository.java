@@ -18,4 +18,5 @@ public interface SpringDataUserRepository extends JpaRepository<UserEntity, Long
 	Optional<UserEntity> findByLeetcodeUsername(String username);
 
 	List<UserEntity> findAllByGuildId(Long guildId);
+	List<UserEntity> findAllByGuildIdOrderByXpDesc(Long guildId);
 }

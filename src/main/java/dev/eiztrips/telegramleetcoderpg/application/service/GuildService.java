@@ -1,6 +1,7 @@
 package dev.eiztrips.telegramleetcoderpg.application.service;
 
 import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.guild.*;
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.guild.dto.GuildInfoResult;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.boss.BossRepositoryPort;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.client.ClientPort;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.guild.GuildRepositoryPort;
@@ -14,6 +15,7 @@ import dev.eiztrips.telegramleetcoderpg.domain.model.user.User;
 
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -24,7 +26,8 @@ public final class GuildService
 			AddUserToGuildUseCase,
 			CreateGuildUseCase,
 			RemoveUserFromGuildUseCase,
-			RespawnWeeklyBossUseCase {
+			RespawnWeeklyBossUseCase,
+			GetOrCreateGuildInfoUseCase {
 	private final GuildRepositoryPort guildRepositoryPort;
 	private final ClientPort clientPort;
 	private final UserRepositoryPort userRepositoryPort;
@@ -118,5 +121,21 @@ public final class GuildService
 		WeeklyBoss boss = WeeklyBoss.builder().name(name).maxHp(hp).currentHp(hp).guildId(guildId).build();
 
 		bossRepositoryPort.save(boss);
+	}
+
+	@Override
+	public GuildInfoResult getOrCreateGuild(Long chatId, Long telegramUserId) {
+		boolean isCreated = false;
+
+		if (guildRepositoryPort.getGuildById(chatId).isEmpty()) {
+			create(chatId);
+			addUserToGuild(telegramUserId, chatId);
+			isCreated = true;
+		}
+
+		WeeklyBoss boss = guildRepositoryPort.getCurrentWeeklyBoss(chatId).orElse(null);
+		List<User> users = userRepositoryPort.getUsersByGuildIdSortedByUserXpDesc(chatId);
+
+		return GuildInfoResult.builder().isCreated(isCreated).currentBoss(boss).users(users).build();
 	}
 }

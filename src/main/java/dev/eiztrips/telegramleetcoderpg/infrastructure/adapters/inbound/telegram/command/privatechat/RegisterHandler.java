@@ -5,7 +5,6 @@ import dev.eiztrips.telegramleetcoderpg.domain.exception.TelegramException;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
@@ -24,7 +23,6 @@ public class RegisterHandler extends PrivateChatHandler implements CommandHandle
 	}
 
 	@Override
-	@Transactional
 	public String handle(Update update) {
 		String[] parts = update.getMessage().getText().trim().split("\\s+");
 
@@ -32,7 +30,6 @@ public class RegisterHandler extends PrivateChatHandler implements CommandHandle
 			throw new TelegramException.InvalidCommandException(getCommandExample());
 
 		Long userId = update.getMessage().getFrom().getId();
-
 		String leetcodeUsername = parts[1];
 
 		String token = registerUserUseCase.startUserRegistration(userId, leetcodeUsername);

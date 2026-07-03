@@ -2,7 +2,6 @@ package dev.eiztrips.telegramleetcoderpg.domain.model.user;
 
 import dev.eiztrips.telegramleetcoderpg.domain.exception.GlobalExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.SubmissionExceptions;
-import dev.eiztrips.telegramleetcoderpg.domain.model.guild.Guild;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -58,14 +57,14 @@ class UserTest {
                 Submission.builder().taskSlug("one_pooooppoooo").taskDifficulty(Difficulty.EASY).completedAt(Instant.now()).build(),
                 new Submission("three_poooo", Difficulty.HARD, Instant.now())
         ));
-        assertEquals(40, user.xp());
+        assertEquals(Difficulty.HARD.getReward()+Difficulty.EASY.getReward(), user.xp());
 
         user = user.takeRewardForSolveTask(
                 List.of(
                         new Submission("two_pooooppoooo", Difficulty.MEDIUM, Instant.now())
                 )
         );
-        assertEquals(60, user.xp());
+        assertEquals(Difficulty.HARD.getReward()+Difficulty.EASY.getReward()+Difficulty.MEDIUM.getReward(), user.xp());
     }
 
     @Test

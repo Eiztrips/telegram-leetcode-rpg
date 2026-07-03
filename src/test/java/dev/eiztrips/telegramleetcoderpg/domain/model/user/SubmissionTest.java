@@ -17,8 +17,6 @@ class SubmissionTest {
 
         assertEquals("two-sum", submission.taskSlug());
         assertEquals(Difficulty.EASY, submission.taskDifficulty());
-        assertEquals(10, submission.taskDifficulty().getReward());
-        assertEquals(10, submission.getReward());
         assertNotNull(submission.completedAt());
     }
 

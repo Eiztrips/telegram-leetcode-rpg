@@ -12,11 +12,11 @@ import java.util.List;
 public interface AttackBossUseCase {
 	/**
 	 * Атаковать еженедельного босса.
-	 * 
-	 * @param bossId
-	 *            telegramId босса
+	 *
 	 * @param submissionDataList
 	 *            сабмишены пользователя
+	 * @param userId
+	 *            id пользователя
 	 * @return еженедельный босс с обновленным здоровьем
 	 *
 	 * @throws WeeklyBossNotFoundException
@@ -24,5 +24,5 @@ public interface AttackBossUseCase {
 	 * @throws WeeklyBossAlreadyDefeated
 	 *             босс уже был побежден
 	 */
-	WeeklyBoss attackBoss(Long bossId, List<SubmissionData> submissionDataList);
+	WeeklyBoss attackBoss(List<SubmissionData> submissionDataList, Long userId);
 }

@@ -1,16 +1,12 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.groupchat;
 
-import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.guild.AddUserToGuildUseCase;
-import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.guild.CreateGuildUseCase;
-import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.guild.GuildRepositoryPort;
-import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserRepositoryPort;
-import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions;
-import dev.eiztrips.telegramleetcoderpg.domain.model.user.User;
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.guild.GetOrCreateGuildInfoUseCase;
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.guild.dto.GuildInfoResult;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.presenter.TelegramGuildMessagePresenter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
@@ -18,10 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Order(4)
 public class GuildInfoHandler extends GroupChatHandler implements CommandHandler {
 
-	private final CreateGuildUseCase createGuildUseCase;
-	private final UserRepositoryPort userRepositoryPort;
-	private final GuildRepositoryPort guildRepositoryPort;
-	private final AddUserToGuildUseCase addUserToGuildUseCase;
+	private final GetOrCreateGuildInfoUseCase useCase;
 
 	@Override
 	public boolean canHandle(Update update) {
@@ -30,43 +23,14 @@ public class GuildInfoHandler extends GroupChatHandler implements CommandHandler
 	}
 
 	@Override
-	@Transactional
 	public String handle(Update update) {
 		Long chatId = update.getMessage().getChatId();
+		Long fromId = update.getMessage().getFrom().getId();
+		String title = update.getMessage().getChat().getTitle();
 
-		userRepositoryPort.getByTelegramId(update.getMessage().getFrom().getId())
-				.orElseThrow(UserExceptions.UserNotFoundException::new);
+		GuildInfoResult gr = useCase.getOrCreateGuild(chatId, fromId);
 
-		var info = new StringBuilder();
-
-		guildRepositoryPort.getGuildById(chatId).ifPresentOrElse(g -> {
-		}, () -> {
-			createGuildUseCase.create(chatId);
-			addUserToGuildUseCase.addUserToGuild(update.getMessage().getFrom().getId(), chatId);
-			info.append("<b>Успешное создание гильдии!</b>\n\n");
-		});
-
-		info.append("<blockquote>");
-
-		info.append(String.format("<b>%s</b>%n%n", update.getMessage().getChat().getTitle()));
-
-		var boss = guildRepositoryPort.getCurrentWeeklyBoss(chatId);
-
-		boss.ifPresent(b -> info.append(
-				String.format("<b>Текущий босс:</b> %n <i>%s | %d/%d hp%n%n</i>", b.name(), b.currentHp(), b.maxHp())));
-
-		var users = userRepositoryPort.getUsersByGuildIdSortedByUserXpDesc(chatId);
-
-		if (!users.isEmpty()) {
-			info.append("<b>Пользователи:</b>\n");
-			for (User u : users)
-				info.append(
-						String.format("<i>• %s | %d id | %d xp%n</i>", u.leetcodeUsername(), u.telegramId(), u.xp()));
-		}
-
-		info.append("</blockquote>");
-
-		return info.toString();
+		return TelegramGuildMessagePresenter.formatGuildInfo(title, gr.isCreated(), gr.currentBoss(), gr.users());
 	}
 
 	@Override

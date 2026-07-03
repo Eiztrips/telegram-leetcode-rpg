@@ -12,22 +12,27 @@ import dev.eiztrips.telegramleetcoderpg.application.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.transaction.annotation.Transactional;
 
 @Configuration
 public class ApplicationConfig {
 
 	@Bean
-	public BossService bossService(BossRepositoryPort bossRepositoryPort) {
-		return new BossService(bossRepositoryPort);
+	@Transactional
+	public BossService bossService(BossRepositoryPort bossRepositoryPort, UserRepositoryPort userRepositoryPort,
+			GuildRepositoryPort guildRepositoryPort) {
+		return new BossService(bossRepositoryPort, userRepositoryPort, guildRepositoryPort);
 	}
 
 	@Bean
+	@Transactional
 	public UserService userService(UserRepositoryPort userRepositoryPort, LeetCodeClientPort leetCodeClientPort,
 			UserCacheRepositoryPort userCacheRepositoryPort) {
 		return new UserService(userRepositoryPort, leetCodeClientPort, userCacheRepositoryPort);
 	}
 
 	@Bean
+	@Transactional
 	public GuildService guildService(UserRepositoryPort userRepositoryPort, GuildRepositoryPort guildRepositoryPort,
 			@Lazy ClientPort clientPort, BossRepositoryPort bossRepositoryPort) {
 		return new GuildService(guildRepositoryPort, clientPort, userRepositoryPort, bossRepositoryPort);

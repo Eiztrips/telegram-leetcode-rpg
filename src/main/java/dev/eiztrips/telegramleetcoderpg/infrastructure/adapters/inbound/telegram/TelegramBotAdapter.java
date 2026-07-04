@@ -46,6 +46,10 @@ public class TelegramBotAdapter extends TelegramLongPollingBot implements Client
 				|| !update.getMessage().getText().startsWith("/"))
 			return;
 
+		log.info("Пришло сообщение: {}. Чат: {}. Пользователь: {}",
+				update.getMessage().getText(), update.getMessage().getChat().getTitle(),
+				update.getMessage().getFrom().getFirstName() + "|" +update.getMessage().getFrom().getId());
+
 		Long userId = update.getMessage().getFrom().getId();
 
 		updateUserQueueMap.computeIfAbsent(userId, u -> new LinkedBlockingDeque<>()).addLast(update);

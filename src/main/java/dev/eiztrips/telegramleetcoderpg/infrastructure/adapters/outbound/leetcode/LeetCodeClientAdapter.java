@@ -67,6 +67,7 @@ public class LeetCodeClientAdapter implements LeetCodeClientPort {
 
 	// при горизонтальном масштабирование, от мутекса будет мало толку
 	public synchronized void syncAllTasksToRedis() {
+		// todo: добавить метрики и логирование через AOP
 		log.info("Запуск выкачивания всех задач с LeetCode API...");
 		try {
 			Map<String, String> fetchedTasks = fetchAllTasksFromLeetCode();
@@ -83,6 +84,8 @@ public class LeetCodeClientAdapter implements LeetCodeClientPort {
 
 	@Override
 	public List<SubmissionData> getTodaySubmissions(String leetcodeUsername) {
+		log.info("Получение решенных задач пользователя {}...", leetcodeUsername);
+
 		LeetCodeGraphQlRequest request = new LeetCodeGraphQlRequest(RECENT_SUBMISSIONS_QUERY,
 				new LeetCodeGraphQlRequest.Variables(leetcodeUsername, LIMIT));
 
@@ -95,6 +98,8 @@ public class LeetCodeClientAdapter implements LeetCodeClientPort {
 
 		Instant oneDayAgo = Instant.now().minus(Duration.ofDays(1));
 
+		log.info("Успешное получение решенных задач пользователя {}", leetcodeUsername);
+
 		return response.data().recentAcSubmissionList().stream()
 				.map(gql -> SubmissionData.builder().submissionId(Long.parseLong(gql.id()))
 						.completedAt(Instant.ofEpochSecond(Long.parseLong(gql.timestamp()))).taskSlug(gql.titleSlug())
@@ -105,6 +110,8 @@ public class LeetCodeClientAdapter implements LeetCodeClientPort {
 
 	@Override
 	public String getBio(String leetcodeUsername) {
+		log.info("Получение bio пользователя: {}...", leetcodeUsername);
+
 		LeetCodeGraphQlRequest request = new LeetCodeGraphQlRequest(USER_BIO_QUERY,
 				new LeetCodeGraphQlRequest.Variables(leetcodeUsername, null));
 		LeetCodeUserBioResponse response = restClient.post().uri("").contentType(MediaType.APPLICATION_JSON)
@@ -113,6 +120,8 @@ public class LeetCodeClientAdapter implements LeetCodeClientPort {
 		if (response == null || response.data() == null || response.data().matchedUser() == null
 				|| response.data().matchedUser().profile() == null)
 			return "";
+
+		log.info("Успешное получение bio пользователя: {}", leetcodeUsername);
 
 		return response.data().matchedUser().profile().aboutMe();
 	}

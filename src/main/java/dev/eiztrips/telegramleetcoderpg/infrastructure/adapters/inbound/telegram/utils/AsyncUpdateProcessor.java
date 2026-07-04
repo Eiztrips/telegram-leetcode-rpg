@@ -41,13 +41,15 @@ public class AsyncUpdateProcessor {
 		try {
 			while (!updateUserQueue.isEmpty()) {
 				var update = updateUserQueue.pollFirst();
-				if (update == null)
-					continue;
+
 				CommandHandler handler = commandHandlers.stream().filter(h -> h.canHandle(update)).findFirst()
 						.orElse(null);
 
 				if (handler == null || isStart(handler, helloCommandConsumer, update.getMessage().getChatId()))
 					continue;
+
+				log.info("Начало обработки комманды: {} (user: {})",
+						handler.getCommand(), userId);
 
 				String responseText = executeHandler(handler, update);
 

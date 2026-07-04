@@ -3,6 +3,8 @@ package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegra
 import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.user.RegisterUserUseCase;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.TelegramException;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.presenter.TelegramPrivateMessagePresenter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -11,6 +13,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Order(2)
 public class RegisterHandler extends PrivateChatHandler implements CommandHandler {
 	private final RegisterUserUseCase registerUserUseCase;
+
+	@Value("${spring.profiles.active:dev}")
+	private String profile;
 
 	public RegisterHandler(RegisterUserUseCase registerUserUseCase) {
 		this.registerUserUseCase = registerUserUseCase;
@@ -32,11 +37,14 @@ public class RegisterHandler extends PrivateChatHandler implements CommandHandle
 		Long userId = update.getMessage().getFrom().getId();
 		String leetcodeUsername = parts[1];
 
+		if (profile.equals("dev")) {
+			registerUserUseCase.createUser(userId, leetcodeUsername);
+			return "Пользователь создан";
+		}
+
 		String token = registerUserUseCase.startUserRegistration(userId, leetcodeUsername);
 
-		return String.format(
-				"<b>Ваш токен регистрации:</b> %n<code>%s</code> %n%n<b>Введите его в описание своего профиля на leetcode (readme).</b>%n%s",
-				token, "https://leetcode.com/settings/profile");
+		return TelegramPrivateMessagePresenter.formatRegisterInfo(token);
 	}
 
 	@Override

@@ -62,12 +62,13 @@ public final class UserService implements RegisterUserUseCase, CheckSubmissionsU
 		if (!bio.equals(cache.get().token()))
 			throw new BadRegistrationTokenException();
 
-		User user = User.builder().telegramId(userTelegramId).leetcodeUsername(leetcodeUsername).xp(0)
+		return createUser(userTelegramId, leetcodeUsername);
+	}
+
+	@Override
+	public User createUser(Long userTelegramId, String leetcodeUsername) {
+		return User.builder().telegramId(userTelegramId).leetcodeUsername(leetcodeUsername).xp(0)
 				.lastCheckTime(null).build();
-
-		userRepository.save(user);
-
-		return user;
 	}
 
 	@Override

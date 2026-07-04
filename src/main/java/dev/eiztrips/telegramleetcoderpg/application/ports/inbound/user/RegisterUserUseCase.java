@@ -39,6 +39,16 @@ public interface RegisterUserUseCase {
 	User completeUserRegistration(Long userTelegramId);
 
 	/**
+	 * Создание пользователя.
+	 *
+	 * @param userTelegramId
+	 *            telegramId пользователя
+	 * @param leetcodeUsername имя пользователя leetCode
+	 * @return созданный пользователь
+	 */
+	User createUser(Long userTelegramId, String leetcodeUsername);
+
+	/**
 	 * Сгенерировать токен регистрации.
 	 *
 	 * @param userTelegramId

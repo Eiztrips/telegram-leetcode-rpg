@@ -15,7 +15,8 @@ import java.time.Instant;
  * @param completedAt
  *            время отправки сабмишена
  */
-public record Submission(Long id, String taskTitle, String taskSlug, Difficulty taskDifficulty, Instant completedAt) {
+public record Submission(Long submissionId, String taskTitle, String taskSlug, Difficulty taskDifficulty,
+		Instant completedAt) {
 
 	@Builder
 	public Submission {

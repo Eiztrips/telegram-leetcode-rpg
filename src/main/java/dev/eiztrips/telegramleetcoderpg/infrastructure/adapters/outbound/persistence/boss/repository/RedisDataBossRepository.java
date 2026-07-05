@@ -40,11 +40,12 @@ public class RedisDataBossRepository {
 			return Optional.empty();
 
 		String[] bossDetailsArray = bossDetails.split(" ");
-		if (bossDetails.split(" ").length != 2)
+
+		if (bossDetails.split(" ").length != 3)
 			return Optional.empty();
 
-		WeeklyBoss boss = WeeklyBoss.builder().name(bossDetailsArray[0]).maxHp(Integer.parseInt(bossDetailsArray[1]))
-				.currentHp(Integer.parseInt(bossDetailsArray[1])).build();
+		WeeklyBoss boss = WeeklyBoss.builder().name(bossDetailsArray[0] + " " + bossDetailsArray[1])
+				.maxHp(Integer.parseInt(bossDetailsArray[2])).currentHp(Integer.parseInt(bossDetailsArray[2])).build();
 
 		return Optional.of(boss);
 	}

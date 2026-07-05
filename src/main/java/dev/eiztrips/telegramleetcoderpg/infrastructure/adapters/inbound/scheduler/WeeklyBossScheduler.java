@@ -19,6 +19,7 @@ import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
@@ -51,7 +52,7 @@ public class WeeklyBossScheduler {
 
 	private void triggerRespawn() {
 		var bossCredentials = fetchRandomBossCredentials();
-		respawnWeeklyBossUseCase.respawnWeeklyBoss((String) bossCredentials.get("name"),
+		respawnWeeklyBossUseCase.respawnWeeklyBoss(bossCredentials.get("adjective") + " " + bossCredentials.get("name"),
 				(int) bossCredentials.get("hp"), null);
 		log.info("Последняя дата обновления: {}", bossRepositoryPort.getLastRespawnDate().toString());
 		log.info("Текущий босс недели: {}", bossRepositoryPort.getCurrentWeeklyBoss());
@@ -79,9 +80,19 @@ public class WeeklyBossScheduler {
 			Thread.currentThread().interrupt();
 		}
 
+		map.put("adjective", getAdjective());
 		map.put("name", name);
 		map.put("hp", ThreadLocalRandom.current().nextInt(100, 501));
 
 		return map;
 	}
+
+	private String getAdjective() {
+		return ADJECTIVES[RANDOM.nextInt(ADJECTIVES.length)];
+	}
+
+	private static final Random RANDOM = new Random();
+	private static final String[] ADJECTIVES = {"Великий", "Ультразвуковой", "Свирепый", "Чешуйчатый", "Пухленький",
+			"Загадочный", "Подпивасный", "Древний", "Межгалактический", "Сутулый", "Яростный", "Криворукий", "Грозный",
+			"Злобный", "Коварный"};
 }

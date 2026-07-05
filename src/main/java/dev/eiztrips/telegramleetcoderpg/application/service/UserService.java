@@ -116,7 +116,6 @@ public final class UserService implements RegisterUserUseCase, CheckSubmissionsU
 		var newSubmissions = todaySubmissions.stream().filter(sub -> !tasksLastWeek.contains(sub.taskSlug())).toList();
 
 		if (newSubmissions.isEmpty()) {
-			userRepository.save(user.withLastCheckTime());
 			return new ArrayList<>();
 		}
 
@@ -126,13 +125,12 @@ public final class UserService implements RegisterUserUseCase, CheckSubmissionsU
 
 		userRepository.addSubmissions(userTelegramId, submissions);
 		userRepository.save(updatedUser.withLastCheckTime());
-
 		return newSubmissions;
 	}
 
 	private Submission toSubmission(SubmissionData data) {
-		return Submission.builder().id(data.submissionId()).taskTitle(data.taskTitle()).taskSlug(data.taskSlug())
-				.taskDifficulty(Difficulty.valueOf(data.taskDifficulty().toUpperCase())).completedAt(data.completedAt())
-				.build();
+		return Submission.builder().submissionId(data.submissionId()).taskTitle(data.taskTitle())
+				.taskSlug(data.taskSlug()).taskDifficulty(Difficulty.valueOf(data.taskDifficulty().toUpperCase()))
+				.completedAt(data.completedAt()).build();
 	}
 }

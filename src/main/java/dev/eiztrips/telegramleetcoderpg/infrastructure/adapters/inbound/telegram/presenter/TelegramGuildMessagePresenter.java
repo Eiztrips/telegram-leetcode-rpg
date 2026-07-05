@@ -11,49 +11,44 @@ public class TelegramGuildMessagePresenter {
 	}
 
 	public static String formatGuildInfo(String title, boolean isCreated, WeeklyBoss boss, List<User> users) {
-		var info = new StringBuilder();
+		String header = isCreated ? "<b>Успешное создание гильдии!</b>\n\n" : "";
 
-		if (isCreated)
-			info.append("<b>Успешное создание гильдии!</b>\n\n");
+		String bossSection = (boss == null) ? "" : """
+				<b>Текущий босс:</b>
+				<i>%s | %d/%d hp</i>
 
-		info.append("<blockquote>");
-		info.append(String.format("<b>%s</b>%n%n", title));
+				""".formatted(boss.name(), boss.currentHp(), boss.maxHp());
 
-		if (boss != null)
-			info.append(String.format("<b>Текущий босс:</b> %n <i>%s | %d/%d hp%n%n</i>", boss.name(), boss.currentHp(),
-					boss.maxHp()));
+		String usersSection = users.isEmpty()
+				? ""
+				: "<b>Пользователи:</b>\n" + users.stream()
+						.map(u -> "<i>• %s | %d id | %d xp</i>".formatted(u.leetcodeUsername(), u.telegramId(), u.xp()))
+						.collect(java.util.stream.Collectors.joining("\n"));
 
-		if (!users.isEmpty()) {
-			info.append("<b>Пользователи:</b>\n");
+		return """
+				%s<blockquote><b>%s</b>
 
-			for (User u : users)
-				info.append(
-						String.format("<i>• %s | %d id | %d xp%n</i>", u.leetcodeUsername(), u.telegramId(), u.xp()));
-		}
-
-		info.append("</blockquote>");
-
-		return info.toString();
+				%s%s</blockquote>""".formatted(header, title, bossSection, usersSection).trim();
 	}
 
 	public static String formatProcessBossAttackInfo(WeeklyBoss newBossState, List<SubmissionData> submissionDataList) {
-		var info = new StringBuilder();
-
-		if (submissionDataList == null)
+		if (submissionDataList == null || submissionDataList.isEmpty()) {
 			return "Вы не выполнили ни одной задачи!";
-
-		if (newBossState.currentHp() == 0) {
-			info.append(
-					String.format("Успешно проведена атака %d задачами. Босс повержен!", submissionDataList.size()));
-		} else {
-			info.append(String.format("Успешно проведена атака %d задачами. Здоровье босса: %d/%d",
-					submissionDataList.size(), newBossState.currentHp(), newBossState.maxHp()));
 		}
 
-		info.append("\n\nПроведенные атаки:\n");
-		submissionDataList.forEach(submissionData -> info.append(String.format("- %s (%s)%n",
-				submissionData.taskTitle(), "https://leetcode.com/problems/" + submissionData.taskSlug())));
+		String status = (newBossState.currentHp() == 0)
+				? "Успешно проведена атака %d задачами. Босс повержен!".formatted(submissionDataList.size())
+				: "Успешно проведена атака %d задачами. Здоровье босса: %d/%d".formatted(submissionDataList.size(),
+						newBossState.currentHp(), newBossState.maxHp());
 
-		return info.toString();
+		String attacks = submissionDataList.stream()
+				.map(sub -> "- %s (https://leetcode.com/problems/%s)".formatted(sub.taskTitle(), sub.taskSlug()))
+				.collect(java.util.stream.Collectors.joining("\n"));
+
+		return """
+				%s
+
+				Проведенные атаки:
+				%s""".formatted(status, attacks).trim();
 	}
 }

@@ -43,7 +43,8 @@ public interface RegisterUserUseCase {
 	 *
 	 * @param userTelegramId
 	 *            telegramId пользователя
-	 * @param leetcodeUsername имя пользователя leetCode
+	 * @param leetcodeUsername
+	 *            имя пользователя leetCode
 	 * @return созданный пользователь
 	 */
 	User createUser(Long userTelegramId, String leetcodeUsername);

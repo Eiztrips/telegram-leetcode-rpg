@@ -67,8 +67,8 @@ public final class UserService implements RegisterUserUseCase, CheckSubmissionsU
 
 	@Override
 	public User createUser(Long userTelegramId, String leetcodeUsername) {
-		return User.builder().telegramId(userTelegramId).leetcodeUsername(leetcodeUsername).xp(0)
-				.lastCheckTime(null).build();
+		return User.builder().telegramId(userTelegramId).leetcodeUsername(leetcodeUsername).xp(0).lastCheckTime(null)
+				.build();
 	}
 
 	@Override

@@ -7,7 +7,8 @@ public class TelegramPrivateMessagePresenter {
 	public static String formatRegisterInfo(String token) {
 		return """
 				<b>Ваш токен регистрации:</b> %n<code>%s</code> %n%n
-				<b>Введите его в описание своего профиля на leetcode (readme).</b>%n%s
+				<b>Введите его в описание своего профиля на leetcode (readme): </b>%s %n%n
+				<b>После смены описания обязательно пришлите /verify!</b>
 				""".formatted(token, "https://leetcode.com/settings/profile");
 	}
 }

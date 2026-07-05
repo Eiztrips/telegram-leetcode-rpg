@@ -1,7 +1,8 @@
-package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat;
+package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.registration;
 
 import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.user.RegisterUserUseCase;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.PrivateChatHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -44,7 +45,6 @@ public class VerificationHandler extends PrivateChatHandler implements CommandHa
 
 	@Override
 	public String getCommandDescription() {
-		return String.format("Подтвердить регистрацию (после %s!). Использовать только в личном чате с ботом.",
-				registerHandler.getCommand());
+		return String.format("Подтвердить регистрацию (после %s!).", registerHandler.getCommand());
 	}
 }

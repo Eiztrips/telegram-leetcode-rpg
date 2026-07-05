@@ -23,15 +23,17 @@ public class TelegramBotAdapter extends TelegramLongPollingBot implements Client
 	private final Map<Long, Deque<Update>> updateUserQueueMap = new ConcurrentHashMap<>();
 
 	private final String botUsername;
-	private final List<CommandHandler> commandHandlers;
+	private final List<CommandHandler> privateCommandHandlers;
+	private final List<CommandHandler> groupCommandHandlers;
 	private final AsyncUpdateProcessor asyncUpdateProcessor;
 
 	public TelegramBotAdapter(@Value("${telegram.bot.username}") String botUsername,
-			@Value("${telegram.bot.token}") String botToken, List<CommandHandler> commandHandlers,
-			AsyncUpdateProcessor asyncUpdateProcessor) {
+			@Value("${telegram.bot.token}") String botToken, List<CommandHandler> privateCommandHandlers,
+			List<CommandHandler> groupCommandHandlers, AsyncUpdateProcessor asyncUpdateProcessor) {
 		super(botToken);
 		this.botUsername = botUsername;
-		this.commandHandlers = commandHandlers;
+		this.privateCommandHandlers = privateCommandHandlers;
+		this.groupCommandHandlers = groupCommandHandlers;
 		this.asyncUpdateProcessor = asyncUpdateProcessor;
 	}
 
@@ -68,7 +70,19 @@ public class TelegramBotAdapter extends TelegramLongPollingBot implements Client
 
 		StringBuilder commands = new StringBuilder("<blockquote>" + hello + "</blockquote>\n \n");
 
-		for (CommandHandler h : this.commandHandlers) {
+		commands.append("<b>🔐 Данные комманды используются только в личных сообщениях: </b>\n\n");
+
+		for (CommandHandler h : this.privateCommandHandlers) {
+			String example = h.getCommandExample();
+			String description = h.getCommandDescription();
+
+			commands.append("<b> ").append(example).append("</b>\n").append("<i> • ").append(description)
+					.append("</i>\n\n");
+		}
+
+		commands.append("<b>🏘️ Данные комманды используются только в группах: </b>\n\n");
+
+		for (CommandHandler h : this.groupCommandHandlers) {
 			String example = h.getCommandExample();
 			String description = h.getCommandDescription();
 

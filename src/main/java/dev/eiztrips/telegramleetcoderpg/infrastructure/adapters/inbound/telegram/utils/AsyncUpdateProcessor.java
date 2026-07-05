@@ -3,9 +3,9 @@ package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegra
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserRepositoryPort;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.*;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
-import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.RegisterHandler;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.registration.RegisterHandler;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.StartHandler;
-import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.VerificationHandler;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.registration.VerificationHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;

@@ -45,6 +45,6 @@ public class GuildInfoHandler extends GroupChatHandler implements CommandHandler
 
 	@Override
 	public String getCommandDescription() {
-		return "Получить информацию или создать гильдию." + " Доступно только в общих чатах.";
+		return "Получить информацию о гильдии или создать её.";
 	}
 }

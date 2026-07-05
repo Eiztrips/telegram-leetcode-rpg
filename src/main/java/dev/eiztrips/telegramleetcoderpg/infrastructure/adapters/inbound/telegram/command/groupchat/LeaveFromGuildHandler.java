@@ -42,7 +42,10 @@ public class LeaveFromGuildHandler extends GroupChatHandler implements CommandHa
 
 	@Override
 	public String getCommandDescription() {
-		return "Покинуть гильдию. Доступно только в общих чатах," + " при условии что вы находитесь в этой гильдии"
-				+ " и сама гильдия существет.";
+		return """
+				Покинуть гильдию.
+				📍 Гильдия должна существовать!
+				📍 Вы должны быть в гильдии!
+				""";
 	}
 }

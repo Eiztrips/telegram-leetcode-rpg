@@ -42,7 +42,10 @@ public class JoinToGuildHandler extends GroupChatHandler implements CommandHandl
 
 	@Override
 	public String getCommandDescription() {
-		return "Вступить в гильдию. Доступно только в общих чатах," + " при условии что вы не находитесь в гильдии"
-				+ " и сама гильдия существет.";
+		return """
+				Вступить в гильдию.
+				📍 Гильдия должна существовать!
+				📍 Вы должны находиться в гильдии!
+				""";
 	}
 }

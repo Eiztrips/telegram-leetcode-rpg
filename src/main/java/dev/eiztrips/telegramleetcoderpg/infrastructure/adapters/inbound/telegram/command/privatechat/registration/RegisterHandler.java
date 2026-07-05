@@ -1,8 +1,9 @@
-package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat;
+package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.registration;
 
 import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.user.RegisterUserUseCase;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.TelegramException;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.PrivateChatHandler;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.presenter.TelegramPrivateMessagePresenter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
@@ -59,6 +60,6 @@ public class RegisterHandler extends PrivateChatHandler implements CommandHandle
 
 	@Override
 	public String getCommandDescription() {
-		return "Зарегистрироваться в RPG-системе. Используйте ваш leetcode юзернейм! Использовать только в личном чате с ботом";
+		return "Зарегистрироваться в RPG-системе. Используйте ваш leetcode юзернейм!";
 	}
 }

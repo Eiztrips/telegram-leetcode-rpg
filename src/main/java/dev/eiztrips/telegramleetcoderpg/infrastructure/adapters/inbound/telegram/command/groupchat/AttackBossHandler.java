@@ -55,7 +55,11 @@ public class AttackBossHandler extends GroupChatHandler implements CommandHandle
 
 	@Override
 	public String getCommandDescription() {
-		return "Атаковать босса. Доступно только в общих чатах," + " при условии что вы находитесь в гильдии,"
-				+ " гильдия и босс существуют.";
+		return """
+				Атаковать босса.
+				📍 Гильдия должна существовать!
+				📍 Вы должны быть в гильдии!
+				📍 Босс должен существовать!
+				""";
 	}
 }

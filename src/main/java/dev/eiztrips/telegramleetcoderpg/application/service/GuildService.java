@@ -115,12 +115,15 @@ public final class GuildService
 	}
 
 	private void respawnCurrentGuild(String name, int hp, Long guildId) {
-		guildRepositoryPort.getGuildById(guildId)
+		Guild guild = guildRepositoryPort.getGuildById(guildId)
 				.orElseThrow(() -> new GuildExceptions.GuildNotFoundException(guildId));
 
 		WeeklyBoss boss = WeeklyBoss.builder().name(name).maxHp(hp).currentHp(hp).build();
 
-		bossRepositoryPort.save(boss);
+		boss = bossRepositoryPort.save(boss);
+		guild = guild.withBoss(boss.id());
+
+		guildRepositoryPort.save(guild);
 	}
 
 	@Override

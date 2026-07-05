@@ -19,4 +19,8 @@ public record Guild(Long version, Long id, Long currentBossId) {
 		if (id == null)
 			throw new GlobalExceptions.ArgumentEmptyException("id");
 	}
+
+	public Guild withBoss(Long newCurrentBossId) {
+		return Guild.builder().version(version).id(id).currentBossId(newCurrentBossId).build();
+	}
 }

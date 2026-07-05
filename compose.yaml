@@ -2,6 +2,8 @@ services:
   postgres:
     image: 'postgres:17-alpine'
     restart: unless-stopped
+    ports:
+      - "5432:5432"
     environment:
       - 'POSTGRES_DB=${PG_DB}'
       - 'POSTGRES_PASSWORD=${PG_PASSWORD}'
@@ -20,6 +22,8 @@ services:
     image: 'redis:8-alpine'
     restart: unless-stopped
     command: redis-server --save 60 1 --loglevel warning --requirepass ${REDIS_PASSWORD:-secretdummy}
+    ports:
+      - "6379:6379"
     volumes:
       - redis_data:/data
     networks:

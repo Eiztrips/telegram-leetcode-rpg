@@ -55,13 +55,13 @@ class UserTest {
     void takeRewardForSolveTaskTest() {
         User user = u.takeRewardForSolveTask(List.of(
                 Submission.builder().taskSlug("one_pooooppoooo").taskDifficulty(Difficulty.EASY).completedAt(Instant.now()).build(),
-                new Submission("three_poooo", Difficulty.HARD, Instant.now())
+                new Submission(0L, "chpop", "three_poooo", Difficulty.HARD, Instant.now())
         ));
         assertEquals(Difficulty.HARD.getReward()+Difficulty.EASY.getReward(), user.xp());
 
         user = user.takeRewardForSolveTask(
                 List.of(
-                        new Submission("two_pooooppoooo", Difficulty.MEDIUM, Instant.now())
+                        new Submission(1L, "chpop2", "two_pooooppoooo", Difficulty.MEDIUM, Instant.now())
                 )
         );
         assertEquals(Difficulty.HARD.getReward()+Difficulty.EASY.getReward()+Difficulty.MEDIUM.getReward(), user.xp());

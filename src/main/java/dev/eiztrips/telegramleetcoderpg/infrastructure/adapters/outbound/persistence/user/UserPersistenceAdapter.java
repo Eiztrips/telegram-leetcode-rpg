@@ -5,6 +5,7 @@ import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserCach
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.dto.UserRegistrationCacheData;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.model.guild.Guild;
+import dev.eiztrips.telegramleetcoderpg.domain.model.user.Submission;
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.User;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserRepositoryPort;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.guild.entity.GuildEntity;
@@ -58,11 +59,11 @@ public class UserPersistenceAdapter implements UserRepositoryPort, UserCacheRepo
 
 	@Override
 	@Transactional
-	public void addSubmissions(Long telegramId, List<SubmissionData> newSubmissionsData) {
+	public void addSubmissions(Long telegramId, List<Submission> newSubmissions) {
 		UserEntity userEntity = userRepository.findById(telegramId)
 				.orElseThrow(() -> new UserExceptions.UserNotFoundException(telegramId));
 
-		List<SubmissionEntity> submissionEntities = submissionMapper.toEntityList(newSubmissionsData);
+		List<SubmissionEntity> submissionEntities = submissionMapper.toEntityListFromDomain(newSubmissions);
 		userEntity.addSubmissions(submissionEntities);
 
 		userRepository.save(userEntity);

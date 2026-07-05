@@ -120,16 +120,18 @@ public final class UserService implements RegisterUserUseCase, CheckSubmissionsU
 			return new ArrayList<>();
 		}
 
-		User updatedUser = user.takeRewardForSolveTask(newSubmissions.stream().map(this::toSubmission).toList());
+		List<Submission> submissions = newSubmissions.stream().map(this::toSubmission).toList();
 
-		userRepository.addSubmissions(userTelegramId, newSubmissions);
+		User updatedUser = user.takeRewardForSolveTask(submissions);
+
+		userRepository.addSubmissions(userTelegramId, submissions);
 		userRepository.save(updatedUser.withLastCheckTime());
 
 		return newSubmissions;
 	}
 
 	private Submission toSubmission(SubmissionData data) {
-		return Submission.builder().taskSlug(data.taskSlug())
+		return Submission.builder().id(data.submissionId()).taskTitle(data.taskTitle()).taskSlug(data.taskSlug())
 				.taskDifficulty(Difficulty.valueOf(data.taskDifficulty().toUpperCase())).completedAt(data.completedAt())
 				.build();
 	}

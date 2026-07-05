@@ -1,6 +1,7 @@
 package dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user;
 
 import dev.eiztrips.telegramleetcoderpg.domain.model.guild.Guild;
+import dev.eiztrips.telegramleetcoderpg.domain.model.user.Submission;
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.User;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.a.shared.dto.SubmissionData;
 
@@ -24,7 +25,7 @@ public interface UserRepositoryPort {
 	 * @param data
 	 *            Data сабмишена с литкода
 	 */
-	void addSubmissions(Long userTelegramId, List<SubmissionData> data);
+	void addSubmissions(Long userTelegramId, List<Submission> data);
 
 	/**
 	 * Получить пользователя по telegramId.

@@ -13,13 +13,10 @@ public interface SubmissionMapper {
 
 	@Mapping(target = "user", ignore = true)
 	SubmissionEntity toEntity(SubmissionData data);
-	List<SubmissionEntity> toEntityList(List<SubmissionData> dataList);
+	List<SubmissionEntity> toEntityListFromDomain(List<Submission> domainList);
 
 	Submission toDomain(SubmissionEntity entity);
 	List<Submission> toDomainListFromEntity(List<SubmissionEntity> entities);
-
-	Submission toDomain(SubmissionData data);
-	List<Submission> toDomainListFromData(List<SubmissionData> dataList);
 
 	SubmissionData toData(SubmissionEntity entity);
 	List<SubmissionData> toDataListFromEntity(List<SubmissionEntity> entities);

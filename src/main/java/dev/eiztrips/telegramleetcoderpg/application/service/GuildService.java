@@ -118,7 +118,7 @@ public final class GuildService
 		guildRepositoryPort.getGuildById(guildId)
 				.orElseThrow(() -> new GuildExceptions.GuildNotFoundException(guildId));
 
-		WeeklyBoss boss = WeeklyBoss.builder().name(name).maxHp(hp).currentHp(hp).guildId(guildId).build();
+		WeeklyBoss boss = WeeklyBoss.builder().name(name).maxHp(hp).currentHp(hp).build();
 
 		bossRepositoryPort.save(boss);
 	}

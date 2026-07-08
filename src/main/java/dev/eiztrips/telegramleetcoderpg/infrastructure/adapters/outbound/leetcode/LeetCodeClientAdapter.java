@@ -136,7 +136,12 @@ public class LeetCodeClientAdapter implements LeetCodeClientPort {
 
 		difficulty = leetCodeTaskCacheRepository.getDifficulty(taskSlug);
 
-		return difficulty == null ? "Medium" : difficulty;
+		if (difficulty == null) {
+			log.warn("Не удалось получить сложность задачи: {} после синхронизации!", taskSlug);
+			return "Medium";
+		}
+
+		return difficulty;
 	}
 
 	private Map<String, String> fetchAllTasksFromLeetCode() {

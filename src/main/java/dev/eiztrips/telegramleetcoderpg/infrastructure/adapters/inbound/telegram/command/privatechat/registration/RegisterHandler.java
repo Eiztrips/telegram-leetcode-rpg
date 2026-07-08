@@ -1,7 +1,7 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.registration;
 
 import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.user.RegisterUserUseCase;
-import dev.eiztrips.telegramleetcoderpg.domain.exception.TelegramException;
+import dev.eiztrips.telegramleetcoderpg.domain.exception.TelegramExceptions;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.PrivateChatHandler;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.presenter.TelegramPrivateMessagePresenter;
@@ -33,7 +33,7 @@ public class RegisterHandler extends PrivateChatHandler implements CommandHandle
 		String[] parts = update.getMessage().getText().trim().split("\\s+");
 
 		if (parts.length != 2)
-			throw new TelegramException.InvalidCommandException(getCommandExample());
+			throw new TelegramExceptions.InvalidCommandException(getCommandExample());
 
 		Long userId = update.getMessage().getFrom().getId();
 		String leetcodeUsername = parts[1];

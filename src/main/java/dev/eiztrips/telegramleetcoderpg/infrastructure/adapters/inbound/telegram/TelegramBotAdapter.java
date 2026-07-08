@@ -1,6 +1,7 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram;
 
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.client.ClientPort;
+import dev.eiztrips.telegramleetcoderpg.domain.exception.TelegramExceptions;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.utils.AsyncUpdateProcessor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,16 +23,20 @@ public class TelegramBotAdapter extends TelegramLongPollingBot implements Client
 	private final Set<Long> lockedUsers = ConcurrentHashMap.newKeySet();
 	private final Map<Long, Deque<Update>> updateUserQueueMap = new ConcurrentHashMap<>();
 
-	private final String botUsername;
 	private final List<CommandHandler> privateCommandHandlers;
 	private final List<CommandHandler> groupCommandHandlers;
 	private final AsyncUpdateProcessor asyncUpdateProcessor;
 
+	private final String botUsername;
+	private final Integer maxCommandsCount;
+
 	public TelegramBotAdapter(@Value("${telegram.bot.username}") String botUsername,
+			@Value("${application.max.user.command.count:10}") Integer maxCommandsCount,
 			@Value("${telegram.bot.token}") String botToken, List<CommandHandler> privateCommandHandlers,
 			List<CommandHandler> groupCommandHandlers, AsyncUpdateProcessor asyncUpdateProcessor) {
 		super(botToken);
 		this.botUsername = botUsername;
+		this.maxCommandsCount = maxCommandsCount;
 		this.privateCommandHandlers = privateCommandHandlers;
 		this.groupCommandHandlers = groupCommandHandlers;
 		this.asyncUpdateProcessor = asyncUpdateProcessor;
@@ -53,6 +58,9 @@ public class TelegramBotAdapter extends TelegramLongPollingBot implements Client
 				update.getMessage().getFrom().getFirstName() + "|" + update.getMessage().getFrom().getId());
 
 		Long userId = update.getMessage().getFrom().getId();
+
+		if (updateUserQueueMap.containsKey(userId) && updateUserQueueMap.get(userId).size() >= maxCommandsCount)
+			throw new TelegramExceptions.ToManyRequestException();
 
 		updateUserQueueMap.computeIfAbsent(userId, u -> new LinkedBlockingDeque<>()).addLast(update);
 

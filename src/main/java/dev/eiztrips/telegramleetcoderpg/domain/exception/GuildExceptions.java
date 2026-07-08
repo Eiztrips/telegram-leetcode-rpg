@@ -43,8 +43,8 @@ public final class GuildExceptions {
 	/**
 	 * Исключение: босс гильдии не существует.
 	 */
-	public static final class GuildBossNotFountException extends DomainException {
-		public GuildBossNotFountException() {
+	public static final class GuildBossNotFoundException extends DomainException {
+		public GuildBossNotFoundException() {
 			super("Босс гильдии не существует");
 		}
 	}

@@ -35,7 +35,7 @@ public final class BossService implements AttackBossUseCase {
 				.orElseThrow(UserExceptions.UserGuildNotFoundException::new);
 
 		var guildBoss = guildRepositoryPort.getCurrentWeeklyBoss(userGuild.id())
-				.orElseThrow(GuildExceptions.GuildBossNotFountException::new);
+				.orElseThrow(GuildExceptions.GuildBossNotFoundException::new);
 
 		WeeklyBoss boss = bossRepositoryPort.getById(guildBoss.id())
 				.orElseThrow(() -> new WeeklyBossExceptions.WeeklyBossNotFoundException(guildBoss.id()));

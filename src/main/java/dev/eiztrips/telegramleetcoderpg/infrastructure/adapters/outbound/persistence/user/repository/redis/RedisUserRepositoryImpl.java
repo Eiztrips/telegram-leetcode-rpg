@@ -25,11 +25,13 @@ public class RedisUserRepositoryImpl implements RedisUserRepository {
 	@Override
 	public Optional<UserRegistrationCacheData> findByChatId(Long telegramChatId) {
 		String val = redisTemplate.opsForValue().get(KEY + telegramChatId.toString());
+
 		if (val == null)
 			return Optional.empty();
 
-		String[] parts = val.split(":");
-		if (parts.length < 2)
+		String[] parts = val.split(":", 3);
+
+		if (parts.length < 3)
 			return Optional.empty();
 
 		return Optional.of(UserRegistrationCacheData.builder().token(val).leetcodeUserName(parts[2])

@@ -6,6 +6,8 @@ import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.registration.RegisterHandler;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.StartHandler;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.registration.VerificationHandler;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
@@ -29,6 +31,7 @@ public class AsyncUpdateProcessor {
 	private final RegisterHandler registerHandler;
 	private final VerificationHandler verificationHandler;
 	private final ObjectProvider<AsyncUpdateProcessor> selfProvider;
+	private final EntityManager entityManager;
 
 	@Async
 	public void process(Long userId, Map<Long, Deque<Update>> updateUserQueueMap, Set<Long> lockedUsers,
@@ -70,15 +73,33 @@ public class AsyncUpdateProcessor {
 	}
 
 	private String executeHandler(CommandHandler handler, Update update) {
-		try {
-			checkUserRegistration(update);
-			return handler.handle(update);
-		} catch (DomainException e) {
-			return resolveDomainException(e);
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			return "Произошла непредвиденная ошибка";
+		int maxAttempts = 3;
+
+		for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+			try {
+				checkUserRegistration(update);
+				return handler.handle(update);
+			} catch (DomainException e) {
+				return resolveDomainException(e);
+			} catch (OptimisticLockException _) {
+				if (attempt == maxAttempts) {
+					log.warn("OptimisticLockException: превышено количество попыток ({})", maxAttempts);
+					return "Сервер перегружен, повторите попытку позже";
+				}
+				log.warn("OptimisticLockException: повтор {} из {}", attempt + 1, maxAttempts);
+				entityManager.clear();
+				try {
+					Thread.sleep(100L * (1L << (attempt - 1)));
+				} catch (InterruptedException _) {
+					Thread.currentThread().interrupt();
+					return "Обработка команды была прервана, повторите попытку";
+				}
+			} catch (Exception e) {
+				log.error(e.getMessage());
+				return "Произошла непредвиденная ошибка";
+			}
 		}
+		return "Сервер перегружен, повторите попытку позже";
 	}
 
 	private String resolveDomainException(DomainException e) {

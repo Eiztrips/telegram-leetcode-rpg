@@ -22,7 +22,8 @@ public class TelegramGuildMessagePresenter {
 		String usersSection = users.isEmpty()
 				? ""
 				: "<b>Пользователи:</b>\n" + users.stream()
-						.map(u -> "<i>• %s | %d id | %d xp</i>".formatted(u.leetcodeUsername(), u.telegramId(), u.xp()))
+						.map(u -> "<i>• <a href=\"https://leetcode.com/u/%s/\">%s</a> | %d id | %d xp</i>"
+								.formatted(u.leetcodeUsername(), u.leetcodeUsername(), u.telegramId(), u.xp()))
 						.collect(java.util.stream.Collectors.joining("\n"));
 
 		return """
@@ -38,8 +39,8 @@ public class TelegramGuildMessagePresenter {
 
 		String status = (newBossState.currentHp() == 0)
 				? "Успешно проведена атака <b>%d</b> задачами. Босс повержен!".formatted(submissionDataList.size())
-				: "Успешно проведена атака <b>%d</b> задачами. Здоровье босса: <b>%d/%d</b>".formatted(submissionDataList.size(),
-						newBossState.currentHp(), newBossState.maxHp());
+				: "Успешно проведена атака <b>%d</b> задачами. Здоровье босса: <b>%d/%d</b>"
+						.formatted(submissionDataList.size(), newBossState.currentHp(), newBossState.maxHp());
 
 		String attacks = submissionDataList.stream()
 				.map(sub -> "- <a href=\"https://leetcode.com/submissions/detail/%s/\">%s</a>"

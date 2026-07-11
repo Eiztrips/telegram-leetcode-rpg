@@ -31,7 +31,7 @@ public class WeeklyBossScheduler {
 	private final HttpClient httpClient;
 	private final ObjectMapper objectMapper;
 
-	@Scheduled(cron = "0 0 0 * * SUN")
+	@Scheduled(cron = "@weekly")
 	public void cronRespawnBoss() {
 		log.info("Еженедельный респавн боссов");
 		triggerRespawn();

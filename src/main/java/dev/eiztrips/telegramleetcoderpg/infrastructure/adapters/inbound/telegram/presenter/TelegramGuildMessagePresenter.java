@@ -37,12 +37,13 @@ public class TelegramGuildMessagePresenter {
 		}
 
 		String status = (newBossState.currentHp() == 0)
-				? "Успешно проведена атака %d задачами. Босс повержен!".formatted(submissionDataList.size())
-				: "Успешно проведена атака %d задачами. Здоровье босса: %d/%d".formatted(submissionDataList.size(),
+				? "Успешно проведена атака <b>%d</b> задачами. Босс повержен!".formatted(submissionDataList.size())
+				: "Успешно проведена атака <b>%d</b> задачами. Здоровье босса: <b>%d/%d</b>".formatted(submissionDataList.size(),
 						newBossState.currentHp(), newBossState.maxHp());
 
 		String attacks = submissionDataList.stream()
-				.map(sub -> "- %s (https://leetcode.com/problems/%s)".formatted(sub.taskTitle(), sub.taskSlug()))
+				.map(sub -> "- <a href=\"https://leetcode.com/submissions/detail/%s/\">%s</a>"
+						.formatted(sub.submissionId(), sub.taskTitle()))
 				.collect(java.util.stream.Collectors.joining("\n"));
 
 		return """

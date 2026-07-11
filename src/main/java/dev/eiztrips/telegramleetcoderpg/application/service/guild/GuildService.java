@@ -18,8 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Сервис гильдии.
@@ -116,8 +115,20 @@ public class GuildService
 
 			bossRepositoryPort.saveCurrentWeeklyBoss(WeeklyBoss.builder().name(name).maxHp(hp).build());
 
-			// переписать что бы избежать n+1
-			guildRepositoryPort.getAllGuilds().forEach(g -> respawnCurrentGuild(name, hp, g.id()));
+			List<WeeklyBoss> guildBosses = new ArrayList<>();
+			List<Guild> guilds = guildRepositoryPort.getAllGuilds();
+
+			for (int i = 0; i < guilds.size(); i++)
+				guildBosses.add(WeeklyBoss.builder().name(name).maxHp(hp).currentHp(hp).build());
+
+			List<WeeklyBoss> bosses = bossRepositoryPort.saveAll(guildBosses);
+
+			guilds.forEach(guild -> {
+				guild.withBoss(bosses.getFirst().id());
+				bosses.removeFirst();
+			});
+
+			guildRepositoryPort.saveAll(guilds);
 
 			bossRepositoryPort.saveLastRespawnDate(now);
 		}

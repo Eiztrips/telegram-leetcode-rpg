@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Component("bossPersistenceAdapter")
@@ -25,13 +26,24 @@ public class BossPersistenceAdapter implements BossRepositoryPort {
 	@Override
 	@Transactional
 	public WeeklyBoss save(WeeklyBoss boss) {
-		if (boss.id() != null && boss.version() == null) {
-			throw new GlobalExceptions.ArgumentEmptyException("version");
-		}
-
+		validateBossVersion(boss);
 		WeeklyBossEntity entity = weeklyBossMapper.toEntity(boss);
 		return weeklyBossMapper.toDomain(bossRepository.save(entity));
 	}
+
+	@Override
+	public List<WeeklyBoss> saveAll(List<WeeklyBoss> bosses) {
+		for (WeeklyBoss b : bosses)
+			validateBossVersion(b);
+		List<WeeklyBossEntity> entities = weeklyBossMapper.toEntityList(bosses);
+		return weeklyBossMapper.toDomainList(bossRepository.saveAll(entities));
+	}
+
+	private void validateBossVersion(WeeklyBoss boss) {
+		if (boss.id() != null && boss.version() == null) {
+			throw new GlobalExceptions.ArgumentEmptyException("version");
+		}
+	};
 
 	@Override
 	@Transactional(readOnly = true)

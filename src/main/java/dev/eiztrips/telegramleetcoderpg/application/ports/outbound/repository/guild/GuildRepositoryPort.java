@@ -14,9 +14,20 @@ public interface GuildRepositoryPort {
 	 * Сохранить гильдию
 	 *
 	 * @param guild
-	 *            доменная модель гильдии
+	 *            доменная модель
+	 *
+	 * @return гильдия
 	 */
 	Guild save(Guild guild);
+
+	/**
+	 * Сохранить несколько гильдий разом.
+	 *
+	 * @param guilds
+	 *            доменная модель гильдии
+	 * @return список гильдий
+	 */
+	List<Guild> saveAll(List<Guild> guilds);
 
 	/**
 	 * Получить гильдию по guildId

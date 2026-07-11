@@ -27,15 +27,25 @@ public class GuildPersistenceAdapter implements GuildRepositoryPort {
 	@Override
 	public Guild save(Guild guild) {
 		GuildEntity entity = guildMapper.toEntity(guild);
+		validateGuildBoss(entity);
+		return guildMapper.toDomain(guildRepository.save(entity));
+	}
 
+	@Override
+	public List<Guild> saveAll(List<Guild> guilds) {
+		List<GuildEntity> entities = guildMapper.toEntityList(guilds);
+		for (GuildEntity entity : entities)
+			validateGuildBoss(entity);
+		return guildMapper.toDomainList(guildRepository.saveAll(entities));
+	}
+
+	private void validateGuildBoss(GuildEntity entity) {
 		if (entity.getCurrentBoss() != null) {
 			long bossId = entity.getCurrentBoss().getId();
 			WeeklyBossEntity wbe = bossRepositoryPort.getById(bossId).map(weeklyBossMapper::toEntity)
 					.orElseThrow(() -> new WeeklyBossExceptions.WeeklyBossNotFoundException(bossId));
 			entity.getCurrentBoss().setVersion(wbe.getVersion() == null ? 0L : wbe.getVersion());
 		}
-
-		return guildMapper.toDomain(guildRepository.save(entity));
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package dev.eiztrips.telegramleetcoderpg.application.ports.outbound.repository.b
 import dev.eiztrips.telegramleetcoderpg.domain.model.boss.WeeklyBoss;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -16,6 +17,15 @@ public interface BossRepositoryPort {
 	 *            босс
 	 */
 	WeeklyBoss save(WeeklyBoss boss);
+
+	/**
+	 * Сохранить несколько боссов.
+	 *
+	 * @param bosses
+	 *            боссы
+	 * @return боссы
+	 */
+	List<WeeklyBoss> saveAll(List<WeeklyBoss> bosses);
 
 	/**
 	 * Получить босса по telegramId.

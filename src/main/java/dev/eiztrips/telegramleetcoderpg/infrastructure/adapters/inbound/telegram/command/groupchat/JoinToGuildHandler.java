@@ -45,7 +45,6 @@ public class JoinToGuildHandler extends GroupChatHandler implements CommandHandl
 		return """
 				Вступить в гильдию.
 				📍 Гильдия должна существовать!
-				📍 Вы должны находиться в гильдии!
-				""";
+				📍 Вы должны находиться в гильдии!""";
 	}
 }

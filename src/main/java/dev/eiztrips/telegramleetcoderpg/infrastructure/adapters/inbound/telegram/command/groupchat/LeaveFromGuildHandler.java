@@ -45,7 +45,6 @@ public class LeaveFromGuildHandler extends GroupChatHandler implements CommandHa
 		return """
 				Покинуть гильдию.
 				📍 Гильдия должна существовать!
-				📍 Вы должны быть в гильдии!
-				""";
+				📍 Вы должны быть в гильдии!""";
 	}
 }

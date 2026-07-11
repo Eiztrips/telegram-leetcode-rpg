@@ -1,12 +1,15 @@
 package dev.eiztrips.telegramleetcoderpg.application.service.user;
 
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.dto.UserInfoResult;
 import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.usecase.user.CheckSubmissionsUseCase;
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.usecase.user.GetUserInfoUseCase;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.dto.SubmissionData;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.client.leetcode.LeetCodeClientPort;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.repository.user.UserCacheRepositoryPort;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.dto.UserRegistrationCacheData;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions.*;
+import dev.eiztrips.telegramleetcoderpg.domain.model.guild.Guild;
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.Difficulty;
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.Submission;
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.User;
@@ -27,7 +30,7 @@ import java.util.stream.Collectors;
  * Сервис регистрации пользователей.
  */
 @Service
-public class UserService implements RegisterUserUseCase, CheckSubmissionsUseCase {
+public class UserService implements RegisterUserUseCase, CheckSubmissionsUseCase, GetUserInfoUseCase {
 
 	private final UserRepositoryPort userRepository;
 	private final LeetCodeClientPort leetCodeClient;
@@ -134,6 +137,19 @@ public class UserService implements RegisterUserUseCase, CheckSubmissionsUseCase
 			userRepository.save(updatedUser.withLastCheckTime());
 			return newSubmissions;
 		});
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public UserInfoResult getUserInfo(String leetcodeUsername) {
+		User user = userRepository.getByLeetCodeUsername(leetcodeUsername).orElseThrow(UserNotFoundException::new);
+
+		Guild guild = userRepository.getGuildByUserTelegramId(user.telegramId()).orElse(null);
+
+		List<SubmissionData> submissions = userRepository.getSubmissionsLastWeek(user.telegramId());
+
+		return UserInfoResult.builder().user(user).guild(guild)
+				.submissions(submissions.stream().map(this::toSubmission).toList()).build();
 	}
 
 	private Submission toSubmission(SubmissionData data) {

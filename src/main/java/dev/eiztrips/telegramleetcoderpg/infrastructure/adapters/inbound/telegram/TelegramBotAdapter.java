@@ -25,6 +25,7 @@ public class TelegramBotAdapter extends TelegramLongPollingBot implements ChatCl
 
 	private final List<CommandHandler> privateCommandHandlers;
 	private final List<CommandHandler> groupCommandHandlers;
+	private final List<CommandHandler> commonCommandHandlers;
 	private final AsyncUpdateProcessor asyncUpdateProcessor;
 
 	private final String botUsername;
@@ -33,11 +34,13 @@ public class TelegramBotAdapter extends TelegramLongPollingBot implements ChatCl
 	public TelegramBotAdapter(@Value("${telegram.bot.username}") String botUsername,
 			@Value("${application.max.user.command.count:10}") Integer maxCommandsCount,
 			@Value("${telegram.bot.token}") String botToken, List<CommandHandler> privateCommandHandlers,
-			List<CommandHandler> groupCommandHandlers, AsyncUpdateProcessor asyncUpdateProcessor) {
+			List<CommandHandler> groupCommandHandlers, List<CommandHandler> commandHandlers,
+			AsyncUpdateProcessor asyncUpdateProcessor) {
 		super(botToken);
 		this.botUsername = botUsername;
 		this.maxCommandsCount = maxCommandsCount;
 		this.privateCommandHandlers = privateCommandHandlers;
+		this.commonCommandHandlers = commandHandlers;
 		this.groupCommandHandlers = groupCommandHandlers;
 		this.asyncUpdateProcessor = asyncUpdateProcessor;
 	}
@@ -96,6 +99,18 @@ public class TelegramBotAdapter extends TelegramLongPollingBot implements ChatCl
 
 			commands.append("<b> ").append(example).append("</b>\n").append("<i> • ").append(description)
 					.append("</i>\n\n");
+		}
+
+		commands.append("<b>🌎️ Данные комманды используются везде: </b>\n\n");
+
+		for (CommandHandler commandHandler : commonCommandHandlers) {
+			if (!privateCommandHandlers.contains(commandHandler) && !groupCommandHandlers.contains(commandHandler)) {
+				String example = commandHandler.getCommandExample();
+				String description = commandHandler.getCommandDescription();
+
+				commands.append("<b> ").append(example).append("</b>\n").append("<i> • ").append(description)
+						.append("</i>\n\n");
+			}
 		}
 
 		var message = new SendMessage(String.valueOf(chatId), commands.toString());

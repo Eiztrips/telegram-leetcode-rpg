@@ -106,6 +106,7 @@ public class TelegramBotAdapter extends TelegramLongPollingBot implements ChatCl
 	private void executeMessage(SendMessage message) {
 		try {
 			message.setParseMode("html");
+			message.disableWebPagePreview();
 			execute(message);
 		} catch (TelegramApiException e) {
 			log.error("Ошибка отправки сообщения в Telegram: {}", e.getMessage());

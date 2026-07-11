@@ -1,6 +1,6 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.presenter;
 
-import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.a.shared.dto.SubmissionData;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.dto.SubmissionData;
 import dev.eiztrips.telegramleetcoderpg.domain.model.boss.WeeklyBoss;
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.User;
 

@@ -1,13 +1,13 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user;
 
-import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.a.shared.dto.SubmissionData;
-import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserCacheRepositoryPort;
-import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.dto.UserRegistrationCacheData;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.dto.SubmissionData;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.repository.user.UserCacheRepositoryPort;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.dto.UserRegistrationCacheData;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.UserExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.model.guild.Guild;
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.Submission;
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.User;
-import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserRepositoryPort;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.repository.user.UserRepositoryPort;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.guild.entity.GuildEntity;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.guild.mapper.GuildMapper;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.guild.repository.SpringDataGuildRepository;

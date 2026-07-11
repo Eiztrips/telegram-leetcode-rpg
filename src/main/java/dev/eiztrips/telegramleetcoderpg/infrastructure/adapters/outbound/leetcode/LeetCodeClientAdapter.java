@@ -1,7 +1,7 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.leetcode;
 
-import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.a.shared.dto.SubmissionData;
-import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.leetcode.LeetCodeClientPort;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.dto.SubmissionData;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.client.leetcode.LeetCodeClientPort;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.leetcode.dto.LeetCodeAllQuestionsResponse;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.leetcode.dto.LeetCodeGraphQlRequest;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.leetcode.dto.LeetCodeSubmissionResponse;

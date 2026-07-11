@@ -1,14 +1,13 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.scheduler;
 
-import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.guild.RespawnWeeklyBossUseCase;
-import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.boss.BossRepositoryPort;
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.usecase.guild.RespawnWeeklyBossUseCase;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.repository.boss.BossRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -33,14 +32,12 @@ public class WeeklyBossScheduler {
 	private final ObjectMapper objectMapper;
 
 	@Scheduled(cron = "0 0 0 * * SUN")
-	@Transactional
 	public void cronRespawnBoss() {
 		log.info("Еженедельный респавн боссов");
 		triggerRespawn();
 	}
 
 	@EventListener(ApplicationReadyEvent.class)
-	@Transactional
 	public void onStartupRespawnBosses() {
 		log.info("Проверка необходимости респавна боссов:");
 		LocalDate currDate = bossRepositoryPort.getLastRespawnDate();

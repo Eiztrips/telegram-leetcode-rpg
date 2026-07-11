@@ -1,7 +1,7 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.groupchat;
 
-import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.guild.GetOrCreateGuildInfoUseCase;
-import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.guild.dto.GuildInfoResult;
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.usecase.guild.GetOrCreateGuildInfoUseCase;
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.dto.GuildInfoResult;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.presenter.TelegramGuildMessagePresenter;
 import lombok.RequiredArgsConstructor;

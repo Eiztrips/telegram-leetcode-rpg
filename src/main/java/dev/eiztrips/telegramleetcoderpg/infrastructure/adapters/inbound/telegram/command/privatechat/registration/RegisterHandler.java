@@ -1,6 +1,6 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.registration;
 
-import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.user.RegisterUserUseCase;
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.usecase.user.RegisterUserUseCase;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.TelegramExceptions;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.PrivateChatHandler;
@@ -30,18 +30,11 @@ public class RegisterHandler extends PrivateChatHandler implements CommandHandle
 
 	@Override
 	public String handle(Update update) {
-		String[] parts = update.getMessage().getText().trim().split("\\s+");
-
-		if (parts.length != 2)
-			throw new TelegramExceptions.InvalidCommandException(getCommandExample());
-
 		Long userId = update.getMessage().getFrom().getId();
-		String leetcodeUsername = parts[1];
+		String leetcodeUsername = extractLeetcodeUsername(update);
 
-		if (profile.equals("dev")) {
-			registerUserUseCase.createUser(userId, leetcodeUsername);
-			return "Пользователь создан";
-		}
+		if (profile.equals("dev"))
+			return registerUserUseCase.createUser(userId, leetcodeUsername).toString();
 
 		String token = registerUserUseCase.startUserRegistration(userId, leetcodeUsername);
 
@@ -61,5 +54,14 @@ public class RegisterHandler extends PrivateChatHandler implements CommandHandle
 	@Override
 	public String getCommandDescription() {
 		return "Зарегистрироваться в RPG-системе. Используйте ваш leetcode юзернейм!";
+	}
+
+	private String extractLeetcodeUsername(Update update) {
+		String[] parts = update.getMessage().getText().trim().split("\\s+");
+
+		if (parts.length != 2)
+			throw new TelegramExceptions.InvalidCommandException(getCommandExample());
+
+		return parts[1];
 	}
 }

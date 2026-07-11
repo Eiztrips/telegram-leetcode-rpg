@@ -1,27 +1,20 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.groupchat;
 
-import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.boss.AttackBossUseCase;
-import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.user.CheckSubmissionsUseCase;
-import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.a.shared.dto.SubmissionData;
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.dto.ProcessAttackBossResult;
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.usecase.boss.ProcessAttackBossUseCase;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.presenter.TelegramGuildMessagePresenter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.List;
-
 @Component
+@RequiredArgsConstructor
 @Order(6)
 public class AttackBossHandler extends GroupChatHandler implements CommandHandler {
 
-	private final AttackBossUseCase attackBossUseCase;
-	private final CheckSubmissionsUseCase checkSubmissionsUseCase;
-
-	public AttackBossHandler(AttackBossUseCase attackBossUseCase, CheckSubmissionsUseCase checkSubmissionsUseCase) {
-		this.attackBossUseCase = attackBossUseCase;
-		this.checkSubmissionsUseCase = checkSubmissionsUseCase;
-	}
+	private final ProcessAttackBossUseCase processAttackBossUseCase;
 
 	@Override
 	public boolean canHandle(Update update) {
@@ -32,15 +25,10 @@ public class AttackBossHandler extends GroupChatHandler implements CommandHandle
 	@Override
 	public String handle(Update update) {
 		Long userId = update.getMessage().getFrom().getId();
+		ProcessAttackBossResult processAttackBossResult = processAttackBossUseCase.processAttackBoss(userId);
 
-		List<SubmissionData> submissionDataList = checkSubmissionsUseCase.checkTodaySubmissions(userId);
-
-		if (submissionDataList.isEmpty())
-			return TelegramGuildMessagePresenter.formatProcessBossAttackInfo(null, null);
-
-		var boss = attackBossUseCase.attackBoss(submissionDataList, userId);
-
-		return TelegramGuildMessagePresenter.formatProcessBossAttackInfo(boss, submissionDataList);
+		return TelegramGuildMessagePresenter.formatProcessBossAttackInfo(processAttackBossResult.boss(),
+				processAttackBossResult.submissionDataList());
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.guild;
 
-import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.boss.BossRepositoryPort;
-import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.guild.GuildRepositoryPort;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.repository.boss.BossRepositoryPort;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.repository.guild.GuildRepositoryPort;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.WeeklyBossExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.model.boss.WeeklyBoss;
 import dev.eiztrips.telegramleetcoderpg.domain.model.guild.Guild;

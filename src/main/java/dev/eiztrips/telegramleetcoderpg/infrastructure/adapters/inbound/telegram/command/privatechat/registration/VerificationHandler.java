@@ -1,6 +1,6 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.registration;
 
-import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.user.RegisterUserUseCase;
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.usecase.user.RegisterUserUseCase;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.PrivateChatHandler;
 import lombok.RequiredArgsConstructor;

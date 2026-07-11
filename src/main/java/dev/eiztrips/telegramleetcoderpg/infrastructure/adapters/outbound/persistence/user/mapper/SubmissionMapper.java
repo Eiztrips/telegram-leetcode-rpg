@@ -1,6 +1,6 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.mapper;
 
-import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.a.shared.dto.SubmissionData;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.dto.SubmissionData;
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.Submission;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.user.entity.SubmissionEntity;
 import org.mapstruct.Mapper;

@@ -1,6 +1,6 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.groupchat;
 
-import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.guild.AddUserToGuildUseCase;
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.usecase.guild.AddUserToGuildUseCase;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;

@@ -1,6 +1,6 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.utils;
 
-import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.user.UserRepositoryPort;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.repository.user.UserRepositoryPort;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.*;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.privatechat.registration.RegisterHandler;

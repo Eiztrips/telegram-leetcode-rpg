@@ -1,6 +1,6 @@
 package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram;
 
-import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.client.ClientPort;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.client.chat.ChatClientPort;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.TelegramExceptions;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.utils.AsyncUpdateProcessor;
@@ -19,7 +19,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 @Slf4j
 @Component
-public class TelegramBotAdapter extends TelegramLongPollingBot implements ClientPort {
+public class TelegramBotAdapter extends TelegramLongPollingBot implements ChatClientPort {
 	private final Set<Long> lockedUsers = ConcurrentHashMap.newKeySet();
 	private final Map<Long, Deque<Update>> updateUserQueueMap = new ConcurrentHashMap<>();
 

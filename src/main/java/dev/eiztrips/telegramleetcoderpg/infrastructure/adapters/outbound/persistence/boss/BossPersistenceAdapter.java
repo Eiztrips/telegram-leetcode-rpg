@@ -2,7 +2,7 @@ package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persis
 
 import dev.eiztrips.telegramleetcoderpg.domain.exception.GlobalExceptions;
 import dev.eiztrips.telegramleetcoderpg.domain.model.boss.WeeklyBoss;
-import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.boss.BossRepositoryPort;
+import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.repository.boss.BossRepositoryPort;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.boss.entity.WeeklyBossEntity;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.boss.mapper.WeeklyBossMapper;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.outbound.persistence.boss.repository.RedisDataBossRepository;

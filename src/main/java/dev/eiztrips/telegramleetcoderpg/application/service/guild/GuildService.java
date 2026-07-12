@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.temporal.WeekFields;
 import java.util.*;
 
 /**
@@ -100,19 +99,6 @@ public class GuildService
 		if (guildId != null) {
 			respawnCurrentGuild(name, hp, guildId);
 		} else {
-			LocalDate now = LocalDate.now();
-			LocalDate lastRespawn = bossRepositoryPort.getLastRespawnDate();
-
-			WeekFields weekFields = WeekFields.of(Locale.getDefault());
-			int currentWeek = now.get(weekFields.weekOfWeekBasedYear());
-			int lastWeek = lastRespawn.get(weekFields.weekOfWeekBasedYear());
-			int currentYear = now.get(weekFields.weekBasedYear());
-			int lastYear = lastRespawn.get(weekFields.weekBasedYear());
-
-			if (currentWeek == lastWeek && currentYear == lastYear) {
-				return;
-			}
-
 			bossRepositoryPort.saveCurrentWeeklyBoss(WeeklyBoss.builder().name(name).maxHp(hp).build());
 
 			List<WeeklyBoss> guildBosses = new ArrayList<>();
@@ -123,14 +109,15 @@ public class GuildService
 
 			List<WeeklyBoss> bosses = bossRepositoryPort.saveAll(guildBosses);
 
-			guilds.forEach(guild -> {
-				guild.withBoss(bosses.getFirst().id());
+			guilds = guilds.stream().map(guild -> {
+				guild = guild.withBoss(bosses.getFirst().id());
 				bosses.removeFirst();
-			});
+				return guild;
+			}).toList();
 
 			guildRepositoryPort.saveAll(guilds);
 
-			bossRepositoryPort.saveLastRespawnDate(now);
+			bossRepositoryPort.saveLastRespawnDate(LocalDate.now());
 		}
 	}
 

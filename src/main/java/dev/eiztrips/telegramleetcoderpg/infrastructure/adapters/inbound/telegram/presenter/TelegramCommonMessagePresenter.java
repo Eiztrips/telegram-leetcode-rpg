@@ -35,7 +35,7 @@ public class TelegramCommonMessagePresenter {
 						<b>Решенные задачи за последнюю неделю:</b>%n%s
 						""".formatted(formatter.format(user.lastCheckTime()), submissions.stream().map(
 						submission -> "<i>• <a href=\"https://leetcode.com/submissions/detail/%s/\">%s</a> | %d xp</i>"
-								.formatted(submission.taskTitle(), submission.submissionId(), submission.getReward()))
+								.formatted(submission.submissionId(), submission.taskTitle(), submission.getReward()))
 						.collect(Collectors.joining("\n")));
 
 		return """

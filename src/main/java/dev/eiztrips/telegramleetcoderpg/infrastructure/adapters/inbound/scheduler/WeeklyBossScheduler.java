@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Slf4j
 @Component
@@ -30,11 +31,14 @@ public class WeeklyBossScheduler {
 	@EventListener(ApplicationReadyEvent.class)
 	public void onStartupRespawnBosses() {
 		log.info("Проверка необходимости респавна боссов:");
-		LocalDate currDate = bossRepositoryPort.getLastRespawnDate();
-		triggerRespawn();
-		LocalDate newDate = bossRepositoryPort.getLastRespawnDate();
-		if (!currDate.isEqual(newDate))
+		LocalDate lastRespawn = bossRepositoryPort.getLastRespawnDate();
+		long daysSinceLastRespawn = ChronoUnit.DAYS.between(lastRespawn, LocalDate.now());
+		if (daysSinceLastRespawn >= 7) {
+			triggerRespawn();
 			log.info("Недельный босс обновлен");
+		} else {
+			log.info("Босс обновлялся {} дн. назад, обновление не требуется", daysSinceLastRespawn);
+		}
 	}
 
 	private void triggerRespawn() {

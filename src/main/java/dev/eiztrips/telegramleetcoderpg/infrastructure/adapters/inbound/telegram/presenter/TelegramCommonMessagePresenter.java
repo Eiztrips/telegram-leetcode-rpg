@@ -23,16 +23,16 @@ public class TelegramCommonMessagePresenter {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")
 				.withZone(ZoneId.systemDefault());
 
-		String header = "<b>Пользователь</b> <a href=\"https://leetcode.com/u/%s/\">%s</a> | %s"
-				.formatted(user.leetcodeUsername(), user.leetcodeUsername(), user.telegramId().toString());
+		String header = "<b>Пользователь</b> <a href=\"https://leetcode.com/u/%s/\">%s</a> | %s xp"
+				.formatted(user.leetcodeUsername(), user.leetcodeUsername(), user.xp());
 
 		String guildSection = (guild == null) ? "" : "<b>Гильдия:</b> <i>%s</i>".formatted(guild.id());
 
 		String submissionSection = submissions.isEmpty()
 				? ""
 				: """
-						<b>Последняя отправка:</b> %s
-						<b>Реш/енные задачи за последнюю неделю:</b>%n%s
+						<b>Последняя отправка:</b> %s%n
+						<b>Решенные задачи за последнюю неделю:</b>%n%s
 						""".formatted(formatter.format(user.lastCheckTime()), submissions.stream().map(
 						submission -> "<i>• <a href=\"https://leetcode.com/submissions/detail/%s/\">%s</a> | %d xp</i>"
 								.formatted(submission.taskTitle(), submission.submissionId(), submission.getReward()))

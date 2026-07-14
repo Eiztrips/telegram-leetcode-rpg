@@ -44,7 +44,7 @@ public class UserInfoHandler implements CommandHandler {
 
 	@Override
 	public String getCommand() {
-		return "/me";
+		return "/profile";
 	}
 
 	@Override

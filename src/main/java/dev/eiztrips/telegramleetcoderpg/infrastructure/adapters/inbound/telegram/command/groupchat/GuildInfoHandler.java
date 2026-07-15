@@ -9,6 +9,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.Set;
+
 @Component
 @RequiredArgsConstructor
 @Order(4)
@@ -19,7 +21,7 @@ public class GuildInfoHandler extends GroupChatHandler implements CommandHandler
 	@Override
 	public boolean canHandle(Update update) {
 		String text = update.getMessage().getText();
-		return super.canHandle(update) && text.startsWith(getCommand());
+		return super.canHandle(update) && isAlias(text);
 	}
 
 	@Override
@@ -36,6 +38,11 @@ public class GuildInfoHandler extends GroupChatHandler implements CommandHandler
 	@Override
 	public String getCommand() {
 		return "/guild";
+	}
+
+	@Override
+	public Set<String> getCommandAliases() {
+		return Set.of(getCommand(), "/group");
 	}
 
 	@Override

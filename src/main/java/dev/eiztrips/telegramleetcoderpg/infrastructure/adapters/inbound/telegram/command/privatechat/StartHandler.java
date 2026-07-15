@@ -5,6 +5,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.Set;
+
 @Component
 @Order(1)
 public class StartHandler extends PrivateChatHandler implements CommandHandler {
@@ -12,7 +14,7 @@ public class StartHandler extends PrivateChatHandler implements CommandHandler {
 	@Override
 	public boolean canHandle(Update update) {
 		String text = update.getMessage().getText();
-		return super.canHandle(update) && text.startsWith(getCommand());
+		return super.canHandle(update) && isAlias(text);
 	}
 
 	@Override
@@ -23,6 +25,11 @@ public class StartHandler extends PrivateChatHandler implements CommandHandler {
 	@Override
 	public String getCommand() {
 		return "/start";
+	}
+
+	@Override
+	public Set<String> getCommandAliases() {
+		return Set.of(getCommand(), "/info", "/help");
 	}
 
 	@Override

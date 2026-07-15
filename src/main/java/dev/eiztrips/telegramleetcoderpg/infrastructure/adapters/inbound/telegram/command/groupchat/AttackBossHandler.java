@@ -19,7 +19,7 @@ public class AttackBossHandler extends GroupChatHandler implements CommandHandle
 	@Override
 	public boolean canHandle(Update update) {
 		String text = update.getMessage().getText();
-		return super.canHandle(update) && text.startsWith(getCommand());
+		return super.canHandle(update) && isAlias(text);
 	}
 
 	@Override

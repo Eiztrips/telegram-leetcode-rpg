@@ -17,7 +17,7 @@ public class LeaveFromGuildHandler extends GroupChatHandler implements CommandHa
 	@Override
 	public boolean canHandle(Update update) {
 		var text = update.getMessage().getText();
-		return super.canHandle(update) && text.startsWith(getCommand());
+		return super.canHandle(update) && isAlias(text);
 	}
 
 	@Override

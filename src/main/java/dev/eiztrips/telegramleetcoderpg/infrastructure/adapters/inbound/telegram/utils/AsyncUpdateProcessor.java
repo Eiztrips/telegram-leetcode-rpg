@@ -109,8 +109,9 @@ public class AsyncUpdateProcessor {
 	private void checkUserRegistration(Update update) {
 		if (!update.getMessage().hasText())
 			return;
+
 		String text = update.getMessage().getText();
-		if (text.startsWith(registerHandler.getCommand()) || text.startsWith(verificationHandler.getCommand()))
+		if (registerHandler.isAlias(text) || verificationHandler.isAlias(text))
 			return;
 
 		userRepositoryPort.getByTelegramId(update.getMessage().getFrom().getId())

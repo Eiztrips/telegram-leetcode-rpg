@@ -9,6 +9,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.Set;
+
 @Component
 @Order(4)
 public class UserInfoHandler implements CommandHandler {
@@ -24,7 +26,7 @@ public class UserInfoHandler implements CommandHandler {
 	@Override
 	public boolean canHandle(Update update) {
 		String text = update.getMessage().getText();
-		return text.startsWith(getCommand());
+		return isAlias(text);
 	}
 
 	@Override
@@ -45,6 +47,11 @@ public class UserInfoHandler implements CommandHandler {
 	@Override
 	public String getCommand() {
 		return "/profile";
+	}
+
+	@Override
+	public Set<String> getCommandAliases() {
+		return Set.of(getCommand(), "/me", "/user");
 	}
 
 	@Override

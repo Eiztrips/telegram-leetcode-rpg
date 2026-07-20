@@ -28,9 +28,9 @@ public class VerificationHandler extends PrivateChatHandler implements CommandHa
 		var user = registerUserUseCase.completeUserRegistration(userId);
 
 		if (user != null)
-			return "<b>Успешная регистрация!</b>";
+			return "✅ <b>Регистрация завершена!</b>\n\nДобро пожаловать в мир RPG LeetCode!\nИспользуйте /profile чтобы посмотреть свой профиль.";
 
-		return "<b>Что-то пошло не так...</b>";
+		return "❌ <b>Ошибка регистрации</b>\n\nПроверьте что токен вставлен в описание профиля, и попробуйте /verify снова.";
 	}
 
 	@Override

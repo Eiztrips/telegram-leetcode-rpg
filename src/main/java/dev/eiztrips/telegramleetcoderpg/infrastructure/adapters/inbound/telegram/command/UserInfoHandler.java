@@ -61,6 +61,6 @@ public class UserInfoHandler implements CommandHandler {
 
 	@Override
 	public String getCommandDescription() {
-		return "Получить информацию о себе или другом пользователе.";
+		return "Получить информацию о пользователе.";
 	}
 }

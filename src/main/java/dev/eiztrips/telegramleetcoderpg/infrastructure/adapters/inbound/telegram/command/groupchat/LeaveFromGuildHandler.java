@@ -27,7 +27,7 @@ public class LeaveFromGuildHandler extends GroupChatHandler implements CommandHa
 
 		removeUserFromGuildUseCase.removeUserFromGuild(userId, groupId);
 
-		return "Вы успешно покинули группу";
+		return "🚪 <b>Вы покинули гильдию.</b>";
 	}
 
 	@Override

@@ -60,7 +60,7 @@ public class RegisterHandler extends PrivateChatHandler implements CommandHandle
 
 	@Override
 	public String getCommandDescription() {
-		return "Зарегистрироваться в RPG-системе. Используйте ваш leetcode юзернейм!";
+		return "Зарегистрироваться в RPG-системе. \n📍 Используйте ваш leetcode юзернейм!";
 	}
 
 	private String extractLeetcodeUsername(Update update) {

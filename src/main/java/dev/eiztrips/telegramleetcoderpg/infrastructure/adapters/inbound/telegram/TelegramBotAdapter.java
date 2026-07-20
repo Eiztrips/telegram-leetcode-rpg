@@ -3,6 +3,7 @@ package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegra
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.client.chat.ChatClientPort;
 import dev.eiztrips.telegramleetcoderpg.domain.exception.TelegramExceptions;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.command.CommandHandler;
+import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.presenter.TelegramCommonMessagePresenter;
 import dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegram.utils.AsyncUpdateProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,49 +74,12 @@ public class TelegramBotAdapter extends TelegramLongPollingBot implements ChatCl
 		asyncUpdateProcessor.process(userId, updateUserQueueMap, lockedUsers,
 				(responseText,
 						chatId) -> executeMessage(SendMessage.builder().chatId(chatId).text(responseText).build()),
-				this::sendHelloCommandMessage);
+				this::sendStartCommandMessage);
 	}
 
-	private void sendHelloCommandMessage(long chatId) {
-		var hello = "Приветствую в новом RPG мире leetcode приключений! \nВот список существующих команд:\n";
-
-		StringBuilder commands = new StringBuilder("<blockquote>" + hello + "</blockquote>\n \n");
-
-		commands.append("<b>🔐 Данные комманды используются только в личных сообщениях: </b>\n\n");
-
-		for (CommandHandler h : this.privateCommandHandlers) {
-			String example = h.getCommandExample();
-			String description = h.getCommandDescription();
-
-			commands.append("<b> ").append(example).append("</b>\n").append("<i> • ").append(description)
-					.append("</i>\n\n");
-		}
-
-		commands.append("<b>🏘️ Данные комманды используются только в группах: </b>\n\n");
-
-		for (CommandHandler h : this.groupCommandHandlers) {
-			String example = h.getCommandExample();
-			String description = h.getCommandDescription();
-
-			commands.append("<b> ").append(example).append("</b>\n").append("<i> • ").append(description)
-					.append("</i>\n\n");
-		}
-
-		commands.append("<b>🌎️ Данные комманды используются везде: </b>\n\n");
-
-		for (CommandHandler commandHandler : commonCommandHandlers) {
-			if (!privateCommandHandlers.contains(commandHandler) && !groupCommandHandlers.contains(commandHandler)) {
-				String example = commandHandler.getCommandExample();
-				String description = commandHandler.getCommandDescription();
-
-				commands.append("<b> ").append(example).append("</b>\n").append("<i> • ").append(description)
-						.append("</i>\n\n");
-			}
-		}
-
-		var message = new SendMessage(String.valueOf(chatId), commands.toString());
-
-		executeMessage(message);
+	private void sendStartCommandMessage(long chatId) {
+		executeMessage(new SendMessage(String.valueOf(chatId), TelegramCommonMessagePresenter
+				.formatHelpInfo(privateCommandHandlers, groupCommandHandlers, commonCommandHandlers)));
 	}
 
 	private void executeMessage(SendMessage message) {

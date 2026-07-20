@@ -11,46 +11,71 @@ public class TelegramGuildMessagePresenter {
 	}
 
 	public static String formatGuildInfo(String title, boolean isCreated, WeeklyBoss boss, List<User> users) {
-		String header = isCreated ? "<b>Успешное создание гильдии!</b>\n\n" : "";
+		StringBuilder sb = new StringBuilder();
 
-		String bossSection = (boss == null) ? "" : """
-				<b>Текущий босс:</b>
-				<i>%s | %d/%d hp</i>
+		if (isCreated) {
+			sb.append("<b>Гильдия создана!</b>\n\n");
+		} else {
+			sb.append("🏰 <b>Информация о гильдии</b>\n");
+		}
 
-				""".formatted(boss.name(), boss.currentHp(), boss.maxHp());
+		sb.append("<blockquote>");
+		sb.append("🏛️ <b>%s</b>\n\n".formatted(title));
 
-		String usersSection = users.isEmpty()
-				? ""
-				: "<b>Пользователи:</b>\n" + users.stream()
-						.map(u -> "<i>• <a href=\"https://leetcode.com/u/%s/\">%s</a> | %d id | %d xp</i>"
-								.formatted(u.leetcodeUsername(), u.leetcodeUsername(), u.telegramId(), u.xp()))
-						.collect(java.util.stream.Collectors.joining("\n"));
+		if (boss != null) {
+			int hpPercent = boss.maxHp() > 0 ? (boss.currentHp() * 100 / boss.maxHp()) : 0;
+			sb.append("💀 <b>Босс:</b> %s\n".formatted(boss.name()));
+			sb.append("❤️ HP: %d / %d  (%d%%)\n\n".formatted(boss.currentHp(), boss.maxHp(), hpPercent));
+		}
 
-		return """
-				%s<blockquote><b>%s</b>
+		if (!users.isEmpty()) {
+			sb.append("👥 <b>Участники (%d):</b>\n".formatted(users.size()));
+			for (User u : users) {
+				sb.append("   • <a href=\"https://leetcode.com/u/%s/\">%s</a> — <b>%d</b> xp\n"
+						.formatted(u.leetcodeUsername(), u.leetcodeUsername(), u.xp()));
+			}
+		}
 
-				%s%s</blockquote>""".formatted(header, title, bossSection, usersSection).trim();
+		sb.append("</blockquote>");
+
+		return sb.toString().trim();
 	}
 
 	public static String formatProcessBossAttackInfo(WeeklyBoss newBossState, List<SubmissionData> submissionDataList) {
 		if (submissionDataList == null || submissionDataList.isEmpty()) {
-			return "Вы не выполнили ни одной задачи!";
+			return "⚠️ Вы не выполнили ни одной задачи для атаки!";
 		}
 
-		String status = (newBossState.currentHp() == 0)
-				? "Успешно проведена атака <b>%d</b> задачами. Босс повержен!".formatted(submissionDataList.size())
-				: "Успешно проведена атака <b>%d</b> задачами. Здоровье босса: <b>%d/%d</b>"
-						.formatted(submissionDataList.size(), newBossState.currentHp(), newBossState.maxHp());
+		StringBuilder sb = new StringBuilder();
 
-		String attacks = submissionDataList.stream()
-				.map(sub -> "- <a href=\"https://leetcode.com/submissions/detail/%s/\">%s</a>"
-						.formatted(sub.submissionId(), sub.taskTitle()))
-				.collect(java.util.stream.Collectors.joining("\n"));
+		boolean bossDefeated = newBossState.currentHp() == 0;
 
-		return """
-				%s
+		if (bossDefeated) {
+			sb.append("🏆 <b>Босс повержен!</b>\n");
+			sb.append("Атака силой в <b>%d</b> задач!\n".formatted(submissionDataList.size()));
+		} else {
+			sb.append("⚔️ <b>Атака проведена!</b>\n");
+			sb.append("Сила атаки: <b>%d</b> задач\n".formatted(submissionDataList.size()));
+		}
 
-				Проведенные атаки:
-				%s""".formatted(status, attacks).trim();
+		sb.append("\n");
+		sb.append("<blockquote>");
+
+		if (!bossDefeated) {
+			int hpPercent = newBossState.maxHp() > 0 ? (newBossState.currentHp() * 100 / newBossState.maxHp()) : 0;
+			sb.append("💀 <b>%s</b>\n".formatted(newBossState.name()));
+			sb.append(
+					"❤️ HP: %d / %d  (%d%%)\n\n".formatted(newBossState.currentHp(), newBossState.maxHp(), hpPercent));
+		}
+
+		sb.append("🗡️ <b>Использованные задачи:</b>\n");
+		for (SubmissionData sub : submissionDataList) {
+			sb.append("   • <a href=\"https://leetcode.com/submissions/detail/%s/\">%s</a>\n"
+					.formatted(sub.submissionId(), sub.taskTitle()));
+		}
+
+		sb.append("</blockquote>");
+
+		return sb.toString().trim();
 	}
 }

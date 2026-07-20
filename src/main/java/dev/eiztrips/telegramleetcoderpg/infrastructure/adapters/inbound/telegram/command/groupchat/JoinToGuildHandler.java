@@ -27,7 +27,7 @@ public class JoinToGuildHandler extends GroupChatHandler implements CommandHandl
 
 		addUserToGuildUseCase.addUserToGuild(userId, guildId);
 
-		return "Вы были успешно добавлены";
+		return "✅ <b>Вы вступили в гильдию!</b>\n\nИспользуйте /guild чтобы посмотреть информацию.";
 	}
 
 	@Override

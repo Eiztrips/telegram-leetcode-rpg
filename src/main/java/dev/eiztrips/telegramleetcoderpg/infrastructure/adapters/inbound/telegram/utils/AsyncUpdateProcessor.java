@@ -35,7 +35,7 @@ public class AsyncUpdateProcessor {
 
 	@Async
 	public void process(Long userId, Map<Long, Deque<Update>> updateUserQueueMap, Set<Long> lockedUsers,
-			BiConsumer<String, Long> responseConsumer, LongConsumer helloCommandConsumer) {
+			BiConsumer<String, Long> responseConsumer, LongConsumer startCommandConsumer) {
 		var updateUserQueue = updateUserQueueMap.get(userId);
 
 		if (updateUserQueue == null || updateUserQueue.isEmpty())
@@ -48,7 +48,7 @@ public class AsyncUpdateProcessor {
 				CommandHandler handler = commandHandlers.stream().filter(h -> h.canHandle(update)).findFirst()
 						.orElse(null);
 
-				if (handler == null || isStart(handler, helloCommandConsumer, update.getMessage().getChatId()))
+				if (handler == null || isStart(handler, startCommandConsumer, update.getMessage().getChatId()))
 					continue;
 
 				log.info("Начало обработки комманды: {} (user: {})", handler.getCommand(), userId);
@@ -64,7 +64,7 @@ public class AsyncUpdateProcessor {
 				if (lockedUsers.add(userId)) {
 					AsyncUpdateProcessor self = selfProvider.getIfAvailable();
 					if (self != null)
-						self.process(userId, updateUserQueueMap, lockedUsers, responseConsumer, helloCommandConsumer);
+						self.process(userId, updateUserQueueMap, lockedUsers, responseConsumer, startCommandConsumer);
 				}
 			} else {
 				updateUserQueueMap.remove(userId);
@@ -84,7 +84,7 @@ public class AsyncUpdateProcessor {
 			} catch (OptimisticLockException _) {
 				if (attempt == maxAttempts) {
 					log.warn("OptimisticLockException: превышено количество попыток ({})", maxAttempts);
-					return "Сервер перегружен, повторите попытку позже";
+					return "⏳ <b>Сервер перегружен!</b>\n\nПовторите попытку позже.";
 				}
 				log.warn("OptimisticLockException: повтор {} из {}", attempt + 1, maxAttempts);
 				entityManager.clear();
@@ -92,14 +92,14 @@ public class AsyncUpdateProcessor {
 					Thread.sleep(100L * (1L << (attempt - 1)));
 				} catch (InterruptedException _) {
 					Thread.currentThread().interrupt();
-					return "Обработка команды была прервана, повторите попытку";
+					return "⚠️ <b>Обработка прервана!</b>\n\nПовторите попытку.";
 				}
 			} catch (Exception e) {
 				log.error(e.getMessage());
-				return "Произошла непредвиденная ошибка";
+				return "❌ <b>Непредвиденная ошибка!</b>\n\nПовторите попытку позже.";
 			}
 		}
-		return "Сервер перегружен, повторите попытку позже";
+		return "⏳ <b>Сервер перегружен!</b>\n\nПовторите попытку позже.";
 	}
 
 	private String resolveDomainException(DomainException e) {

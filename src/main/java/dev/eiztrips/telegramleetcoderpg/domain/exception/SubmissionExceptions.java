@@ -17,7 +17,7 @@ public final class SubmissionExceptions {
 
 			long minutes = remaining.toMinutesPart();
 
-			super(String.format("Вы сможете использовать эту команду через %d мин.", minutes));
+			super("⏳ <b>Команда временно недоступна!</b>\n\nПовторите через <b>%d</b> мин.".formatted(minutes));
 		}
 	}
 }

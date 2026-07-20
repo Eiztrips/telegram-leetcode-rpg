@@ -9,7 +9,7 @@ public final class GlobalExceptions {
 	 */
 	public static final class ArgumentEmptyException extends DomainException {
 		public ArgumentEmptyException(String arg) {
-			super(arg + " не может быть пустым.");
+			super("⚠️ <b>%s</b> не может быть пустым.".formatted(arg));
 		}
 	}
 
@@ -18,7 +18,7 @@ public final class GlobalExceptions {
 	 */
 	public static final class ArgumentInvalidException extends DomainException {
 		public ArgumentInvalidException(String message) {
-			super(message);
+			super("❌ <b>Ошибка:</b> %s".formatted(message));
 		}
 	}
 }

@@ -9,10 +9,10 @@ public final class UserExceptions {
 	 */
 	public static final class UserNotFoundException extends DomainException {
 		public UserNotFoundException(Long id) {
-			super("Пользователь " + id + " не найден");
+			super("❌ Пользователь <b>%d</b> не найден".formatted(id));
 		}
 		public UserNotFoundException() {
-			super("Вы не зарегистрированы, напишите /start мне в лс!");
+			super("⚠️ <b>Вы не зарегистрированы!</b>\n\nНапишите /start мне в личные сообщения.");
 		}
 	}
 
@@ -21,10 +21,10 @@ public final class UserExceptions {
 	 */
 	public static final class UserGuildNotFoundException extends DomainException {
 		public UserGuildNotFoundException(Long id) {
-			super("Пользователь + " + id + ", не состоит в гильдии");
+			super("❌ Пользователь <b>%d</b> не состоит в гильдии".formatted(id));
 		}
 		public UserGuildNotFoundException() {
-			super("Вы не состоите в гильдии");
+			super("⚠️ <b>Вы не состоите в гильдии!</b>\n\nВступите в гильдию командой /join.");
 		}
 	}
 
@@ -33,7 +33,7 @@ public final class UserExceptions {
 	 */
 	public static final class UserAlreadyExistsException extends DomainException {
 		public UserAlreadyExistsException() {
-			super("Вы уже зарегистрированы");
+			super("⚠️ <b>Вы уже зарегистрированы!</b>");
 		}
 	}
 
@@ -42,7 +42,7 @@ public final class UserExceptions {
 	 */
 	public static final class LeetcodeUsernameAlreadyExistsException extends DomainException {
 		public LeetcodeUsernameAlreadyExistsException() {
-			super("Пользователь с таким юзернеймом уже зарегистрирован");
+			super("⚠️ <b>Пользователь с таким юзернеймом уже зарегистрирован</b>");
 		}
 	}
 
@@ -51,7 +51,7 @@ public final class UserExceptions {
 	 */
 	public static final class RegistrationTokenExpiredException extends DomainException {
 		public RegistrationTokenExpiredException() {
-			super("Ваш токен регистрации не был найден, повторите попытку регистрации");
+			super("⏰ <b>Токен не найден!</b>\n\nПовторите регистрацию командой /register.");
 		}
 	}
 
@@ -60,7 +60,7 @@ public final class UserExceptions {
 	 */
 	public static final class BadRegistrationTokenException extends DomainException {
 		public BadRegistrationTokenException() {
-			super("В описании профиля не найден подходящий токен");
+			super("❌ <b>Токен не найден в профиле!</b>\n\nПроверьте описание профиля и попробуйте /verify снова.");
 		}
 	}
 }

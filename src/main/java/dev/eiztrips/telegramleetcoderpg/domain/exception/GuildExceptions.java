@@ -9,7 +9,7 @@ public final class GuildExceptions {
 	 */
 	public static final class GuildNotFoundException extends DomainException {
 		public GuildNotFoundException(Long id) {
-			super(String.format("Гильдия с id: %d - не найдена", id));
+			super("❌ Гильдия <b>%d</b> не найдена".formatted(id));
 		}
 	}
 
@@ -18,7 +18,7 @@ public final class GuildExceptions {
 	 */
 	public static final class GuildAlreadyExists extends DomainException {
 		public GuildAlreadyExists(Long id) {
-			super(String.format("Гильдия с id: %d - уже существует", id));
+			super("⚠️ Гильдия <b>%d</b> уже существует".formatted(id));
 		}
 	}
 
@@ -27,7 +27,7 @@ public final class GuildExceptions {
 	 */
 	public static final class UserAlreadyExistsInGuild extends DomainException {
 		public UserAlreadyExistsInGuild(Long id) {
-			super(String.format("Пользователь: %d - уже состоит в гильдии", id));
+			super("⚠️ Пользователь <b>%d</b> уже состоит в гильдии".formatted(id));
 		}
 	}
 
@@ -36,7 +36,7 @@ public final class GuildExceptions {
 	 */
 	public static final class UserNotFoundInGuild extends DomainException {
 		public UserNotFoundInGuild(Long id) {
-			super(String.format("Пользователь: %d - не состоит в гильдии", id));
+			super("❌ Пользователь <b>%d</b> не состоит в гильдии".formatted(id));
 		}
 	}
 
@@ -45,7 +45,7 @@ public final class GuildExceptions {
 	 */
 	public static final class GuildBossNotFoundException extends DomainException {
 		public GuildBossNotFoundException() {
-			super("Босс гильдии не существует");
+			super("💀 <b>Босс гильдии не существует</b>");
 		}
 	}
 }

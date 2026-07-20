@@ -9,7 +9,7 @@ public final class WeeklyBossExceptions {
 	 */
 	public static final class WeeklyBossNotFoundException extends DomainException {
 		public WeeklyBossNotFoundException(Long id) {
-			super("Босс " + id + " не найден");
+			super("❌ Босс <b>%d</b> не найден".formatted(id));
 		}
 	}
 
@@ -18,7 +18,7 @@ public final class WeeklyBossExceptions {
 	 */
 	public static final class WeeklyBossAlreadyDefeated extends DomainException {
 		public WeeklyBossAlreadyDefeated(Long id) {
-			super("Босс " + id + " уже повержен");
+			super("🏆 Босс <b>%d</b> уже повержен!".formatted(id));
 		}
 	}
 }

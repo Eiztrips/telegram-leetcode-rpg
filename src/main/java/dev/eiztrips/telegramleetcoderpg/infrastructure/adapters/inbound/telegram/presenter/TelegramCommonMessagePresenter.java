@@ -30,7 +30,8 @@ public class TelegramCommonMessagePresenter {
 		sb.append("<blockquote>");
 		sb.append("👤 <a href=\"https://leetcode.com/u/%s/\">%s</a>\n".formatted(user.leetcodeUsername(),
 				user.leetcodeUsername()));
-		sb.append("✨ Опыт: <b>%d</b> xp\n".formatted(user.xp()));
+		sb.append("✨ Ранг: <b>%s</b> <i>(%d lvl | %d xp)</i>\n".formatted(user.getRank().getTitle(), user.getLevel(),
+				user.xp()));
 
 		if (guild != null) {
 			sb.append("🏰 Гильдия: <i>%s</i>\n".formatted(guild.id()));

@@ -2,6 +2,7 @@ package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.telegra
 
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.dto.SubmissionData;
 import dev.eiztrips.telegramleetcoderpg.domain.model.boss.WeeklyBoss;
+import dev.eiztrips.telegramleetcoderpg.domain.model.user.Difficulty;
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.User;
 
 import java.util.List;
@@ -31,8 +32,8 @@ public class TelegramGuildMessagePresenter {
 		if (!users.isEmpty()) {
 			sb.append("👥 <b>Участники (%d):</b>\n".formatted(users.size()));
 			for (User u : users) {
-				sb.append("   • <a href=\"https://leetcode.com/u/%s/\">%s</a> — <b>%d</b> xp\n"
-						.formatted(u.leetcodeUsername(), u.leetcodeUsername(), u.xp()));
+				sb.append("   • <a href=\"https://leetcode.com/u/%s/\">%s</a> — <b>%s</b>\n"
+						.formatted(u.leetcodeUsername(), u.leetcodeUsername(), u.getRank().getTitle()));
 			}
 		}
 
@@ -61,11 +62,14 @@ public class TelegramGuildMessagePresenter {
 		sb.append("\n");
 		sb.append("<blockquote>");
 
+		int attack = submissionDataList.stream()
+				.mapToInt(submissionData -> Difficulty.valueOf(submissionData.taskDifficulty()).getReward()).sum();
+
 		if (!bossDefeated) {
 			int hpPercent = newBossState.maxHp() > 0 ? (newBossState.currentHp() * 100 / newBossState.maxHp()) : 0;
 			sb.append("💀 <b>%s</b>\n".formatted(newBossState.name()));
-			sb.append(
-					"❤️ HP: %d / %d  (%d%%)\n\n".formatted(newBossState.currentHp(), newBossState.maxHp(), hpPercent));
+			sb.append("❤️ HP: %d / %d  (%d%%) -%d hp\n\n".formatted(newBossState.currentHp(), newBossState.maxHp(),
+					hpPercent, attack));
 		}
 
 		sb.append("🗡️ <b>Использованные задачи:</b>\n");

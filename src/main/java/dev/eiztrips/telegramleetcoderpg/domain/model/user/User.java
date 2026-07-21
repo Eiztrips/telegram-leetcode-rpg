@@ -33,6 +33,24 @@ public record User(Long telegramId, String leetcodeUsername, int xp, Instant las
 	}
 
 	/**
+	 * Получить уровень пользователя
+	 *
+	 * @return уровень
+	 */
+	public int getLevel() {
+		return (this.xp / 50) + 1;
+	}
+
+	/**
+	 * Получить ранг пользователя
+	 *
+	 * @return ранг
+	 */
+	public Rank getRank() {
+		return Rank.fromXp(this.xp);
+	}
+
+	/**
 	 * Награждение за выполненные задачи.
 	 *
 	 * @param submissions

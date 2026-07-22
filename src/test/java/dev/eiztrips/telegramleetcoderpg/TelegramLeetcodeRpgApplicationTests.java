@@ -11,7 +11,12 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 @SpringBootTest
 @TestPropertySource(properties = {
         "telegram.bot.username=test_bot_name",
-        "telegram.bot.token=test_bot_token"
+        "telegram.bot.token=test_bot_token",
+        "boss.adjectives.file=classpath:static/boss-adjectives.txt",
+        "boss.hp.min=100",
+        "boss.hp.max=500",
+        "boss.fallback.name=Разрушитель api Eiztrips'а",
+        "boss.random.name.api=https://eiztrips.dev/api/fwd/funny-word"
 })
 class TelegramLeetcodeRpgApplicationTests {
 
@@ -24,5 +29,4 @@ class TelegramLeetcodeRpgApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }

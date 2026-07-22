@@ -2,8 +2,9 @@ package dev.eiztrips.telegramleetcoderpg.infrastructure.adapters.inbound.eiztrip
 
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.client.eiztrips.EiztripsClientPort;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.dto.BossCredentialsData;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.ObjectMapper;
 
@@ -12,21 +13,50 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class EiztripsApiAdapter implements EiztripsClientPort {
 
 	private final HttpClient httpClient;
 	private final ObjectMapper objectMapper;
-	private final String REQUEST_URL = "https://eiztrips.dev/api/fwd/funny-word";
-	private static final Random RANDOM = ThreadLocalRandom.current();
-	private static final String[] ADJECTIVES = {"Великий", "Ультразвуковой", "Свирепый", "Чешуйчатый", "Пухленький",
-			"Загадочный", "Подпивасный", "Древний", "Межгалактический", "Сутулый", "Яростный", "Криворукий", "Грозный",
-			"Злобный", "Коварный"};
+	private final Random RANDOM;
+	private final String REQUEST_URL;
+	private final Integer MIN_HP;
+	private final Integer MAX_HP;
+	private final String FALLBACK_NAME;
+	private final List<String> ADJECTIVES;
+
+	public EiztripsApiAdapter(HttpClient httpClient, ObjectMapper objectMapper, @Value("${boss.hp.min:100}") int minHp,
+			@Value("${boss.hp.max:500}") int maxHp, @Value("${boss.fallback.name}") String fallbackName,
+			@Value("${boss.random.name.api}") String url, @Value("${boss.adjectives.file}") Resource adjectivesResource)
+			throws IOException {
+		this.httpClient = httpClient;
+		this.objectMapper = objectMapper;
+		this.MIN_HP = minHp;
+		this.MAX_HP = maxHp;
+		this.REQUEST_URL = url;
+		this.FALLBACK_NAME = fallbackName;
+		this.ADJECTIVES = loadAdjectives(adjectivesResource);
+		this.RANDOM = ThreadLocalRandom.current();
+	}
+
+	private List<String> loadAdjectives(Resource resource) throws IOException {
+		var res = Files.readAllLines(resource.getFile().toPath()).stream().filter(s -> !s.isBlank()).map(String::trim)
+				.toList();
+
+		if (res.isEmpty()) {
+			log.warn("Не удалось загрузить прилагательные");
+			return List.of("Храбрый", "Глупый", "Пивной");
+		}
+
+		log.info("Загружено {} прилагательных", res.size());
+		return res;
+	}
 
 	@Override
 	public BossCredentialsData fetchRandomBossCredentials() {
@@ -34,7 +64,7 @@ public class EiztripsApiAdapter implements EiztripsClientPort {
 		var request = HttpRequest.newBuilder().uri(URI.create(REQUEST_URL)).header("Accept", "application/json")
 				.build();
 
-		var name = "Разрушитель api Eiztrips'a";
+		var name = FALLBACK_NAME;
 
 		try {
 			log.info("Послан запрос на %s".formatted(REQUEST_URL));
@@ -51,10 +81,11 @@ public class EiztripsApiAdapter implements EiztripsClientPort {
 			Thread.currentThread().interrupt();
 		}
 
-		return BossCredentialsData.builder().adjective(getAdjective()).name(name).hp(RANDOM.nextInt(100, 501)).build();
+		return BossCredentialsData.builder().adjective(getAdjective()).name(name).hp(RANDOM.nextInt(MIN_HP, MAX_HP + 1))
+				.build();
 	}
 
 	private String getAdjective() {
-		return ADJECTIVES[RANDOM.nextInt(ADJECTIVES.length)];
+		return ADJECTIVES.get(RANDOM.nextInt(ADJECTIVES.size()));
 	}
 }

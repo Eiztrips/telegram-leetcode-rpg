@@ -39,6 +39,11 @@ public class GuildPersistenceAdapter implements GuildRepositoryPort {
 		return guildMapper.toDomainList(guildRepository.saveAll(entities));
 	}
 
+	@Override
+	public void deleteById(Long guildId) {
+		guildRepository.deleteById(guildId);
+	}
+
 	private void validateGuildBoss(GuildEntity entity) {
 		if (entity.getCurrentBoss() != null) {
 			long bossId = entity.getCurrentBoss().getId();

@@ -91,6 +91,10 @@ public class GuildService
 			throw new GuildExceptions.UserNotFoundInGuild(userId);
 
 		userRepositoryPort.save(user.withoutGuild());
+
+		if (userRepositoryPort.getUsersByGuildId(guildId).isEmpty()) {
+			guildRepositoryPort.deleteById(guildId);
+		}
 	}
 
 	@Override

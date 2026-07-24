@@ -30,6 +30,14 @@ public interface GuildRepositoryPort {
 	List<Guild> saveAll(List<Guild> guilds);
 
 	/**
+	 * Удалить гильдию
+	 *
+	 * @param guildId
+	 *            id гильдии
+	 */
+	void deleteById(Long guildId);
+
+	/**
 	 * Получить гильдию по guildId
 	 *
 	 * @param guildId

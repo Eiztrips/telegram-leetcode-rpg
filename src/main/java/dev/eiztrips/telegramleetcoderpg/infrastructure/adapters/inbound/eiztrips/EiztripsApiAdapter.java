@@ -13,7 +13,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -46,16 +45,20 @@ public class EiztripsApiAdapter implements EiztripsClientPort {
 	}
 
 	private List<String> loadAdjectives(Resource resource) throws IOException {
-		var res = Files.readAllLines(resource.getFile().toPath()).stream().filter(s -> !s.isBlank()).map(String::trim)
-				.toList();
+		try (var is = resource.getInputStream();
+				var reader = new java.io.BufferedReader(
+						new java.io.InputStreamReader(is, java.nio.charset.StandardCharsets.UTF_8))) {
 
-		if (res.isEmpty()) {
-			log.warn("Не удалось загрузить прилагательные");
-			return List.of("Храбрый", "Глупый", "Пивной");
+			var res = reader.lines().filter(s -> !s.isBlank()).map(String::trim).toList();
+
+			if (res.isEmpty()) {
+				log.warn("Не удалось загрузить прилагательные");
+				return List.of("Храбрый", "Глупый", "Пивной");
+			}
+
+			log.info("Загружено {} прилагательных", res.size());
+			return res;
 		}
-
-		log.info("Загружено {} прилагательных", res.size());
-		return res;
 	}
 
 	@Override

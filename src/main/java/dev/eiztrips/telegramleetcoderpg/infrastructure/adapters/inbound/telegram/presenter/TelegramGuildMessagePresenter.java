@@ -5,6 +5,9 @@ import dev.eiztrips.telegramleetcoderpg.domain.model.boss.WeeklyBoss;
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.Difficulty;
 import dev.eiztrips.telegramleetcoderpg.domain.model.user.User;
 
+import java.time.*;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 public class TelegramGuildMessagePresenter {
@@ -21,18 +24,24 @@ public class TelegramGuildMessagePresenter {
 		}
 
 		sb.append("<blockquote>");
-		sb.append("🏛️ <b>%s</b>\n\n".formatted(title));
+		sb.append("🏛️ <b>%s</b>%n%n".formatted(title));
 
 		if (boss != null) {
-			int hpPercent = boss.maxHp() > 0 ? (boss.currentHp() * 100 / boss.maxHp()) : 0;
-			sb.append("💀 <b>Босс:</b> %s\n".formatted(boss.name()));
-			sb.append("❤️ HP: %d / %d  (%d%%)\n\n".formatted(boss.currentHp(), boss.maxHp(), hpPercent));
+			int maxHp = boss.maxHp();
+			int currentHp = boss.currentHp();
+			int hpPercent = maxHp > 0 ? (currentHp * 100 / maxHp) : 0;
+
+			sb.append("💀 <b>Босс:</b> %s%n".formatted(boss.name()));
+			sb.append("%s HP: %d / %d (%d%%)%n".formatted(currentHp == 0 ? "💔" : "❤️", currentHp, maxHp, hpPercent));
+
+			if (currentHp == 0)
+				sb.append("Босс повержен, до следующего обновления: %s%n%n".formatted(getTimeToSunday()));
 		}
 
 		if (!users.isEmpty()) {
-			sb.append("👥 <b>Участники (%d):</b>\n".formatted(users.size()));
+			sb.append("👥 <b>Участники (%d):</b>%n".formatted(users.size()));
 			for (User u : users) {
-				sb.append("   • <a href=\"https://leetcode.com/u/%s/\">%s</a> — <b>%s</b>\n"
+				sb.append("   • <a href=\"https://leetcode.com/u/%s/\">%s</a> — <b>%s</b>%n"
 						.formatted(u.leetcodeUsername(), u.leetcodeUsername(), u.getRank().getTitle()));
 			}
 		}
@@ -40,6 +49,14 @@ public class TelegramGuildMessagePresenter {
 		sb.append("</blockquote>");
 
 		return sb.toString().trim();
+	}
+
+	private static String getTimeToSunday() {
+		var now = ZonedDateTime.now();
+		var sunday = now.with(TemporalAdjusters.next(DayOfWeek.SUNDAY)).truncatedTo(ChronoUnit.DAYS);
+		var d = Duration.between(now, sunday);
+
+		return "%02d:%02d:%02d:%02d".formatted(d.toDays(), d.toHoursPart(), d.toMinutesPart(), d.toSecondsPart());
 	}
 
 	public static String formatProcessBossAttackInfo(WeeklyBoss newBossState, List<SubmissionData> submissionDataList) {

@@ -108,8 +108,10 @@ public class GuildService
 			List<WeeklyBoss> guildBosses = new ArrayList<>();
 			List<Guild> guilds = guildRepositoryPort.getAllGuilds();
 
-			for (int i = 0; i < guilds.size(); i++)
-				guildBosses.add(WeeklyBoss.builder().name(name).maxHp(hp).currentHp(hp).build());
+			for (Guild g : guilds) {
+				int guildBossHp = hp * userRepositoryPort.getUsersByGuildId(g.id()).size();
+				guildBosses.add(WeeklyBoss.builder().name(name).maxHp(guildBossHp).currentHp(guildBossHp).build());
+			}
 
 			List<WeeklyBoss> bosses = bossRepositoryPort.saveAll(guildBosses);
 

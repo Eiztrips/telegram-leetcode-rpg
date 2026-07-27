@@ -129,6 +129,9 @@ public class GuildService
 		Guild guild = guildRepositoryPort.getGuildById(guildId)
 				.orElseThrow(() -> new GuildExceptions.GuildNotFoundException(guildId));
 
+		int membersCount = userRepositoryPort.getUsersByGuildId(guildId).size();
+		hp = membersCount * hp;
+
 		WeeklyBoss boss = WeeklyBoss.builder().name(name).maxHp(hp).currentHp(hp).build();
 
 		boss = bossRepositoryPort.save(boss);

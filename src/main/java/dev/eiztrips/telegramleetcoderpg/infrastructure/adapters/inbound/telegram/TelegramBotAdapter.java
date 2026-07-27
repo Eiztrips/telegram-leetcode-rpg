@@ -102,4 +102,9 @@ public class TelegramBotAdapter extends TelegramLongPollingBot implements ChatCl
 			return false;
 		}
 	}
+
+	@Override
+	public void sendMessage(Long userId, String message) {
+		executeMessage(new SendMessage(String.valueOf(userId), message));
+	}
 }

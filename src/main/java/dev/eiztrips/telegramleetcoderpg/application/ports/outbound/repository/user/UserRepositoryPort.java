@@ -20,12 +20,27 @@ public interface UserRepositoryPort {
 	void save(User user);
 
 	/**
+	 * Удалить пользователя.
+	 *
+	 * @param user
+	 *            пользователь
+	 */
+	void delete(User user);
+
+	/**
 	 * Добавить решенный submission.
 	 *
 	 * @param data
 	 *            Data сабмишена с литкода
 	 */
 	void addSubmissions(Long userTelegramId, List<Submission> data);
+
+	/**
+	 * Получить всех пользователей.
+	 *
+	 * @return список пользователей;
+	 */
+	List<User> getAllUsers();
 
 	/**
 	 * Получить пользователя по telegramId.

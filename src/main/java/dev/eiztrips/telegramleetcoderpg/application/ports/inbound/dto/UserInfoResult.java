@@ -7,6 +7,16 @@ import lombok.Builder;
 
 import java.util.List;
 
+/**
+ * Информация о пользователе.
+ *
+ * @param user
+ *            пользователь
+ * @param guild
+ *            гильдия
+ * @param submissions
+ *            сабмишены
+ */
 public record UserInfoResult(User user, Guild guild, List<Submission> submissions) {
 	@Builder
 	public UserInfoResult {

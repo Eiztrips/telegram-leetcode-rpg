@@ -16,7 +16,9 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
         "boss.hp.min=100",
         "boss.hp.max=500",
         "boss.fallback.name=Разрушитель api Eiztrips'а",
-        "boss.random.name.api=https://eiztrips.dev/api/fwd/funny-word"
+        "boss.random.name.api=https://eiztrips.dev/api/fwd/funny-word",
+        "inactive.days.alarm=7",
+        "inactive.days.delete=30"
 })
 class TelegramLeetcodeRpgApplicationTests {
 

@@ -1,7 +1,9 @@
 package dev.eiztrips.telegramleetcoderpg.application.service.user;
 
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.dto.InactiveUserResult;
 import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.dto.UserInfoResult;
 import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.usecase.user.CheckSubmissionsUseCase;
+import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.usecase.user.CheckUserInactiveUseCase;
 import dev.eiztrips.telegramleetcoderpg.application.ports.inbound.usecase.user.GetUserInfoUseCase;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.dto.SubmissionData;
 import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.client.leetcode.LeetCodeClientPort;
@@ -21,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +36,12 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class UserService implements RegisterUserUseCase, CheckSubmissionsUseCase, GetUserInfoUseCase {
+public class UserService
+		implements
+			RegisterUserUseCase,
+			CheckSubmissionsUseCase,
+			GetUserInfoUseCase,
+			CheckUserInactiveUseCase {
 
 	private final UserRepositoryPort userRepository;
 	private final LeetCodeClientPort leetCodeClient;
@@ -158,5 +167,46 @@ public class UserService implements RegisterUserUseCase, CheckSubmissionsUseCase
 		return Submission.builder().submissionId(data.submissionId()).taskTitle(data.taskTitle())
 				.taskSlug(data.taskSlug()).taskDifficulty(Difficulty.valueOf(data.taskDifficulty().toUpperCase()))
 				.completedAt(data.completedAt()).build();
+	}
+
+	@Override
+	@Transactional
+	public InactiveUserResult checkUserInactive(User user, Integer removeTimeDays, Integer alarmTimeDays) {
+		if (user.lastCheckTime() == null) {
+			if (userCacheRepositoryPort.checkUserInactive(user.telegramId())) {
+				userRepository.delete(user);
+				userCacheRepositoryPort.makeUserActive(user.telegramId());
+				return InactiveUserResult.builder().user(user).isInactive(false).isDeleted(true).build();
+			}
+
+			userCacheRepositoryPort.makeUserInactive(user.telegramId());
+			return InactiveUserResult.builder().user(user).isInactive(false).isDeleted(false).build();
+		}
+
+		Instant now = Instant.now();
+		boolean isDeleted = false;
+
+		if (removeTimeDays != null && user.lastCheckTime().isBefore(now.minus(removeTimeDays, ChronoUnit.DAYS))) {
+			if (userCacheRepositoryPort.checkUserInactive(user.telegramId())) {
+				userRepository.delete(user);
+				isDeleted = true;
+				userCacheRepositoryPort.makeUserActive(user.telegramId());
+			} else {
+				userCacheRepositoryPort.makeUserInactive(user.telegramId());
+			}
+		}
+
+		boolean isInactive = alarmTimeDays != null
+				&& user.lastCheckTime().isBefore(now.minus(alarmTimeDays, ChronoUnit.DAYS));
+
+		return InactiveUserResult.builder().user(user).isInactive(isInactive).isDeleted(isDeleted).build();
+	}
+
+	@Override
+	public List<InactiveUserResult> checkAllUsersInactive(Integer removeTimeDays, Integer alarmTimeDays) {
+		List<User> users = userRepository.getAllUsers();
+
+		return transactionTemplate.execute(
+				status -> users.stream().map(u -> this.checkUserInactive(u, removeTimeDays, alarmTimeDays)).toList());
 	}
 }

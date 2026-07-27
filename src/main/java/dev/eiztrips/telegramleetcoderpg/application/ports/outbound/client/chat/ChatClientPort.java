@@ -11,4 +11,12 @@ public interface ChatClientPort {
 	 *            id чата
 	 */
 	boolean chatExists(Long chatId);
+
+	/**
+	 * Отправить сообщение пользователю
+	 *
+	 * @param userId
+	 *            id пользователя
+	 */
+	void sendMessage(Long userId, String message);
 }

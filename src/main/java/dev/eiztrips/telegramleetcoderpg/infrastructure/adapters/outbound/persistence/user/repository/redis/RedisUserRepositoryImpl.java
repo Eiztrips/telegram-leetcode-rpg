@@ -12,19 +12,20 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class RedisUserRepositoryImpl implements RedisUserRepository {
 	private final StringRedisTemplate redisTemplate;
-	private static final String KEY = "registration_cache:";
+	private static final String REGISTRATION_KEY = "registration_cache:";
+	private static final String INACTIVE_KEY = "inactive:";
 
 	@Override
-	public void save(UserRegistrationCacheData data) {
-		String key = KEY + data.chatId().toString();
+	public void saveRegistrationCacheData(UserRegistrationCacheData data) {
+		String key = REGISTRATION_KEY + data.chatId().toString();
 		String val = data.token();
 
 		redisTemplate.opsForValue().set(key, val, data.ttl().toMinutes(), TimeUnit.MINUTES);
 	}
 
 	@Override
-	public Optional<UserRegistrationCacheData> findByChatId(Long telegramChatId) {
-		String val = redisTemplate.opsForValue().get(KEY + telegramChatId.toString());
+	public Optional<UserRegistrationCacheData> findRegistrationCacheDataByChatId(Long telegramChatId) {
+		String val = redisTemplate.opsForValue().get(REGISTRATION_KEY + telegramChatId.toString());
 
 		if (val == null)
 			return Optional.empty();
@@ -39,8 +40,23 @@ public class RedisUserRepositoryImpl implements RedisUserRepository {
 	}
 
 	@Override
-	public void remove(Long telegramChatId) {
-		String key = KEY + telegramChatId.toString();
+	public void removeRegistrationCacheData(Long telegramChatId) {
+		String key = REGISTRATION_KEY + telegramChatId.toString();
 		redisTemplate.delete(key);
+	}
+
+	@Override
+	public void saveUserInactive(Long telegramChatId) {
+		redisTemplate.opsForSet().add(INACTIVE_KEY, telegramChatId.toString());
+	}
+
+	@Override
+	public void deleteUserInactive(Long telegramChatId) {
+		redisTemplate.opsForSet().remove(INACTIVE_KEY, telegramChatId.toString());
+	}
+
+	@Override
+	public Boolean checkUserInactive(Long telegramChatId) {
+		return redisTemplate.opsForSet().isMember(INACTIVE_KEY, telegramChatId.toString());
 	}
 }

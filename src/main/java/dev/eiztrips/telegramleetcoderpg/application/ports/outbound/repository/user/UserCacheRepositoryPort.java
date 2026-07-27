@@ -32,4 +32,29 @@ public interface UserCacheRepositoryPort {
 	 *            id пользователя телеграмм
 	 */
 	void removeRegistrationCache(Long telegramChatId);
+
+	/**
+	 * Пометить пользователя как неактивного
+	 *
+	 * @param telegramChatId
+	 *            id пользователя телеграм
+	 */
+	void makeUserInactive(Long telegramChatId);
+
+	/**
+	 * Убрать пометку неактивности с пользователя
+	 *
+	 * @param telegramChatId
+	 *            id пользователя телеграм
+	 */
+	void makeUserActive(Long telegramChatId);
+
+	/**
+	 * Проверить активность пользователя
+	 *
+	 * @param telegramChatId
+	 *            id пользователя телеграм
+	 * @return true если пользователь инактивен
+	 */
+	boolean checkUserInactive(Long telegramChatId);
 }

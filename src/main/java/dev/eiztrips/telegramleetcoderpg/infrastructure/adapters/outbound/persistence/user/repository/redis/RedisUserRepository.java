@@ -5,9 +5,15 @@ import dev.eiztrips.telegramleetcoderpg.application.ports.outbound.dto.UserRegis
 import java.util.Optional;
 
 public interface RedisUserRepository {
-	void save(UserRegistrationCacheData data);
+	void saveRegistrationCacheData(UserRegistrationCacheData data);
 
-	Optional<UserRegistrationCacheData> findByChatId(Long telegramChatId);
+	Optional<UserRegistrationCacheData> findRegistrationCacheDataByChatId(Long telegramChatId);
 
-	void remove(Long telegramChatId);
+	void removeRegistrationCacheData(Long telegramChatId);
+
+	void saveUserInactive(Long telegramChatId);
+
+	void deleteUserInactive(Long telegramChatId);
+
+	Boolean checkUserInactive(Long telegramChatId);
 }

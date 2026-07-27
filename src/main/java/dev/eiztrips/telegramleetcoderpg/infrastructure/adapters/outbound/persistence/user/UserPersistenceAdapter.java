@@ -58,6 +58,14 @@ public class UserPersistenceAdapter implements UserRepositoryPort, UserCacheRepo
 	}
 
 	@Override
+	public void delete(User user) {
+		UserEntity entity = userRepository.findById(user.telegramId())
+				.orElseThrow(() -> new UserExceptions.UserNotFoundException(user.telegramId()));
+
+		userRepository.delete(entity);
+	}
+
+	@Override
 	@Transactional
 	public void addSubmissions(Long telegramId, List<Submission> newSubmissions) {
 		UserEntity userEntity = userRepository.findById(telegramId)
@@ -67,6 +75,11 @@ public class UserPersistenceAdapter implements UserRepositoryPort, UserCacheRepo
 		userEntity.addSubmissions(submissionEntities);
 
 		userRepository.save(userEntity);
+	}
+
+	@Override
+	public List<User> getAllUsers() {
+		return userMapper.toDomainList(userRepository.findAll());
 	}
 
 	@Override
@@ -108,16 +121,31 @@ public class UserPersistenceAdapter implements UserRepositoryPort, UserCacheRepo
 
 	@Override
 	public void saveRegistrationToken(UserRegistrationCacheData data) {
-		redisUserRepository.save(data);
+		redisUserRepository.saveRegistrationCacheData(data);
 	}
 
 	@Override
 	public Optional<UserRegistrationCacheData> getRegistrationCache(Long telegramChatId) {
-		return redisUserRepository.findByChatId(telegramChatId);
+		return redisUserRepository.findRegistrationCacheDataByChatId(telegramChatId);
 	}
 
 	@Override
 	public void removeRegistrationCache(Long telegramChatId) {
-		redisUserRepository.remove(telegramChatId);
+		redisUserRepository.removeRegistrationCacheData(telegramChatId);
+	}
+
+	@Override
+	public void makeUserInactive(Long telegramChatId) {
+		redisUserRepository.saveUserInactive(telegramChatId);
+	}
+
+	@Override
+	public void makeUserActive(Long telegramChatId) {
+		redisUserRepository.deleteUserInactive(telegramChatId);
+	}
+
+	@Override
+	public boolean checkUserInactive(Long telegramChatId) {
+		return redisUserRepository.checkUserInactive(telegramChatId);
 	}
 }
